@@ -13,6 +13,7 @@ const config = {
     kit: {
         adapter: adapter({
             runtime: 'edge',
+            regions: ['lhr1']
         }),
         csrf: {
             checkOrigin: process.env.VERCEL_ENV !== 'development',
