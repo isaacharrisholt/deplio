@@ -5,6 +5,8 @@
 	import '@skeletonlabs/skeleton/styles/skeleton.css';
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
+    import Meta from "$lib/components/Meta.svelte";
 </script>
 
+<Meta defaultMeta={{ title: 'Deplio', description: 'Preview branches for your backend.' }} />
 <slot />
