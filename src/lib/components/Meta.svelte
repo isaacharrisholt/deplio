@@ -18,7 +18,7 @@
             ...$page.data.meta,
         }
         if (PUBLIC_DEPLOYMENT_ENV !== 'prod') {
-            meta.title = `${PUBLIC_DEPLOYMENT_ENV.toUpperCase()}: ${meta.title}`
+            meta.title = `${(PUBLIC_DEPLOYMENT_ENV ?? 'local').toUpperCase()}: ${meta.title}`
         }
     }
 </script>
