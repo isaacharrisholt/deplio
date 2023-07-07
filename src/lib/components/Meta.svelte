@@ -18,12 +18,14 @@
             ...$page.data.meta,
         }
         if (PUBLIC_DEPLOYMENT_ENV !== 'prod') {
-            meta.title = `${(PUBLIC_DEPLOYMENT_ENV ?? 'local').toUpperCase()}: ${meta.title}`
+            meta.title = `${(PUBLIC_DEPLOYMENT_ENV ?? 'local').toUpperCase()}: ${
+                meta.title
+            }`
         }
     }
 </script>
 
 <svelte:head>
     <title>{meta.title}</title>
-    <meta name="description" content={meta.description}/>
+    <meta name="description" content={meta.description} />
 </svelte:head>
