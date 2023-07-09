@@ -21,13 +21,18 @@ export const handle: Handle = async ({ event, resolve }) => {
         } = await event.locals.supabase.auth.getSession()
         return session
     }
+    const session = await event.locals.getSession()
 
-    if (event.url.pathname.startsWith('/dashboard')) {
-        const session = await event.locals.getSession()
-        console.log('session', session)
+    if (event.url.pathname.startsWith('/dashboard') && !session) {
         if (!session) {
             throw redirect(303, '/login')
         }
+    } else if (!session) {
+        return resolve(event, {
+            filterSerializedResponseHeaders(name) {
+                return name === 'content-range'
+            },
+        })
     }
 
     return resolve(event, {

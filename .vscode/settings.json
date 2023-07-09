@@ -1,0 +1,13 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 54322,
+            "driver": "PostgreSQL",
+            "name": "Local Supabase",
+            "database": "postgres",
+            "username": "postgres"
+        }
+    ]
+}

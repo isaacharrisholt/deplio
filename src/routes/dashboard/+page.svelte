@@ -5,4 +5,4 @@
 </script>
 
 <h1>Dashboard</h1>
-<h2>{data.session}</h2>
+<h2>{JSON.stringify(data.session)}</h2>
