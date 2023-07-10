@@ -26,6 +26,8 @@
         !!$emailSignupForm.passwordConfirmation
 </script>
 
+{JSON.stringify($emailSignupFormErrors)}
+{JSON.stringify($emailSignupFormMessage)}
 <div class="w-full h-screen grid place-items-center">
     <div class="flex flex-col gap-4 w-fit">
         <form
