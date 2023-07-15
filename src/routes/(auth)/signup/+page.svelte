@@ -26,8 +26,8 @@
         !!$emailSignupForm.passwordConfirmation
 </script>
 
-<div class="w-full h-screen grid place-items-center">
-    <div class="flex flex-col gap-4 w-fit">
+<div class="grid h-screen w-full place-items-center">
+    <div class="flex w-fit flex-col gap-4">
         <form
             action="?/providerSignup"
             method="POST"
@@ -36,7 +36,7 @@
         >
             <button
                 type="submit"
-                class="btn bg-[#333] flex flex-row items-center gap-2 w-full"
+                class="btn flex w-full flex-row items-center gap-2 bg-[#333]"
                 disabled={$providerSignupFormSubmitting}
             >
                 <Github />
@@ -48,7 +48,7 @@
         <form
             method="POST"
             action="?/emailSignup"
-            class="grid gap-4 w-fit"
+            class="grid w-fit gap-4"
             use:emailSignupFormEnhance
         >
             <input

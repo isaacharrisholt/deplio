@@ -6,8 +6,8 @@
     const { form, message, errors, enhance } = createForm(data.form)
 </script>
 
-<div class="w-full h-screen grid place-items-center">
-    <form method="POST" use:enhance class="grid gap-4 w-fit">
+<div class="grid h-screen w-full place-items-center">
+    <form method="POST" use:enhance class="grid w-fit gap-4">
         <input
             type="email"
             name="email"

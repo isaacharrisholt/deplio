@@ -1,9 +1,9 @@
-import { fail, redirect } from "@sveltejs/kit"
-import type { Actions, PageServerLoad } from "./$types"
-import { AuthApiError } from "@supabase/supabase-js"
-import { setError, superValidate, message } from "sveltekit-superforms/server"
-import { loginFormSchema } from "$lib/forms/auth"
-import type { FormMessage } from "$lib/forms/client"
+import { fail, redirect } from '@sveltejs/kit'
+import type { Actions, PageServerLoad } from './$types'
+import { AuthApiError } from '@supabase/supabase-js'
+import { setError, superValidate, message } from 'sveltekit-superforms/server'
+import { loginFormSchema } from '$lib/forms/auth'
+import type { FormMessage } from '$lib/forms/client'
 
 export const load: PageServerLoad = async (event) => {
     const form = await superValidate(event, loginFormSchema)
@@ -12,8 +12,13 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
     default: async (event) => {
-        const { locals: { supabase } } = event
-        const form = await superValidate<typeof loginFormSchema, FormMessage>(event, loginFormSchema)
+        const {
+            locals: { supabase },
+        } = event
+        const form = await superValidate<typeof loginFormSchema, FormMessage>(
+            event,
+            loginFormSchema,
+        )
 
         if (!form.valid) {
             return fail(400, { form })
@@ -30,9 +35,17 @@ export const actions: Actions = {
             if (loginError instanceof AuthApiError && loginError.status === 400) {
                 return setError(form, 'password', 'Invalid email or password')
             }
-            return message(form, { status: 'error', message: 'There was an error logging you in. Please try again later.' }, { status: 500 })
+            return message(
+                form,
+                {
+                    status: 'error',
+                    message:
+                        'There was an error logging you in. Please try again later.',
+                },
+                { status: 500 },
+            )
         }
 
         throw redirect(303, '/dashboard')
-    }
+    },
 }
