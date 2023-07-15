@@ -23,5 +23,9 @@ export const loginFormSchema = z.object({
     email: z.string().email(),
     password: z.string(),
 })
-
 export type LoginFormSchema = z.infer<typeof loginFormSchema>
+
+export const otpVerificationFormSchema = z.object({
+    verificationCode: z.number().default('' as unknown as number),
+})
+export type OtpVerificationFormSchema = z.infer<typeof otpVerificationFormSchema>

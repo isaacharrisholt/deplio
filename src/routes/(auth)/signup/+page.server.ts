@@ -29,7 +29,7 @@ export const actions: Actions = {
             email: form.data.email,
             password: form.data.password,
             options: {
-                emailRedirectTo: `${getSiteUrl()}/auth/callback`,
+                emailRedirectTo: `${getSiteUrl()}/auth/callback?redirectUrl=/dashboard`,
             },
         })
 
@@ -85,7 +85,6 @@ export const actions: Actions = {
             )
         }
 
-        console.log(providerData)
         throw redirect(303, providerData.url)
     },
 }
