@@ -6,7 +6,7 @@
     import { loginFormSchema } from '$lib/forms/auth'
 
     export let data: PageData
-    const { form, message, errors, enhance, allErrors } = createForm(data.form, {
+    const { form, errors, enhance, allErrors } = createForm(data.form, {
         validators: loginFormSchema,
     })
 </script>

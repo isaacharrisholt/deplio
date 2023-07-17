@@ -7,6 +7,7 @@
     import '../app.postcss'
     import { invalidate } from '$app/navigation'
     import { onMount } from 'svelte'
+    import { Toast } from '@skeletonlabs/skeleton'
     import Meta from '$lib/components/Meta.svelte'
 
     export let data
@@ -30,4 +31,5 @@
 <Meta
     defaultMeta={{ title: 'Deplio', description: 'Preview branches for your backend.' }}
 />
+<Toast position="br" />
 <slot />

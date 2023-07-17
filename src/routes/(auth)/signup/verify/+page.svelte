@@ -3,7 +3,7 @@
     import TextInput from '$lib/components/forms/TextInput.svelte'
 
     export let data
-    const { form, errors, message, enhance } = createForm(data.form)
+    const { form, errors, enhance } = createForm(data.form)
 </script>
 
 <!-- Session is null when signing up -->

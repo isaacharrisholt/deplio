@@ -20,6 +20,15 @@ export const actions: Actions = {
             loginFormSchema,
         )
 
+        return message(
+            form,
+            {
+                status: 'error',
+                message: 'You have successfully failed to log in!',
+            },
+            { status: 500 },
+        )
+
         if (!form.valid) {
             return fail(400, { form })
         }

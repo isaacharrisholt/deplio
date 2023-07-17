@@ -11,13 +11,11 @@
     const {
         form: emailSignupForm,
         errors: emailSignupFormErrors,
-        message: emailSignupFormMessage,
         enhance: emailSignupFormEnhance,
     } = createForm(data.emailSignupForm, {
         validators: emailSignupFormSchema,
     })
     const {
-        message: providerSignupFormMessage,
         enhance: providerSignupFormEnhance,
         submitting: providerSignupFormSubmitting,
     } = createForm(data.providerSignupForm)
