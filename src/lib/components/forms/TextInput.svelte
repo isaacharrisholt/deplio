@@ -12,20 +12,19 @@
     /**
      * String array of errors to display
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     export let errors: any = [] as string[]
     export let minlength: number | null = null
     export let maxlength: number | null = null
-    export let required: boolean = false
-    export let disabled: boolean = false
-    export let readonly: boolean = false
+    export let required = false
+    export let disabled = false
+    export let readonly = false
     export let autocomplete: 'on' | 'off' = 'on'
     export let pattern: RegExp | null = null
     export let value: string
 
     let classes = ''
     export { classes as class }
-
-    $: errors = errors as string[]
 </script>
 
 <div class="flex w-full flex-col gap-2">
@@ -49,7 +48,7 @@
         aria-disabled={disabled}
         aria-readonly={readonly}
         aria-invalid={!!errors?.length}
-        aria-errormessage={!!errors?.length ? `${id}-error` : null}
+        aria-errormessage={errors?.length ? `${id}-error` : null}
         aria-required={required}
         class:input-error={!!errors?.length}
     />

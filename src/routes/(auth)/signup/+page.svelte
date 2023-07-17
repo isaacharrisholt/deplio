@@ -7,7 +7,6 @@
     import PasswordInput from '$lib/components/forms/PasswordInput.svelte'
 
     export let data: PageData
-    const supabase = data.supabase
     const {
         form: emailSignupForm,
         errors: emailSignupFormErrors,
