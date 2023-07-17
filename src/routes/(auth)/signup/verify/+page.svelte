@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { createForm } from '$lib/forms/client.js'
+    import { createForm } from '$lib/forms/client'
+    import TextInput from '$lib/components/forms/TextInput.svelte'
 
     export let data
     const { form, errors, message, enhance } = createForm(data.form)
@@ -17,13 +18,14 @@
             below:
         </p>
         <form method="post" class="w-full" use:enhance>
-            <input
-                type="number"
-                class="input"
+            <TextInput
+                id="verificationCode"
                 name="verificationCode"
                 bind:value={$form.verificationCode}
+                errors={$errors.verificationCode}
+                pattern={/^[0-9]{6}$/}
             />
-            <button type="submit" class="variant-form-material btn"
+            <button type="submit" class="btn variant-filled-primary"
                 >I am a real human. Beep boop.</button
             >
         </form>

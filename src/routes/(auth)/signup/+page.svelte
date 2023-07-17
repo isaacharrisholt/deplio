@@ -3,6 +3,8 @@
     import { createForm } from '$lib/forms/client'
     import { Github } from 'lucide-svelte'
     import { emailSignupFormSchema } from '$lib/forms/auth'
+    import EmailInput from '$lib/components/forms/EmailInput.svelte'
+    import PasswordInput from '$lib/components/forms/PasswordInput.svelte'
 
     export let data: PageData
     const supabase = data.supabase
@@ -51,26 +53,26 @@
             class="grid w-fit gap-4"
             use:emailSignupFormEnhance
         >
-            <input
-                type="email"
+            <EmailInput
+                id="email"
                 name="email"
                 placeholder="Email"
-                class="input"
                 bind:value={$emailSignupForm.email}
+                errors={$emailSignupFormErrors.email}
             />
-            <input
-                type="password"
+            <PasswordInput
+                id="password"
                 name="password"
                 placeholder="Password"
-                class="input"
                 bind:value={$emailSignupForm.password}
+                errors={$emailSignupFormErrors.password}
             />
-            <input
-                type="password"
+            <PasswordInput
+                id="passwordConfirmation"
                 name="passwordConfirmation"
                 placeholder="Confirm password"
-                class="input"
                 bind:value={$emailSignupForm.passwordConfirmation}
+                errors={$emailSignupFormErrors.passwordConfirmation}
             />
             <button
                 type="submit"
