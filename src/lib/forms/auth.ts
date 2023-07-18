@@ -26,6 +26,6 @@ export const loginFormSchema = z.object({
 export type LoginFormSchema = z.infer<typeof loginFormSchema>
 
 export const otpVerificationFormSchema = z.object({
-    verificationCode: z.number().default('' as unknown as number),
+    verificationCode: z.string(),
 })
 export type OtpVerificationFormSchema = z.infer<typeof otpVerificationFormSchema>

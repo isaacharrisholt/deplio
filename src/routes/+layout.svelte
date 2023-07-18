@@ -37,26 +37,26 @@
 
 <style lang="postcss">
     :global(h1) {
-        @apply h1
+        @apply h1;
     }
 
     :global(h2) {
-        @apply h2
+        @apply h2;
     }
 
     :global(h3) {
-        @apply h3
+        @apply h3;
     }
 
     :global(h4) {
-        @apply h4
+        @apply h4;
     }
 
     :global(h5) {
-        @apply h5
+        @apply h5;
     }
 
     :global(h6) {
-        @apply h6
+        @apply h6;
     }
 </style>

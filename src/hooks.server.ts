@@ -2,6 +2,8 @@ import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/publi
 import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit'
 import type { Handle } from '@sveltejs/kit'
 import { redirect } from '@sveltejs/kit'
+import { cache } from '$lib/cache'
+import type { TeamWithRole, UserWithTeams } from '$lib/types/supabase'
 
 export const handle: Handle = async ({ event, resolve }) => {
     event.locals.supabase = createSupabaseServerClient({
@@ -34,6 +36,44 @@ export const handle: Handle = async ({ event, resolve }) => {
             },
         })
     }
+
+    let user = await cache.hgetall<UserWithTeams>(`user:${session?.user.id}`)
+    const refreshCache = event.url.searchParams.get('refreshCache')
+
+    if (!user || refreshCache) {
+        const { data: userFetch, error: userFetchError } = await event.locals.supabase
+            .from('user')
+            .select('*, team_user (team (*), role)')
+            .eq('user_id', session?.user.id)
+            .single()
+
+        if (userFetchError) {
+            throw userFetchError
+        }
+
+        if (!userFetch) {
+            throw new Error('User not found')
+        }
+
+        const { team_user: teamUser, ...extractedUser } = userFetch
+
+        const userWithTeams: UserWithTeams = {
+            ...extractedUser,
+            teams: teamUser.map(
+                (teamWithRole) =>
+                    ({
+                        ...teamWithRole.team,
+                        role: teamWithRole.role,
+                    } as TeamWithRole),
+            ),
+        }
+
+        await cache.hset(`user:${session?.user.id}`, userWithTeams, {
+            ttl: 60 * 60, // 1 hour
+        })
+        user = userWithTeams
+    }
+    event.locals.user = user
 
     return resolve(event, {
         filterSerializedResponseHeaders(name) {

@@ -47,7 +47,7 @@
         <form
             method="POST"
             action="?/emailSignup"
-            class="grid w-fit gap-4"
+            class="grid w-full gap-4"
             use:emailSignupFormEnhance
         >
             <EmailInput

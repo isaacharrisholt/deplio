@@ -34,16 +34,271 @@ export interface Database {
     }
     public: {
         Tables: {
-            [_ in never]: never
+            team: {
+                Row: {
+                    avatar_url: string | null
+                    created_at: string
+                    deleted_at: string | null
+                    id: string
+                    name: string
+                    type: Database['public']['Enums']['team_type']
+                }
+                Insert: {
+                    avatar_url?: string | null
+                    created_at?: string
+                    deleted_at?: string | null
+                    id?: string
+                    name: string
+                    type: Database['public']['Enums']['team_type']
+                }
+                Update: {
+                    avatar_url?: string | null
+                    created_at?: string
+                    deleted_at?: string | null
+                    id?: string
+                    name?: string
+                    type?: Database['public']['Enums']['team_type']
+                }
+                Relationships: []
+            }
+            team_user: {
+                Row: {
+                    created_at: string
+                    deleted_at: string | null
+                    role: Database['public']['Enums']['user_role']
+                    team_id: string
+                    user_id: string
+                }
+                Insert: {
+                    created_at?: string
+                    deleted_at?: string | null
+                    role?: Database['public']['Enums']['user_role']
+                    team_id: string
+                    user_id: string
+                }
+                Update: {
+                    created_at?: string
+                    deleted_at?: string | null
+                    role?: Database['public']['Enums']['user_role']
+                    team_id?: string
+                    user_id?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: 'team_user_team_id_fkey'
+                        columns: ['team_id']
+                        referencedRelation: 'team'
+                        referencedColumns: ['id']
+                    },
+                    {
+                        foreignKeyName: 'team_user_user_id_fkey'
+                        columns: ['user_id']
+                        referencedRelation: 'user'
+                        referencedColumns: ['id']
+                    },
+                ]
+            }
+            user: {
+                Row: {
+                    avatar_url: string | null
+                    created_at: string
+                    deleted_at: string | null
+                    email: string
+                    first_name: string | null
+                    id: string
+                    last_name: string | null
+                    user_id: string
+                }
+                Insert: {
+                    avatar_url?: string | null
+                    created_at?: string
+                    deleted_at?: string | null
+                    email: string
+                    first_name?: string | null
+                    id?: string
+                    last_name?: string | null
+                    user_id: string
+                }
+                Update: {
+                    avatar_url?: string | null
+                    created_at?: string
+                    deleted_at?: string | null
+                    email?: string
+                    first_name?: string | null
+                    id?: string
+                    last_name?: string | null
+                    user_id?: string
+                }
+                Relationships: []
+            }
         }
         Views: {
             [_ in never]: never
         }
         Functions: {
-            [_ in never]: never
+            can_insert_team_user_with_check: {
+                Args: {
+                    tu: unknown
+                }
+                Returns: boolean
+            }
+            can_insert_team_with_check: {
+                Args: {
+                    t: unknown
+                }
+                Returns: boolean
+            }
+            can_read_team_user_using: {
+                Args: {
+                    tu: unknown
+                }
+                Returns: boolean
+            }
+            can_read_team_using: {
+                Args: {
+                    t: unknown
+                }
+                Returns: boolean
+            }
+            can_read_user_using: {
+                Args: {
+                    u: unknown
+                }
+                Returns: boolean
+            }
+            can_update_team_user_using: {
+                Args: {
+                    tu: unknown
+                }
+                Returns: boolean
+            }
+            can_update_team_user_with_check: {
+                Args: {
+                    tu: unknown
+                }
+                Returns: boolean
+            }
+            can_update_team_using: {
+                Args: {
+                    t: unknown
+                }
+                Returns: boolean
+            }
+            can_update_team_with_check: {
+                Args: {
+                    t: unknown
+                }
+                Returns: boolean
+            }
+            can_update_user_using: {
+                Args: {
+                    u: unknown
+                }
+                Returns: boolean
+            }
+            can_update_user_with_check: {
+                Args: {
+                    u: unknown
+                }
+                Returns: boolean
+            }
+            from_b64u: {
+                Args: {
+                    val: string
+                }
+                Returns: string
+            }
+            is_deleted: {
+                Args: {
+                    ts: string
+                }
+                Returns: boolean
+            }
+            stuid: {
+                Args: Record<PropertyKey, never>
+                Returns: string
+            }
+            stuid_from_compact: {
+                Args: {
+                    compact: string
+                }
+                Returns: string
+            }
+            stuid_to_compact: {
+                Args: {
+                    stuid: string
+                }
+                Returns: string
+            }
+            stuid_tz: {
+                Args: {
+                    stuid: string
+                }
+                Returns: string
+            }
+            team_ids: {
+                Args: Record<PropertyKey, never>
+                Returns: string[]
+            }
+            to_b64u: {
+                Args: {
+                    val: string
+                }
+                Returns: string
+            }
+            tuid_zero: {
+                Args: Record<PropertyKey, never>
+                Returns: string
+            }
+            tuid6: {
+                Args: Record<PropertyKey, never>
+                Returns: string
+            }
+            tuid6_from_compact: {
+                Args: {
+                    compact: string
+                }
+                Returns: string
+            }
+            tuid6_from_tz: {
+                Args: {
+                    tz: string
+                }
+                Returns: string
+            }
+            tuid6_to_compact: {
+                Args: {
+                    tuid: string
+                }
+                Returns: string
+            }
+            tuid6_tz: {
+                Args: {
+                    tuid: string
+                }
+                Returns: string
+            }
+            tz_to_iso: {
+                Args: {
+                    tz: string
+                }
+                Returns: string
+            }
+            user_id: {
+                Args: Record<PropertyKey, never>
+                Returns: string
+            }
+            user_is_team_admin: {
+                Args: {
+                    check_team_id: string
+                    check_user_id?: string
+                }
+                Returns: boolean
+            }
         }
         Enums: {
-            [_ in never]: never
+            team_type: 'personal' | 'organization'
+            user_role: 'admin' | 'member'
         }
         CompositeTypes: {
             [_ in never]: never

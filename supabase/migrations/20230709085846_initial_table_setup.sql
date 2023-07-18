@@ -58,7 +58,9 @@ returns uuid
 language sql
 security definer
 as $$
-    select id from public."user" where user_id = auth.uid();
+    select id
+    from public."user" as u
+    where u.user_id = auth.uid();
 $$
 ;
 
@@ -67,7 +69,9 @@ returns setof uuid
 language sql
 security definer
 as $$
-    select team_id from public.team_user where user_id = auth.uid();
+    select team_id
+    from public.team_user as tu
+    where tu.user_id = user_id();
 $$
 ;
 
