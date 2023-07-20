@@ -78,8 +78,8 @@ devDependencies:
     specifier: ^0.4.1
     version: 0.4.1(prettier-plugin-svelte@2.10.1)(prettier@2.8.8)
   supabase:
-    specifier: ^1.75.3
-    version: 1.75.3
+    specifier: ^1.77.9
+    version: 1.77.9
   svelte:
     specifier: ^3.54.0
     version: 3.59.2
@@ -2882,8 +2882,8 @@ packages:
       ts-interface-checker: 0.1.13
     dev: true
 
-  /supabase@1.75.3:
-    resolution: {integrity: sha512-o6rd6v09QstJACYbcNPHaPPnCSi6CO5o2g4ZiZ45V+RYBQasPk8UCOqzJEzi/Ahizq3rb1bJBdwYdEpDmlepPg==}
+  /supabase@1.77.9:
+    resolution: {integrity: sha512-AyMaMsb+QpUMTE1XfV8Vhl/9G+Hkzk61RXf/JP5uyxc256hcb3N3FQoW2bi+A/BodJ/rfZOPE7vv+xtfVf6vyQ==}
     engines: {npm: '>=8'}
     hasBin: true
     requiresBuild: true

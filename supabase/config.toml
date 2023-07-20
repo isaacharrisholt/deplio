@@ -67,7 +67,7 @@ client_id = "env(GITHUB_AUTH_CLIENT_ID)"
 secret = "env(GITHUB_AUTH_CLIENT_SECRET)"
 
 [analytics]
-enabled = false
+enabled = true
 port = 54327
 vector_port = 54328
 # Setup BigQuery project to enable log viewer on local development stack.
