@@ -1,4 +1,9 @@
 export function extractRedirectUrl(url: URL, fallback: string): string {
-    const redirectUrl = url.searchParams.get('redirectUrl')
-    return redirectUrl ? redirectUrl : fallback
+    let redirectUrl = url.searchParams.get('redirectUrl')
+
+    if (redirectUrl && !redirectUrl.startsWith('/')) {
+        redirectUrl = `/${redirectUrl}`
+    }
+
+    return redirectUrl || fallback
 }
