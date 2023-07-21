@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { page } from '$app/stores'
     import { AppBar, drawerStore } from '@skeletonlabs/skeleton'
     import { Menu } from 'lucide-svelte'
     import NavbarLinks from './NavbarLinks.svelte'
