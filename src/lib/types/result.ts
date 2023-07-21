@@ -1,7 +1,7 @@
 /**
  * A TypeScript port of the Result type from Rust.
  */
-export class Result<T, E = Error> {
+export class Result<T, E extends NonNullable<unknown> = Error> {
     private constructor(private readonly value: T, private readonly error?: E) {}
 
     /**
@@ -18,21 +18,21 @@ export class Result<T, E = Error> {
      * @param error
      * @returns Result
      */
-    static err<T, E = Error>(error: E) {
+    static err<T, E extends NonNullable<unknown> = Error>(error: E): Result<T, E> {
         return new Result(undefined as T, error)
     }
 
     /**
      * Check if the Result is an Ok.
      */
-    isOk() {
+    isOk(): boolean {
         return !this.error
     }
 
     /**
      * Check if the Result is an Err.
      */
-    isErr() {
+    isErr(): boolean {
         return !!this.error
     }
 
@@ -52,6 +52,8 @@ export class Result<T, E = Error> {
 
     /**
      * Throw an error if the Result is an Err, or return the value if it is an Ok.
+     * @returns T
+     * @throws E
      */
     unwrap(): T {
         if (this.error) {
@@ -75,7 +77,8 @@ export class Result<T, E = Error> {
     }
 
     /**
-     * Returns a new error result with the given type for T if the Result is an Err, or throws if it is an Ok.
+     * Returns a new error result with the given type for T if the Result is an Err, or
+     * throws if it is an Ok.
      * @returns Result
      * @throws Error
      */
