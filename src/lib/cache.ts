@@ -1,17 +1,29 @@
 import { kv } from '@vercel/kv'
+import type { UserWithTeams } from '$lib/types/supabase'
 
 type Expires<T extends object> = {
     expiresAt: number | null
     value: T
 }
 
+/**
+ * A mapping of cache keys to their types.
+ */
+type CacheMapping = {
+    user: UserWithTeams
+}
+
+type CacheKey = keyof CacheMapping
+
 export const cache = {
     /**
      * Get a hash value. This is an object.
      * @param key
      */
-    async hgetall<T extends object>(key: string): Promise<T | null> {
-        const value = await kv.hgetall<Expires<T>>(key)
+    async hgetall<Key extends CacheKey, ObjectType extends CacheMapping[Key]>(
+        key: `${Key}:${string}`,
+    ): Promise<ObjectType | null> {
+        const value = await kv.hgetall<Expires<ObjectType>>(key)
         if (!value) {
             return null
         }
@@ -29,19 +41,21 @@ export const cache = {
      * @param value
      * @param options - ttl: time to live in seconds
      */
-    async hset(
-        key: string,
-        value: object,
-        options?: { ttl?: number },
+    async hset<Key extends CacheKey, ObjectType extends CacheMapping[Key]>(
+        key: `${Key}:${string}`,
+        value: ObjectType,
+        options?: { ttlSeconds?: number },
     ): Promise<number> {
-        const expiresAt = options?.ttl ? Date.now() + options.ttl * 1000 : null
+        const expiresAt = options?.ttlSeconds
+            ? Date.now() + options.ttlSeconds * 1000
+            : null
         return await kv.hset(key, { value, expiresAt })
     },
     /**
      * Delete a key-value pair from the database.
      * @param key
      */
-    async del(key: string): Promise<number> {
+    async del(key: `${CacheKey}:${string}`): Promise<number> {
         return await kv.del(key)
     },
 }

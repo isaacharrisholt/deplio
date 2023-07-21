@@ -37,7 +37,7 @@ export const handle: Handle = async ({ event, resolve }) => {
         })
     }
 
-    let user = await cache.hgetall<UserWithTeams>(`user:${session?.user.id}`)
+    let user = await cache.hgetall(`user:${session?.user.id}`)
     const refreshCache = event.url.searchParams.get('refreshCache')
 
     if (!user || refreshCache) {
@@ -69,7 +69,7 @@ export const handle: Handle = async ({ event, resolve }) => {
         }
 
         await cache.hset(`user:${session?.user.id}`, userWithTeams, {
-            ttl: 60 * 60, // 1 hour
+            ttlSeconds: 60 * 60, // 1 hour
         })
         user = userWithTeams
     }
