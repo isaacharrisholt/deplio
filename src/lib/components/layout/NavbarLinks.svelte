@@ -31,7 +31,7 @@
             linkClass,
         )}
         class:bg-surface-300-600-token={$page.url.pathname.startsWith(link.href)}
-        on:click={() => drawerStore.close()}
+        on:click={drawerStore.close}
         data-sveltekit-preload-data={link.preload ?? 'hover'}>{link.name}</a
     >
 {/each}

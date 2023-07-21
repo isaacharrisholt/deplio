@@ -11,7 +11,6 @@
     shadow="shadow-lg"
     gridColumns="grid-cols-3"
     slotTrail="place-content-end"
-    background="variant-glass-surface"
 >
     <div slot="lead" class="flex flex-row items-center gap-8">
         <button class="lg:hidden" on:click={() => drawerStore.open()}>

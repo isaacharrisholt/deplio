@@ -68,7 +68,7 @@ export const actions: Actions = {
             await supabase.auth.signInWithOAuth({
                 provider: form.data.provider,
                 options: {
-                    redirectTo: `${getSiteUrl()}/signup`,
+                    redirectTo: `${getSiteUrl()}/auth/provider/github`,
                     skipBrowserRedirect: true,
                 },
             })

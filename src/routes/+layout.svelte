@@ -36,7 +36,7 @@
 />
 <Toast position="br" />
 
-<Drawer>
+<Drawer width="w-fit">
     <DrawerNav />
 </Drawer>
 
