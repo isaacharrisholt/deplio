@@ -1,7 +1,7 @@
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public'
 import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit'
 import type { Handle } from '@sveltejs/kit'
-import { redirect } from '@sveltejs/kit'
+import { error, redirect } from '@sveltejs/kit'
 import { cache } from '$lib/cache'
 import type { TeamWithRole, UserWithTeams } from '$lib/types/supabase'
 
@@ -48,11 +48,11 @@ export const handle: Handle = async ({ event, resolve }) => {
             .single()
 
         if (userFetchError) {
-            throw userFetchError
+            throw error(500, userFetchError)
         }
 
         if (!userFetch) {
-            throw new Error('User not found')
+            throw error(404, 'User not found')
         }
 
         const { team_user: teamUser, ...extractedUser } = userFetch

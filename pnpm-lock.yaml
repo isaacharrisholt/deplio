@@ -62,6 +62,9 @@ devDependencies:
   highlight.js:
     specifier: ^11.8.0
     version: 11.8.0
+  jose:
+    specifier: ^4.14.4
+    version: 4.14.4
   lucide-svelte:
     specifier: ^0.259.0
     version: 0.259.0(svelte@3.59.2)

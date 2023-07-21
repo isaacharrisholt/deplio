@@ -38,6 +38,16 @@ create table if not exists team_user (
 );
 alter table team_user enable row level security;
 
+-- github_installation
+create table if not exists github_installation (
+    id uuid not null primary key default tuid6(),
+    created_at timestamptz not null default now(),
+    deleted_at timestamptz,
+    installation_id bigint not null unique,
+    team_id uuid not null references team (id)
+);
+alter table github_installation enable row level security;
+
 
 /*
  * RLS Policies
@@ -290,3 +300,70 @@ on team
 for insert
 to authenticated
 with check (can_insert_team_with_check(team));
+
+-- github_installation
+create or replace function can_read_github_installation_using(gi github_installation)
+returns boolean
+security definer
+language sql
+as $$
+    select ( -- User is in team
+        gi.team_id in (select * from public.team_ids())
+        and not is_deleted(gi.deleted_at)
+    );
+$$
+;
+
+create or replace function can_update_github_installation_using(gi github_installation)
+returns boolean
+security definer
+language sql
+as $$
+    select ( -- User is admin of team
+        public.user_is_team_admin(gi.team_id)
+        and not is_deleted(gi.deleted_at)
+    );
+$$
+;
+
+create or replace function can_update_github_installation_with_check(gi github_installation)
+returns boolean
+security definer
+language sql
+as $$
+    select ( -- User is admin of team
+        public.user_is_team_admin(gi.team_id)
+    );
+$$
+;
+
+create or replace function can_insert_github_installation_with_check(gi github_installation)
+returns boolean
+security definer
+language sql
+as $$
+    select ( -- User is admin of team
+        public.user_is_team_admin(gi.team_id)
+        and not is_deleted(gi.deleted_at)
+    );
+$$
+;
+
+create policy "github_installation: select"
+on github_installation
+for select
+to authenticated
+using (can_read_github_installation_using(github_installation));
+
+create policy "github_installation: update"
+on github_installation
+for update
+to authenticated
+using (can_update_github_installation_using(github_installation))
+with check (can_update_github_installation_with_check(github_installation));
+
+create policy "github_installation: insert"
+on github_installation
+for insert
+to authenticated
+with check (can_insert_github_installation_with_check(github_installation));

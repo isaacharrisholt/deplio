@@ -1,19 +1,21 @@
 import { kv } from '@vercel/kv'
 import type { UserWithTeams } from '$lib/types/supabase'
 
-type Expires<T extends object> = {
-    expiresAt: number | null
-    value: T
-}
-
 /**
  * A mapping of cache keys to their types.
  */
 type CacheMapping = {
     user: UserWithTeams
+    githubInstallationAccessToken: string
 }
 
 type CacheKey = keyof CacheMapping
+type CacheValue = CacheMapping[keyof CacheMapping]
+
+type Expires<T extends CacheValue> = {
+    expiresAt: number | null
+    value: T
+}
 
 export const cache = {
     /**
