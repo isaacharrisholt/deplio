@@ -8,9 +8,10 @@
     import '../app.postcss'
     import { invalidate } from '$app/navigation'
     import { onMount } from 'svelte'
-    import { Toast, AppShell } from '@skeletonlabs/skeleton'
+    import { Toast, AppShell, Drawer } from '@skeletonlabs/skeleton'
     import Meta from '$lib/components/Meta.svelte'
     import Navbar from '$lib/components/layout/Navbar.svelte'
+    import DrawerNav from '$lib/components/layout/DrawerNav.svelte'
 
     export let data
 
@@ -34,6 +35,10 @@
     defaultMeta={{ title: 'Deplio', description: 'Preview branches for your backend.' }}
 />
 <Toast position="br" />
+
+<Drawer>
+    <DrawerNav />
+</Drawer>
 
 <AppShell>
     <svelte:fragment slot="header">

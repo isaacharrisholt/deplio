@@ -25,7 +25,7 @@
         !!$emailSignupForm.passwordConfirmation
 </script>
 
-<div class="grid h-screen w-full place-items-center">
+<div class="grid w-full place-items-center">
     <div class="flex w-fit flex-col gap-4">
         <form
             action="?/providerSignup"
@@ -43,6 +43,8 @@
             </button>
             <input type="hidden" name="provider" value="github" />
         </form>
+
+        <hr />
 
         <form
             method="POST"

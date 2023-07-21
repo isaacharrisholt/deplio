@@ -11,7 +11,7 @@
     })
 </script>
 
-<div class="grid h-screen w-full place-items-center">
+<div class="grid w-full place-items-center">
     <form method="POST" use:enhance class="grid w-fit gap-4">
         <EmailInput
             id="email"
