@@ -77,6 +77,15 @@ export class Result<T, E extends NonNullable<unknown> = Error> {
     }
 
     /**
+     * Converts the current Result to a new Result with the given new types.
+     * NOT recommended for use if you can avoid it, as the T type is not checked. 
+     * @returns Result<NewT, NewE>
+     */
+    into<NewT, NewE extends NonNullable<unknown> = Error>(): Result<NewT, NewE> {
+        return new Result(this.value as unknown as NewT, this.error as NewE | undefined)
+    }
+
+    /**
      * Returns a new error result with the given type for T if the Result is an Err, or
      * throws if it is an Ok.
      * @returns Result
@@ -84,7 +93,7 @@ export class Result<T, E extends NonNullable<unknown> = Error> {
      */
     errInto<NewT>(): Result<NewT, E> {
         if (!this.error) {
-            throw new Error('called `Result.intoErr()` on an Ok value')
+            throw new Error('called `Result.errInto()` on an Ok value')
         }
         return Result.err<NewT, E>(this.error)
     }

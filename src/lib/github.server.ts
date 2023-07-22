@@ -22,9 +22,7 @@ export async function generateGitHubJWT(): Promise<Result<string>> {
             .setIssuer(GITHUB_APP_ID)
             .sign(crypto.createPrivateKey(GITHUB_PRIVATE_KEY))
     } catch (error) {
-        return Result.err<string, Error>(
-            new Error(`Error generating GitHub JWT: ${error}`),
-        )
+        return Result.err(new Error(`Error generating GitHub JWT: ${error}`))
     }
 
     return Result.ok(jwt)
