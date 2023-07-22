@@ -35,4 +35,7 @@ export type UserRole = Enum<'user_role'>
  * Composite types
  */
 export type TeamWithRole = Team & { role: UserRole }
-export type UserWithTeams = User & { teams: TeamWithRole[] }
+export type UserWithTeams = User & {
+    teams: TeamWithRole[]
+    currentTeamId: Team['id']
+}

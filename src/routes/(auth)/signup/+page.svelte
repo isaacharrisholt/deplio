@@ -1,11 +1,10 @@
 <script lang="ts">
-    import type { PageData } from './$types'
-    import { createForm } from '$lib/forms/client'
-    import { Github } from 'lucide-svelte'
-    import { emailSignupFormSchema } from '$lib/forms/auth'
     import EmailInput from '$lib/components/forms/EmailInput.svelte'
     import PasswordInput from '$lib/components/forms/PasswordInput.svelte'
     import ProviderAuthForm from '$lib/components/forms/ProviderAuthForm.svelte'
+    import { emailSignupFormSchema } from '$lib/forms/auth'
+    import { createForm } from '$lib/forms/client'
+    import type { PageData } from './$types'
 
     export let data: PageData
     const {

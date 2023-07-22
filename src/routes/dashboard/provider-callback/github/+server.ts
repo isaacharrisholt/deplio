@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types'
 
 export const GET: RequestHandler = async ({
     url,
-    locals: { getSession, supabase, user },
+    locals: { getSession, supabase, team },
 }) => {
     const session = await getSession()
     if (!session) {
@@ -26,8 +26,7 @@ export const GET: RequestHandler = async ({
             .from('github_installation')
             .insert({
                 installation_id: installationId,
-                // TODO: use current team ID
-                team_id: user.teams[0]?.id,
+                team_id: team.id,
             })
 
         if (installationInsertError) {

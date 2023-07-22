@@ -57,13 +57,26 @@ export const handle: Handle = async ({ event, resolve }) => {
 
         const { team_user: teamUser, ...extractedUser } = userFetch
 
+        const earliestTeam = teamUser.sort((teamUser1, teamUser2) => {
+            return (teamUser1?.team?.created_at ?? 0) <
+                (teamUser2?.team?.created_at ?? 0)
+                ? -1
+                : 1
+        })[0]?.team
+
+        if (!earliestTeam) {
+            throw error(404, 'User not found')
+        }
+
         const userWithTeams: UserWithTeams = {
             ...extractedUser,
+            currentTeamId: earliestTeam.id,
             teams: teamUser.map(
                 (teamWithRole) =>
                     ({
-                        ...teamWithRole.team,
-                        role: teamWithRole.role,
+                        id: teamWithRole.team?.id,
+                        created_at: teamWithRole.team?.created_at,
+                        name: teamWithRole.team?.name,
                     } as TeamWithRole),
             ),
         }
@@ -74,6 +87,19 @@ export const handle: Handle = async ({ event, resolve }) => {
         user = userWithTeams
     }
     event.locals.user = user
+
+    const newTeamId = event.url.searchParams.get('teamId')
+
+    if (newTeamId) {
+        event.locals.user.currentTeamId = newTeamId
+        cache.hset(`user:${session?.user.id}`, event.locals.user, {
+            ttlSeconds: 60 * 60, // 1 hour
+        })
+    }
+
+    event.locals.team = event.locals.user.teams.find(
+        (team) => team.id === event.locals.user.currentTeamId,
+    ) as TeamWithRole
 
     return resolve(event, {
         filterSerializedResponseHeaders(name) {

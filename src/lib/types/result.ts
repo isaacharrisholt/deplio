@@ -78,7 +78,7 @@ export class Result<T, E extends NonNullable<unknown> = Error> {
 
     /**
      * Converts the current Result to a new Result with the given new types.
-     * NOT recommended for use if you can avoid it, as the T type is not checked. 
+     * NOT recommended for use if you can avoid it, as the T type is not checked.
      * @returns Result<NewT, NewE>
      */
     into<NewT, NewE extends NonNullable<unknown> = Error>(): Result<NewT, NewE> {
