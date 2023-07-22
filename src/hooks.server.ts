@@ -48,7 +48,7 @@ export const handle: Handle = async ({ event, resolve }) => {
             .single()
 
         if (userFetchError) {
-            throw error(500, userFetchError)
+            throw error(500, `Error fetching user: ${userFetchError.message}`)
         }
 
         if (!userFetch) {

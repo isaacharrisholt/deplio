@@ -14,10 +14,10 @@ export const emailSignupFormSchema = z
 
 export type EmailSignupFormSchema = z.infer<typeof emailSignupFormSchema>
 
-export const providerSignupFormSchema = z.object({
+export const providerAuthFormSchema = z.object({
     provider: z.enum(['github']),
 })
-export type ProviderSignupFormSchema = z.infer<typeof providerSignupFormSchema>
+export type ProviderAuthFormSchema = z.infer<typeof providerAuthFormSchema>
 
 export const loginFormSchema = z.object({
     email: z.string().email(),

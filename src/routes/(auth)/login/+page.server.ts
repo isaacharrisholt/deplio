@@ -2,12 +2,13 @@ import { fail, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { AuthApiError } from '@supabase/supabase-js'
 import { setError, superValidate, message } from 'sveltekit-superforms/server'
-import { loginFormSchema } from '$lib/forms/auth'
+import { loginFormSchema, providerAuthFormSchema } from '$lib/forms/auth'
 import type { FormMessage } from '$lib/forms/client'
 
 export const load: PageServerLoad = async (event) => {
     const form = await superValidate(event, loginFormSchema)
-    return { form }
+    const providerAuthForm = await superValidate(event, providerAuthFormSchema)
+    return { form, providerAuthForm }
 }
 
 export const actions: Actions = {
