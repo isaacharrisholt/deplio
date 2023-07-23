@@ -1,5 +1,13 @@
 <script lang="ts">
     import '@fontsource-variable/space-grotesk'
+    import '@fontsource/ubuntu/300.css'
+    import '@fontsource/ubuntu/400.css'
+    import '@fontsource/ubuntu/500.css'
+    import '@fontsource/ubuntu/700.css'
+    import '@fontsource/ubuntu/300-italic.css'
+    import '@fontsource/ubuntu/400-italic.css'
+    import '@fontsource/ubuntu/500-italic.css'
+    import '@fontsource/ubuntu/700-italic.css'
     // The ordering of these imports is critical to your app working properly
     import '../theme.postcss'
     // If you have source.organizeImports set to true in VSCode, then it will auto change this ordering

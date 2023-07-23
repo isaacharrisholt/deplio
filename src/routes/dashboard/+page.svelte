@@ -8,7 +8,4 @@
 <h4>{JSON.stringify(data.user)}</h4>
 <h4>{JSON.stringify(data.team)}</h4>
 
-<a
-    href="https://github.com/apps/depl-io-local/installations/new"
-    class="variant-form-material btn">Test</a
->
+<a href="/dashboard/projects" class="btn variant-filled-secondary">Projects</a>

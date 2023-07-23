@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({
         const { error: installationInsertError } = await supabase
             .from('github_installation')
             .insert({
-                installation_id: installationId,
+                installation_id: +installationId,
                 team_id: team.id,
             })
 
@@ -37,5 +37,5 @@ export const GET: RequestHandler = async ({
         }
     }
 
-    throw redirect(303, '/dashboard')
+    throw redirect(303, '/dashboard/projects')
 }
