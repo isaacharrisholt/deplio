@@ -75,6 +75,22 @@ create table if not exists repo (
 );
 alter table repo enable row level security;
 
+-- deployment
+create table if not exists deployment (
+    id uuid not null primary key default tuid6(),
+    created_at timestamptz not null default now(),
+    deleted_at timestamptz,
+    created_by uuid not null references "user" (id),
+    repo_id uuid not null references repo (id),
+    ref text not null,
+    sha text not null,
+    environment text not null,
+    url text not null,
+    status text not null,
+    redeployed_from uuid references deployment (id)
+);
+alter table deployment enable row level security;
+
 /*
  * RLS Policies
  */
@@ -523,3 +539,26 @@ as $$
     );
 $$
 ;
+
+-- deployment
+create or replace function can_read_deployment_using(d deployment)
+returns boolean
+security definer
+language sql
+as $$
+    select ( -- Can read repo
+        can_read_repo_using((
+            select r
+            from public.repo as r
+            where r.id = d.repo_id
+        ))
+        and not is_deleted(d.deleted_at)
+    );
+$$
+;
+
+create policy "deployment: select"
+on deployment
+for select
+to authenticated
+using (can_read_deployment_using(deployment));
