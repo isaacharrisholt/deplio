@@ -17,7 +17,7 @@
             <Menu />
         </button>
         <a href="/" class="select-none">
-            <h1>Deplio</h1>
+            <h1 class="text-primary-500">Deplio</h1>
         </a>
     </div>
 
@@ -32,6 +32,6 @@
     <!-- Using the headline slot to add a nice gradient separator -->
     <div
         slot="headline"
-        class="grid h-[1px] w-full bg-gradient-to-r from-transparent via-surface-50 to-transparent"
+        class="grid h-[1px] w-full bg-gradient-to-r from-transparent via-primary-50 to-transparent"
     />
 </AppBar>

@@ -35,7 +35,7 @@
             />
             <button
                 type="submit"
-                class="btn variant-filled-primary"
+                class="btn variant-filled-secondary"
                 disabled={!$form.email || !$form.password || !!$allErrors.length}
                 >Log in</button
             >

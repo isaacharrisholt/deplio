@@ -25,7 +25,7 @@
                 errors={$errors.verificationCode}
                 pattern={/^[0-9]{6}$/}
             />
-            <button type="submit" class="btn variant-filled-primary"
+            <button type="submit" class="btn variant-filled-secondary"
                 >I am a real human. Beep boop.</button
             >
         </form>
