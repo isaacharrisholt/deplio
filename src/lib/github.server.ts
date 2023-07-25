@@ -1,6 +1,6 @@
 import { GITHUB_APP_ID, GITHUB_PRIVATE_KEY } from '$env/static/private'
 import { App } from 'octokit'
-import { Result } from '$lib/types/result'
+import { type Result, Err, Ok } from '$lib/types/result'
 import type { RepoInsert } from '$lib/types/supabase'
 
 const app = new App({
@@ -17,7 +17,7 @@ export async function getGitHubReposForInstallation(
     })
 
     if (response.status !== 200) {
-        return Result.err(new Error(`Error fetching GitHub repos: ${response.status}`))
+        return Err(new Error(`Error fetching GitHub repos: ${response.status}`))
     }
 
     const repos: Omit<RepoInsert, 'project_id'>[] = response.data.repositories.map(
@@ -29,5 +29,5 @@ export async function getGitHubReposForInstallation(
         }),
     )
 
-    return Result.ok(repos)
+    return Ok(repos)
 }
