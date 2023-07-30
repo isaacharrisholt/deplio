@@ -53,7 +53,7 @@
         <Navbar />
     </svelte:fragment>
 
-    <div class="p-4 sm:p-8 lg:p-16">
+    <div class="mx-auto w-full p-4 sm:w-4/5 sm:p-8 lg:p-16 xl:w-2/3">
         <slot />
     </div>
 

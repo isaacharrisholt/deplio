@@ -3,7 +3,6 @@
     import type { Variant } from '$lib/types/styling'
     import ErrorText from './ErrorText.svelte'
 
-    export let type: 'text' | 'email' | 'password' = 'text'
     export let id: string
     export let name: string | null = null
     export let variant: Variant | null = null
@@ -20,8 +19,9 @@
     export let disabled = false
     export let readonly = false
     export let autocomplete: 'on' | 'off' = 'on'
-    export let pattern: RegExp | null = null
     export let value = ''
+    export let rows = 5
+    export let cols = 20
 
     let classes = ''
     export { classes as class }
@@ -31,8 +31,7 @@
     {#if label}
         <label for={id} class="label text-sm">{label}</label>
     {/if}
-    <input
-        {...{ type }}
+    <textarea
         bind:value
         class={twMerge('input', variant, classes)}
         {id}
@@ -44,7 +43,8 @@
         {disabled}
         {readonly}
         {autocomplete}
-        pattern={pattern?.toString().substring(1, pattern?.toString().length - 1)}
+        {rows}
+        {cols}
         aria-disabled={disabled}
         aria-readonly={readonly}
         aria-invalid={!!errors?.length}

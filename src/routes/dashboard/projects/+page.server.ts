@@ -1,7 +1,20 @@
-import { getGitHubReposForInstallation } from '$lib/github.server'
+import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ locals: { supabase, team } }) => {
+    const { data: projects, error: projectFetchError } = await supabase
+        .from('project')
+        .select('id, name, description, repos:repo (*)')
+        .eq('team_id', team.id)
+
+    if (projectFetchError) {
+        throw error(500, `Error fetching projects: ${projectFetchError.message}`)
+    }
+
+    if (projects.length) {
+        return { projects, githubInstallations: [] }
+    }
+
     const { data: githubInstallations, error: githubInstallationFetchError } =
         await supabase
             .from('github_installation')
@@ -9,20 +22,11 @@ export const load: PageServerLoad = async ({ locals: { supabase, team } }) => {
             .eq('team_id', team.id)
 
     if (githubInstallationFetchError) {
-        throw new Error(
+        throw error(
+            500,
             `Error fetching GitHub installations: ${githubInstallationFetchError.message}`,
         )
     }
 
-    const repos = (
-        await Promise.all(
-            githubInstallations.map(async (installation) => {
-                return await getGitHubReposForInstallation(installation.installation_id)
-            }),
-        )
-    ).flatMap((result) => result.unwrapOr([]))
-
-    console.log(repos)
-
-    return { githubInstallations, repos }
+    return { githubInstallations, projects: [] }
 }

@@ -137,7 +137,7 @@ as $$
         from public.team_user as tu
         where
             tu.team_id = check_team_id
-            and tu.user_id = coalesce(public.user_id(), check_user_id)
+            and tu.user_id = coalesce(check_user_id, public.user_id())
             and tu.role = 'admin'
     );
 $$
@@ -539,6 +539,25 @@ as $$
     );
 $$
 ;
+
+create policy "repo: select"
+on repo
+for select
+to authenticated
+using (can_read_repo_using(repo));
+
+create policy "repo: update"
+on repo
+for update
+to authenticated
+using (can_update_repo_using(repo))
+with check (can_update_repo_with_check(repo));
+
+create policy "repo: insert"
+on repo
+for insert
+to authenticated
+with check (can_insert_repo_with_check(repo));
 
 -- deployment
 create or replace function can_read_deployment_using(d deployment)

@@ -37,5 +37,5 @@ export const GET: RequestHandler = async ({
         }
     }
 
-    throw redirect(303, '/dashboard/projects')
+    throw redirect(303, '/dashboard/projects/new')
 }
