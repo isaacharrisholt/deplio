@@ -21,11 +21,11 @@ devDependencies:
     specifier: ^1.9.0
     version: 1.9.0(svelte@3.59.2)
   '@supabase/auth-helpers-sveltekit':
-    specifier: ^0.10.1
-    version: 0.10.1(@supabase/supabase-js@2.26.0)(@sveltejs/kit@1.22.1)
+    specifier: ^0.10.2
+    version: 0.10.2(@supabase/supabase-js@2.32.0)(@sveltejs/kit@1.22.1)
   '@supabase/supabase-js':
-    specifier: ^2.26.0
-    version: 2.26.0
+    specifier: ^2.32.0
+    version: 2.32.0
   '@sveltejs/adapter-vercel':
     specifier: ^3.0.1
     version: 3.0.1(@sveltejs/kit@1.22.1)
@@ -84,8 +84,8 @@ devDependencies:
     specifier: ^0.4.1
     version: 0.4.1(prettier-plugin-svelte@2.10.1)(prettier@2.8.8)
   supabase:
-    specifier: ^1.77.9
-    version: 1.77.9
+    specifier: ^1.83.7
+    version: 1.83.7
   svelte:
     specifier: ^3.54.0
     version: 3.59.2
@@ -934,23 +934,23 @@ packages:
       svelte: 3.59.2
     dev: true
 
-  /@supabase/auth-helpers-shared@0.4.1(@supabase/supabase-js@2.26.0):
+  /@supabase/auth-helpers-shared@0.4.1(@supabase/supabase-js@2.32.0):
     resolution: {integrity: sha512-IEDX9JzWkIjQiLUaP4Qy5YDiG0jFQatWfS+jw8cCQs6QfbNdEPd2Y3qonwGHnM90CZom9SvjuylBv2pFVAL7Lw==}
     peerDependencies:
       '@supabase/supabase-js': ^2.19.0
     dependencies:
-      '@supabase/supabase-js': 2.26.0
+      '@supabase/supabase-js': 2.32.0
       jose: 4.14.4
     dev: true
 
-  /@supabase/auth-helpers-sveltekit@0.10.1(@supabase/supabase-js@2.26.0)(@sveltejs/kit@1.22.1):
-    resolution: {integrity: sha512-28pXA76s7lhw5YSbfB8d8goh7UKHZk2GCU2lIsf3KQLfBhIeYtwO3SL7SNKa50x9enFGgIQjlHj6ukSYeeR+1A==}
+  /@supabase/auth-helpers-sveltekit@0.10.2(@supabase/supabase-js@2.32.0)(@sveltejs/kit@1.22.1):
+    resolution: {integrity: sha512-azQqh4ofgB+ewHBGQPp77R9552jD0DXZMd0QQQQvsgLUdGVghRrydW11491473DvcONoy2KMWUShVxccjzo6Gw==}
     peerDependencies:
       '@supabase/supabase-js': ^2.19.0
       '@sveltejs/kit': ^1.15.4
     dependencies:
-      '@supabase/auth-helpers-shared': 0.4.1(@supabase/supabase-js@2.26.0)
-      '@supabase/supabase-js': 2.26.0
+      '@supabase/auth-helpers-shared': 0.4.1(@supabase/supabase-js@2.32.0)
+      '@supabase/supabase-js': 2.32.0
       '@sveltejs/kit': 1.22.1(svelte@3.59.2)(vite@4.4.2)
     dev: true
 
@@ -962,16 +962,16 @@ packages:
       - encoding
     dev: true
 
-  /@supabase/gotrue-js@2.39.1:
-    resolution: {integrity: sha512-qRz9mBleA/QATGKOdMAUjpn+YcbZJrTHyWQCe2hAFqJo15JIe1XziD1ZeFraRpsXwja+vONslGeynGv7H8ZZeQ==}
+  /@supabase/gotrue-js@2.46.2:
+    resolution: {integrity: sha512-tLyZZNEb3St6Dxe671seLCzYWZ2DftSWWjPEfqAwW6kNOAr+Aw2uEIW0H3gEJxSIST+E+ly9lUBm/rGlfDWKPA==}
     dependencies:
       cross-fetch: 3.1.8
     transitivePeerDependencies:
       - encoding
     dev: true
 
-  /@supabase/postgrest-js@1.7.2:
-    resolution: {integrity: sha512-GK80JpRq8l6Qll85erICypAfQCied8tdlXfsDN14W844HqXCSOisk8AaE01DAwGJanieaoN5fuqhzA2yKxDvEQ==}
+  /@supabase/postgrest-js@1.8.0:
+    resolution: {integrity: sha512-R6leDIC92NgjyG2/tCRJ42rWN7+fZY6ulTEE+c00tcnghn6cX4IYUlnTNMtrdfYC2JYNOTyM+rWj63Wdhr7Zig==}
     dependencies:
       cross-fetch: 3.1.8
     transitivePeerDependencies:
@@ -996,12 +996,12 @@ packages:
       - encoding
     dev: true
 
-  /@supabase/supabase-js@2.26.0:
-    resolution: {integrity: sha512-RXmTPTobaYAwkSobadHZmEVLmzX3SGrtRZIGfLWnLv92VzBRrjuXn0a+bJqKl50GUzsyqPA+j5pod7EwMkcH5A==}
+  /@supabase/supabase-js@2.32.0:
+    resolution: {integrity: sha512-1ShFhuOI5Du7604nlCelBsRD61daXk2O0qwjumoz35bqrYThnSPPtpJqZOHw6Mg6o7mLjIInYLh/DBlh8UvzRg==}
     dependencies:
       '@supabase/functions-js': 2.1.2
-      '@supabase/gotrue-js': 2.39.1
-      '@supabase/postgrest-js': 1.7.2
+      '@supabase/gotrue-js': 2.46.2
+      '@supabase/postgrest-js': 1.8.0
       '@supabase/realtime-js': 2.7.3
       '@supabase/storage-js': 2.5.1
       cross-fetch: 3.1.8
@@ -3233,8 +3233,8 @@ packages:
       ts-interface-checker: 0.1.13
     dev: true
 
-  /supabase@1.77.9:
-    resolution: {integrity: sha512-AyMaMsb+QpUMTE1XfV8Vhl/9G+Hkzk61RXf/JP5uyxc256hcb3N3FQoW2bi+A/BodJ/rfZOPE7vv+xtfVf6vyQ==}
+  /supabase@1.83.7:
+    resolution: {integrity: sha512-3YWwnJxtraDwKYnMFo+uElv4X7nbgZYS++b85ueGRsaAR73E+n5U31rBH34xyw+ob0rm9MPvVbMADqC8RbvFVQ==}
     engines: {npm: '>=8'}
     hasBin: true
     requiresBuild: true
