@@ -59,7 +59,7 @@
     use:enhance
     class="card variant-filled-surface flex flex-col gap-2 p-4 sm:p-8"
 >
-    <h2>Project details</h2>
+    <h2 class="h2">Project details</h2>
     <p>Tell us about your project</p>
 
     <TextInput
@@ -80,7 +80,7 @@
         placeholder={descriptions[Math.floor(Math.random() * descriptions.length)]}
     />
 
-    <h2 class="mt-4">Repos</h2>
+    <h2 class="h2 mt-4">Repos</h2>
     <p>
         Select the GitHub repositories you'd like to include in this project. Repos
         without a <code class="code">deplio.yaml</code> file in their root will be ignored

@@ -1,1 +1,1 @@
-<h2>Signing you in with GitHub...</h2>
+<h2 class="h2">Signing you in with GitHub...</h2>
