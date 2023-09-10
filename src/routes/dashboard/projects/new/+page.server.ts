@@ -56,7 +56,7 @@ export const load: PageServerLoad = async (event) => {
 
     const formSchema = createNewProjectSchema(
         projects.map((p) => p.name),
-        repos.map((r) => r.full_name),
+        repos.map((r) => r.full_name) as [string, ...string[]],
     )
     const form = await superValidate(event, formSchema)
 
@@ -72,7 +72,7 @@ export const actions: Actions = {
 
         const formSchema = createNewProjectSchema(
             projects.map((p) => p.name),
-            repos.map((r) => r.full_name),
+            repos.map((r) => r.full_name) as [string, ...string[]],
         )
 
         const form = await superValidate<typeof formSchema, FormMessage>(
@@ -109,7 +109,7 @@ export const actions: Actions = {
 
         // Filter repos to only those selected in the form
         const repoInserts = repos
-            .filter((repo) => form.data.repos.includes(repo.full_name))
+            .filter((repo) => repo.full_name === form.data.repo)
             .map((repo) => ({
                 project_id: newProject.id,
                 ...repo,

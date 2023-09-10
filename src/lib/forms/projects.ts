@@ -2,8 +2,9 @@ import { z } from 'zod'
 
 export function createNewProjectSchema(
     existingProjects: string[],
-    availableRepos: string[],
+    availableRepos: [string, ...string[]],
 ) {
+    ;[]
     return z.object({
         name: z
             .string()
@@ -11,13 +12,9 @@ export function createNewProjectSchema(
             .refine((name) => !existingProjects.includes(name), {
                 message: 'Project names must be unique',
             }),
-        repos: z
-            .array(
-                z.string().refine((repo) => availableRepos.includes(repo), {
-                    message: 'Invalid repo',
-                }),
-            )
-            .nonempty('Please select at least one repo'),
+        repo: z.enum(availableRepos, {
+            errorMap: () => ({ message: 'Please select a valid repo' }),
+        }),
         description: z.string().optional(),
     })
 }
