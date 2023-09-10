@@ -1,15 +1,9 @@
+import { createS3BuildProject, startBuild } from '$lib/aws/codebuild'
+import { uploadBufferToS3 } from '$lib/aws/s3'
 import { downloadRepoZip } from '$lib/github.server'
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
-import {
-    CodeBuildClient,
-    CreateProjectCommand,
-    StartBuildCommand,
-} from '@aws-sdk/client-codebuild'
+import type { Config } from '@sveltejs/adapter-vercel'
 import { json, type RequestHandler } from '@sveltejs/kit'
 import AdmZip from 'adm-zip'
-import type { Config } from '@sveltejs/adapter-vercel'
-import { uploadBufferToS3 } from '$lib/aws/s3'
-import { createS3BuildProject, startBuild } from '$lib/aws/codebuild'
 
 export const config: Config = {
     runtime: 'nodejs18.x',
