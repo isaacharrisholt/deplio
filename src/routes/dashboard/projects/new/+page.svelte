@@ -1,11 +1,9 @@
 <script lang="ts">
-    import type { PageData } from './$types'
-    import { Autocomplete, type AutocompleteOption } from '@skeletonlabs/skeleton'
     import TextInput from '$lib/components/forms/TextInput.svelte'
-    import { createForm } from '$lib/forms/client'
-    import { createNewProjectSchema } from '$lib/forms/projects'
-    import ErrorText from '$lib/components/forms/ErrorText.svelte'
     import Textarea from '$lib/components/forms/Textarea.svelte'
+    import { createForm } from '$lib/forms/client'
+    import { Autocomplete, type AutocompleteOption } from '@skeletonlabs/skeleton'
+    import type { PageData } from './$types'
 
     export let data: PageData
     const projects = data.projects
