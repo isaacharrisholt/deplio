@@ -45,9 +45,13 @@
             href="/dashboard/projects/{project.id}"
             class="card variant-glass-surface p-8 transition-all duration-100 ease-in-out hover:variant-filled-surface"
         >
-            <h3 class="h3">{project.name}</h3>
+            <h3 class="h3">
+                {project.name}
+            </h3>
             <p class="text-sm">{project.repos.length} repos</p>
-            <p class="mt-4">{project.description}</p>
+            {#if project.description}
+                <p class="mt-4">{project.description}</p>
+            {/if}
         </a>
     {:else}
         <div
@@ -82,3 +86,9 @@
         </div>
     {/each}
 </div>
+
+<style>
+    .project-headline {
+        view-transition-name: title;
+    }
+</style>
