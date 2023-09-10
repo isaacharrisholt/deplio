@@ -28,16 +28,16 @@ devDependencies:
     version: 1.9.0(svelte@3.59.2)
   '@supabase/auth-helpers-sveltekit':
     specifier: ^0.10.2
-    version: 0.10.2(@supabase/supabase-js@2.32.0)(@sveltejs/kit@1.22.1)
+    version: 0.10.2(@supabase/supabase-js@2.32.0)(@sveltejs/kit@1.24.1)
   '@supabase/supabase-js':
     specifier: ^2.32.0
     version: 2.32.0
   '@sveltejs/adapter-vercel':
     specifier: ^3.0.1
-    version: 3.0.1(@sveltejs/kit@1.22.1)
+    version: 3.0.1(@sveltejs/kit@1.24.1)
   '@sveltejs/kit':
-    specifier: ^1.5.0
-    version: 1.22.1(svelte@3.59.2)(vite@4.4.9)
+    specifier: ^1.24.1
+    version: 1.24.1(svelte@3.59.2)(vite@4.4.9)
   '@tailwindcss/forms':
     specifier: ^0.5.3
     version: 0.5.3(tailwindcss@3.3.2)
@@ -106,7 +106,7 @@ devDependencies:
     version: 3.4.5(postcss@8.4.25)(svelte@3.59.2)
   sveltekit-superforms:
     specifier: ^1.3.0
-    version: 1.3.0(@sveltejs/kit@1.22.1)(svelte@3.59.2)(zod@3.21.4)
+    version: 1.3.0(@sveltejs/kit@1.24.1)(svelte@3.59.2)(zod@3.21.4)
   tailwind-merge:
     specifier: ^1.14.0
     version: 1.14.0
@@ -1975,7 +1975,7 @@ packages:
       jose: 4.14.4
     dev: true
 
-  /@supabase/auth-helpers-sveltekit@0.10.2(@supabase/supabase-js@2.32.0)(@sveltejs/kit@1.22.1):
+  /@supabase/auth-helpers-sveltekit@0.10.2(@supabase/supabase-js@2.32.0)(@sveltejs/kit@1.24.1):
     resolution: {integrity: sha512-azQqh4ofgB+ewHBGQPp77R9552jD0DXZMd0QQQQvsgLUdGVghRrydW11491473DvcONoy2KMWUShVxccjzo6Gw==}
     peerDependencies:
       '@supabase/supabase-js': ^2.19.0
@@ -1983,7 +1983,7 @@ packages:
     dependencies:
       '@supabase/auth-helpers-shared': 0.4.1(@supabase/supabase-js@2.32.0)
       '@supabase/supabase-js': 2.32.0
-      '@sveltejs/kit': 1.22.1(svelte@3.59.2)(vite@4.4.9)
+      '@sveltejs/kit': 1.24.1(svelte@3.59.2)(vite@4.4.9)
     dev: true
 
   /@supabase/functions-js@2.1.2:
@@ -2042,12 +2042,12 @@ packages:
       - supports-color
     dev: true
 
-  /@sveltejs/adapter-vercel@3.0.1(@sveltejs/kit@1.22.1):
+  /@sveltejs/adapter-vercel@3.0.1(@sveltejs/kit@1.24.1):
     resolution: {integrity: sha512-PBY3YRm7Q7Prax07mxD/rvcho2CntGkYncAIkz2DtG5NTcVG5JZ1RM627it5zYYtc2/RB3YjMkZuCMBqDCiPkA==}
     peerDependencies:
       '@sveltejs/kit': ^1.5.0
     dependencies:
-      '@sveltejs/kit': 1.22.1(svelte@3.59.2)(vite@4.4.9)
+      '@sveltejs/kit': 1.24.1(svelte@3.59.2)(vite@4.4.9)
       '@vercel/nft': 0.22.6
       esbuild: 0.17.19
     transitivePeerDependencies:
@@ -2055,8 +2055,8 @@ packages:
       - supports-color
     dev: true
 
-  /@sveltejs/kit@1.22.1(svelte@3.59.2)(vite@4.4.9):
-    resolution: {integrity: sha512-idFhKVEHuCKbTETvuo3V7UShqSYX9JMKVJXP546dOTkh5ZRejo5XtKtsB5TCSwNBa0TH8hIV44/bnylaFhM1Vg==}
+  /@sveltejs/kit@1.24.1(svelte@3.59.2)(vite@4.4.9):
+    resolution: {integrity: sha512-u2FO0q62Se9UZ0g9kXaWYi+54vTK70BKaPScOcx6jLMRou4CUZgDTNKnRhsbJgPMgaLkOH0j3o/fKlZ6jBfgSg==}
     engines: {node: ^16.14 || >=18}
     hasBin: true
     requiresBuild: true
@@ -2076,7 +2076,8 @@ packages:
       set-cookie-parser: 2.6.0
       sirv: 2.0.3
       svelte: 3.59.2
-      undici: 5.22.1
+      tiny-glob: 0.2.9
+      undici: 5.23.0
       vite: 4.4.9(@types/node@20.4.1)
     transitivePeerDependencies:
       - supports-color
@@ -3265,6 +3266,10 @@ packages:
       type-fest: 0.20.2
     dev: true
 
+  /globalyzer@0.1.0:
+    resolution: {integrity: sha512-40oNTM9UfG6aBmuKxk/giHn5nQ8RVz/SS4Ir6zgzOv9/qC3kKZ9v4etGTcJbEl/NyVQH7FGU7d+X1egr57Md2Q==}
+    dev: true
+
   /globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
@@ -3275,6 +3280,10 @@ packages:
       ignore: 5.2.4
       merge2: 1.4.1
       slash: 3.0.0
+    dev: true
+
+  /globrex@0.1.2:
+    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
     dev: true
 
   /graceful-fs@4.2.11:
@@ -4437,14 +4446,14 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /sveltekit-superforms@1.3.0(@sveltejs/kit@1.22.1)(svelte@3.59.2)(zod@3.21.4):
+  /sveltekit-superforms@1.3.0(@sveltejs/kit@1.24.1)(svelte@3.59.2)(zod@3.21.4):
     resolution: {integrity: sha512-4bkTxuy7nr+7qSqtJVCv+CJjiGrLR2Qvy2fIelEF5qvWNkvokOZkEwEtDC2bMVgOILebhGANI3RYOVtGA/qH1w==}
     peerDependencies:
       '@sveltejs/kit': 1.x
       svelte: 3.x || 4.x
       zod: 3.x
     dependencies:
-      '@sveltejs/kit': 1.22.1(svelte@3.59.2)(vite@4.4.9)
+      '@sveltejs/kit': 1.24.1(svelte@3.59.2)(vite@4.4.9)
       svelte: 3.59.2
       zod: 3.21.4
     dev: true
@@ -4512,6 +4521,13 @@ packages:
     resolution: {integrity: sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==}
     dependencies:
       any-promise: 1.3.0
+    dev: true
+
+  /tiny-glob@0.2.9:
+    resolution: {integrity: sha512-g/55ssRPUjShh+xkfx9UPDXqhckHEsHr4Vd9zX55oSdGZc/MD0m3sferOkwWtp98bv+kcVfEHtRJgBVJzelrzg==}
+    dependencies:
+      globalyzer: 0.1.0
+      globrex: 0.1.2
     dev: true
 
   /tinybench@2.5.0:
@@ -4603,8 +4619,8 @@ packages:
     hasBin: true
     dev: true
 
-  /undici@5.22.1:
-    resolution: {integrity: sha512-Ji2IJhFXZY0x/0tVBXeQwgPlLWw13GVzpsWPQ3rV50IFMMof2I55PZZxtm4P6iNq+L5znYN9nSTAq0ZyE6lSJw==}
+  /undici@5.23.0:
+    resolution: {integrity: sha512-1D7w+fvRsqlQ9GscLBwcAJinqcZGHUKjbOmXdlE/v8BvEGXjeWAax+341q44EuTcHXXnfyKNbKRq4Lg7OzhMmg==}
     engines: {node: '>=14.0'}
     dependencies:
       busboy: 1.6.0
