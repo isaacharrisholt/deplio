@@ -86,9 +86,3 @@
         </div>
     {/each}
 </div>
-
-<style>
-    .project-headline {
-        view-transition-name: title;
-    }
-</style>
