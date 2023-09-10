@@ -1,8 +1,8 @@
 <script lang="ts">
     import type { providerAuthFormSchema } from '$lib/forms/auth'
     import { createForm } from '$lib/forms/client'
-    import { Github } from 'lucide-svelte'
-    import type { SvelteComponent } from 'svelte'
+    import { Github} from 'lucide-svelte'
+    import type { Icon } from '../types'
     import type { SuperValidated } from 'sveltekit-superforms'
 
     export let data: SuperValidated<typeof providerAuthFormSchema>
@@ -13,7 +13,7 @@
     type ProviderDefinition = {
         name: string
         displayName: string
-        icon: typeof SvelteComponent
+        icon: Icon
         background: `bg-${string}`
     }
 
