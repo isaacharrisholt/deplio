@@ -1,5 +1,5 @@
-import adapter from '@sveltejs/adapter-vercel';
-import { vitePreprocess } from '@sveltejs/kit/vite';
+import adapter from '@sveltejs/adapter-vercel'
+import { vitePreprocess } from '@sveltejs/kit/vite'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -13,11 +13,11 @@ const config = {
     kit: {
         adapter: adapter({
             runtime: 'edge',
-            regions: ['lhr1']
+            regions: ['lhr1'],
         }),
         csrf: {
             checkOrigin: process.env.VERCEL_ENV !== 'development',
-        }
+        },
     },
-};
-export default config;
+}
+export default config
