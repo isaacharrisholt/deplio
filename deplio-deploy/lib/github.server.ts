@@ -39,21 +39,16 @@ export async function downloadRepoZip(
 ): Promise<Result<ArrayBuffer>> {
     const octokit = await app.getInstallationOctokit(installationId)
     console.log(`downloading ${repoFullName} at ${ref}`)
-    const response = await octokit.request(
-        'GET /repos/{owner}/{repo}/zipball/{ref}',
-        {
-            owner: repoFullName.split('/')[0],
-            repo: repoFullName.split('/')[1],
-            ref,
-        },
-    )
+    const response = await octokit.request('GET /repos/{owner}/{repo}/zipball/{ref}', {
+        owner: repoFullName.split('/')[0],
+        repo: repoFullName.split('/')[1],
+        ref,
+    })
 
     // Thanks for the typing, GitHub...
-    if (response.status !== 200 as 302) {
+    if (response.status !== (200 as 302)) {
         console.log('Error', response.data)
-        return Err(
-            new Error(`Error fetching GitHub repo zip: ${response.status}`),
-        )
+        return Err(new Error(`Error fetching GitHub repo zip: ${response.status}`))
     }
 
     return Ok(response.data as ArrayBuffer)

@@ -1,3 +1,3 @@
-import type { Github } from "lucide-svelte";
+import type { Github } from 'lucide-svelte'
 
-export type Icon = typeof Github;
+export type Icon = typeof Github

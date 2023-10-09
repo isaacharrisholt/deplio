@@ -6,7 +6,9 @@ const baseServiceSchema = z.object({
 
 const supabaseTempateSchema = z.object({
     template: z.literal('supabase'),
-    version: z.union([z.literal('latest'), z.string().regex(/^\d+\.\d+\.\d+\.\d+$/)]).optional(),
+    version: z
+        .union([z.literal('latest'), z.string().regex(/^\d+\.\d+\.\d+\.\d+$/)])
+        .optional(),
 })
 
 const templateSchema = z.discriminatedUnion('template', [supabaseTempateSchema])
