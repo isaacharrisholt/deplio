@@ -3,7 +3,7 @@ import {
     type FormOptions,
     type SuperForm,
 } from 'sveltekit-superforms/client'
-import type { SuperValidated } from 'sveltekit-superforms'
+import type { SuperValidated, ZodValidation } from 'sveltekit-superforms'
 import type { AnyZodObject } from 'zod'
 import { toastStore, type ToastSettings } from '@skeletonlabs/skeleton'
 
@@ -12,7 +12,7 @@ export type FormMessage = {
     message: string
 }
 
-export const displayToast = (formMessage: FormMessage, settings?: ToastSettings) => {
+export const displayToast = <M extends FormMessage>(formMessage: FormMessage, settings?: ToastSettings) => {
     const t: ToastSettings = {
         message: formMessage.message,
         background:
@@ -23,15 +23,15 @@ export const displayToast = (formMessage: FormMessage, settings?: ToastSettings)
     toastStore.trigger({ ...t, ...settings })
 }
 
-export const createForm = (
-    form: SuperValidated<AnyZodObject>,
-    options?: FormOptions<AnyZodObject, never>,
-): SuperForm<AnyZodObject> => {
+export const createForm = <T extends ZodValidation<AnyZodObject>, M extends FormMessage = FormMessage>(
+    form: SuperValidated<T, M>,
+    options?: FormOptions<T, M>,
+): SuperForm<T> => {
     const onUpdated: (event: {
-        form: Readonly<SuperValidated<AnyZodObject, never>>
+        form: Readonly<SuperValidated<AnyZodObject, M>>
     }) => unknown = async ({ form }) => {
         if (form.message) {
-            displayToast(form.message as FormMessage)
+            displayToast(form.message)
         }
         if (options?.onUpdated) {
             await options.onUpdated({ form })
@@ -48,5 +48,5 @@ export const createForm = (
         delayMs: 500,
         onUpdated,
         ...opts,
-    })
+    } as any)
 }
