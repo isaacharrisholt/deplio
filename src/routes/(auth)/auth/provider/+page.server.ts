@@ -6,42 +6,41 @@ import { message, superValidate } from 'sveltekit-superforms/server'
 import type { Actions } from './$types'
 
 export const actions: Actions = {
-    providerAuth: async (event) => {
-        const {
-            locals: { supabase },
-        } = event
-        const form = await superValidate<typeof providerAuthFormSchema, FormMessage>(
-            event,
-            providerAuthFormSchema,
-        )
+  providerAuth: async (event) => {
+    const {
+      locals: { supabase },
+    } = event
+    const form = await superValidate<typeof providerAuthFormSchema, FormMessage>(
+      event,
+      providerAuthFormSchema,
+    )
 
-        if (!form.valid) {
-            return fail(400, { form })
-        }
+    if (!form.valid) {
+      return fail(400, { form })
+    }
 
-        const provider = form.data.provider
+    const provider = form.data.provider
 
-        const { data: providerData, error: authError } =
-            await supabase.auth.signInWithOAuth({
-                provider,
-                options: {
-                    redirectTo: `${getSiteUrl()}/auth/provider/${provider}`,
-                    skipBrowserRedirect: true,
-                },
-            })
+    const { data: providerData, error: authError } =
+      await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${getSiteUrl()}/auth/provider/${provider}`,
+          skipBrowserRedirect: true,
+        },
+      })
 
-        if (authError) {
-            return message(
-                form,
-                {
-                    status: 'error',
-                    message:
-                        'There was an error authenticating you. Please try again later.',
-                },
-                { status: 500 },
-            )
-        }
+    if (authError) {
+      return message(
+        form,
+        {
+          status: 'error',
+          message: 'There was an error authenticating you. Please try again later.',
+        },
+        { status: 500 },
+      )
+    }
 
-        throw redirect(303, providerData.url)
-    },
+    throw redirect(303, providerData.url)
+  },
 }
