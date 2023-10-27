@@ -17,7 +17,7 @@
             <Menu />
         </button>
         <a href="/" class="select-none">
-            <h1 class="text-primary-500">Deplio</h1>
+            <p class="h1 text-primary-500">Deplio</p>
         </a>
     </div>
 
