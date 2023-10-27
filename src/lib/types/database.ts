@@ -251,6 +251,18 @@ export interface Database {
           },
         ]
       }
+      test: {
+        Row: {
+          thing: string
+        }
+        Insert: {
+          thing?: string
+        }
+        Update: {
+          thing?: string
+        }
+        Relationships: []
+      }
       user: {
         Row: {
           avatar_url: string | null

@@ -1,7 +1,4 @@
 <script lang="ts">
-  import { page } from '$app/stores'
-  import { twMerge } from 'tailwind-merge'
-  import { drawerStore } from '@skeletonlabs/skeleton'
   import NavbarLink, { type Navlink } from './NavbarLink.svelte'
 
   const navlinks: Navlink[] = [

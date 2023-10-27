@@ -12,10 +12,7 @@ export type FormMessage = {
   message: string
 }
 
-export const displayToast = <M extends FormMessage>(
-  formMessage: FormMessage,
-  settings?: ToastSettings,
-) => {
+export const displayToast = (formMessage: FormMessage, settings?: ToastSettings) => {
   const t: ToastSettings = {
     message: formMessage.message,
     background:
@@ -54,5 +51,6 @@ export const createForm = <
     delayMs: 500,
     onUpdated,
     ...opts,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any)
 }
