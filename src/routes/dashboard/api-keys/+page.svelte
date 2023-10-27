@@ -1,10 +1,10 @@
 <script lang="ts">
-  import TextInput from '$lib/components/forms/TextInput.svelte'
-  import Select from '$lib/components/forms/Select.svelte'
-  import type { PageData } from './$types'
-  import { createForm } from '$lib/forms/client'
   import CopyClick from '$lib/components/CopyClick.svelte'
-  import { Trash, Undo2 } from 'lucide-svelte'
+  import Select from '$lib/components/forms/Select.svelte'
+  import TextInput from '$lib/components/forms/TextInput.svelte'
+  import { createForm } from '$lib/forms/client'
+  import { Undo2 } from 'lucide-svelte'
+  import type { PageData } from './$types'
 
   export let data: PageData
 
@@ -123,21 +123,24 @@
             <th>Key</th>
             <th>Expiry</th>
             <th>Status</th>
-            <th />
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {#each data.apiKeys as apiKey}
             <tr>
               <td>{apiKey.name}</td>
-              <td>{apiKey.key_prefix}{' •'.repeat(16)}</td>
+              <td class="font-mono">{apiKey.key_prefix}{'•'.repeat(16)}</td>
               <td
                 >{apiKey.expires_at
                   ? new Date(apiKey.expires_at).toLocaleString()
                   : 'Never'}</td
               >
               <td
-                ><div class="chip {getStatusChip(apiKey).variant} pointer-events-none">
+                ><div
+                  class="chip {getStatusChip(apiKey)
+                    .variant} pointer-events-none transition-all duration-300 ease-in-out"
+                >
                   {getStatusChip(apiKey).text}
                 </div></td
               >
@@ -159,6 +162,8 @@
                       <Undo2 size={16} />
                     </button>
                   </form>
+                {:else}
+                  <div class="w-full" />
                 {/if}
               </td>
             </tr>
