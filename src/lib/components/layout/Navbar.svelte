@@ -3,6 +3,10 @@
   import { Menu } from 'lucide-svelte'
   import NavbarLinks from './NavbarLinks.svelte'
   import ActionButtons from './ActionButtons.svelte'
+  import { page } from '$app/stores'
+  import DashboardNavbarLinks from './DashboardNavbarLinks.svelte'
+
+  $: isDashboard = $page.url.pathname.startsWith('/dashboard')
 </script>
 
 <AppBar
@@ -21,9 +25,9 @@
     </a>
   </div>
 
-  <div class="hidden w-full flex-row items-center justify-center gap-4 lg:flex">
+  <nav class="hidden w-full flex-row items-center justify-center gap-4 lg:flex">
     <NavbarLinks />
-  </div>
+  </nav>
 
   <div slot="trail" class="hidden flex-row items-center gap-4 sm:flex">
     <ActionButtons />
@@ -33,5 +37,16 @@
   <div
     slot="headline"
     class="grid h-[1px] w-full bg-gradient-to-r from-transparent via-primary-50 to-transparent"
+    class:hidden={isDashboard}
   />
 </AppBar>
+{#if isDashboard}
+  <nav
+    class="w-full flex-row items-center gap-4 px-8 py-2 bg-surface-100-800-token lg:flex"
+  >
+    <DashboardNavbarLinks />
+  </nav>
+  <div
+    class="grid h-[1px] w-full bg-gradient-to-r from-transparent via-primary-50 to-transparent"
+  />
+{/if}
