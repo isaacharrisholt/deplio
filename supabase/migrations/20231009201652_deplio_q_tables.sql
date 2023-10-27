@@ -10,7 +10,7 @@ create table if not exists api_key (
     key_hash text not null unique,
     key_prefix varchar(6) not null,
     name text not null,
-    unique (team_id, name)
+    unique nulls not distinct (team_id, name, deleted_at)
 );
 alter table api_key enable row level security;
 

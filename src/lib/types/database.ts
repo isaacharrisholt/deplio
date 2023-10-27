@@ -42,6 +42,7 @@ export interface Database {
           expires_at: string | null
           id: string
           key_hash: string
+          key_prefix: string
           name: string
           revoked_at: string | null
           revoked_by: string | null
@@ -54,6 +55,7 @@ export interface Database {
           expires_at?: string | null
           id?: string
           key_hash: string
+          key_prefix: string
           name: string
           revoked_at?: string | null
           revoked_by?: string | null
@@ -66,6 +68,7 @@ export interface Database {
           expires_at?: string | null
           id?: string
           key_hash?: string
+          key_prefix?: string
           name?: string
           revoked_at?: string | null
           revoked_by?: string | null
@@ -286,6 +289,12 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      can_insert_api_key_with_check: {
+        Args: {
+          ak: unknown
+        }
+        Returns: boolean
+      }
       can_insert_team_user_with_check: {
         Args: {
           tu: unknown
@@ -295,6 +304,24 @@ export interface Database {
       can_insert_team_with_check: {
         Args: {
           t: unknown
+        }
+        Returns: boolean
+      }
+      can_read_api_key_using: {
+        Args: {
+          ak: unknown
+        }
+        Returns: boolean
+      }
+      can_read_q_request_using: {
+        Args: {
+          qr: unknown
+        }
+        Returns: boolean
+      }
+      can_read_q_response_using: {
+        Args: {
+          qr: unknown
         }
         Returns: boolean
       }
@@ -313,6 +340,18 @@ export interface Database {
       can_read_user_using: {
         Args: {
           u: unknown
+        }
+        Returns: boolean
+      }
+      can_update_api_key_using: {
+        Args: {
+          ak: unknown
+        }
+        Returns: boolean
+      }
+      can_update_api_key_with_check: {
+        Args: {
+          ak: unknown
         }
         Returns: boolean
       }
@@ -437,6 +476,13 @@ export interface Database {
       user_id: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      user_in_team: {
+        Args: {
+          check_team_id: string
+          check_user_id?: string
+        }
+        Returns: boolean
       }
       user_is_team_admin: {
         Args: {
