@@ -42,7 +42,7 @@
 </AppBar>
 {#if isDashboard}
   <nav
-    class="w-full flex-row items-center gap-4 px-8 py-2 bg-surface-100-800-token lg:flex"
+    class="flex w-full flex-row flex-wrap items-center gap-4 px-8 py-2 bg-surface-100-800-token"
   >
     <DashboardNavbarLinks />
   </nav>
