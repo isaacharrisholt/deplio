@@ -6,7 +6,6 @@
   import type { PageData } from './$types'
 
   export let data: PageData
-  const projects = data.projects
   const repos = data.repos
 
   const descriptions = [

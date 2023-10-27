@@ -1,6 +1,9 @@
 <script lang="ts">
   import NavbarLink, { type Navlink } from './NavbarLink.svelte'
 
+  let linkClass = ''
+  export { linkClass as class }
+
   const navlinks: Navlink[] = [
     {
       name: 'Features',
@@ -14,5 +17,5 @@
 </script>
 
 {#each navlinks as link}
-  <NavbarLink {link} />
+  <NavbarLink {link} class={linkClass} />
 {/each}
