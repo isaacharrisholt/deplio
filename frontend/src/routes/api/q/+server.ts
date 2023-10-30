@@ -16,7 +16,7 @@ type DeplioQMessage = {
   body: unknown
   method: string
   headers: Record<string, string> | null
-  requestId: string
+  request_id: string
 }
 
 function searchParamsToObject(params: URLSearchParams) {
@@ -118,8 +118,10 @@ export const POST: RequestHandler = async ({ request }) => {
     body: qRequest.body,
     method: qRequest.method,
     headers: requestHeaders,
-    requestId: qRequest.id,
+    request_id: qRequest.id,
   }
+
+  console.log('sending message', message)
 
   try {
     await sendMessage(JSON.stringify(message), AWS_SQS_QUEUE_URL)
