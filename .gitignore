@@ -13,3 +13,4 @@ vite.config.ts.timestamp-*
 .secrets
 .venv
 supabase/gcloud.json
+.terraform
