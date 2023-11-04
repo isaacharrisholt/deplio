@@ -86,10 +86,14 @@ output "q_queue_url" {
 ##############
 resource "null_resource" "q_receiver_binary" {
   triggers = {
-    code_sha1 = "${sha1(join("", [for f in fileset("../lambda/q_receiver", "./**/*.go") : filesha1("../lambda/q_receiver/${f}")]))}"
+    code_sha1   = "${sha1(join("", [for f in fileset("../lambda/q_receiver", "./**/*.go") : filesha1("../lambda/q_receiver/${f}")]))}"
+    binary_sha1 = "${sha1("../lambda/q_receiver/bootstrap")}"
+    zip_sha1    = "${sha1("../lambda/q_receiver/q_receiver.zip")}"
+    workspace   = "${terraform.workspace}"
   }
   provisioner "local-exec" {
-    command = "cd ../lambda/q_receiver && GOOS=linux GOARCH=arm64 go build -tags lambda.norpc -o bootstrap main.go"
+    # Use x86_64 for local development, arm64 for production
+    command = "cd ../lambda/q_receiver && CGO_ENABLED=0 GOOS=linux GOARCH=${terraform.workspace == "local" ? "amd64" : "arm64"} go build -tags lambda.norpc -o bootstrap main.go"
   }
 }
 
@@ -130,7 +134,7 @@ resource "aws_lambda_function" "q_receiver_function" {
   function_name    = "${terraform.workspace}-deplio-q-receiver"
   role             = aws_iam_role.q_lambda_role.arn
   handler          = "q_receiver"
-  architectures    = ["arm64"]
+  architectures    = [terraform.workspace == "local" ? "x86_64" : "arm64"]
   filename         = data.archive_file.q_receiver_archive.output_path
   source_code_hash = data.archive_file.q_receiver_archive.output_base64sha256
   timeout          = 60
