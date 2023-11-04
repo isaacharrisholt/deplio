@@ -89,7 +89,7 @@ resource "null_resource" "q_receiver_binary" {
     code_sha1   = "${sha1(join("", [for f in fileset("../lambda/q_receiver", "./**/*.go") : filesha1("../lambda/q_receiver/${f}")]))}"
     binary_sha1 = "${sha1("../lambda/q_receiver/bootstrap")}"
     zip_sha1    = "${sha1("../lambda/q_receiver/q_receiver.zip")}"
-    workspace   = "${terraform.workspace}"
+    workspace   = terraform.workspace
   }
   provisioner "local-exec" {
     # Use x86_64 for local development, arm64 for production
@@ -140,6 +140,15 @@ resource "aws_lambda_function" "q_receiver_function" {
   timeout          = 60
 
   runtime = "provided.al2"
+
+  environment {
+    variables = {
+      "PUBLIC_DEPLOYMENT_ENV" = terraform.workspace
+      "PUBLIC_SUPABASE_URL" = data.aws_secretsmanager_secret_version.supabase_url.secret_string
+      "PUBLIC_SUPABASE_ANON_KEY" = data.aws_secretsmanager_secret_version.supabase_anon_key.secret_string
+      "PRIVATE_SUPABASE_SERVICE_ROLE_KEY" = data.aws_secretsmanager_secret_version.supabase_service_role_key.secret_string
+    }
+  }
 }
 
 resource "aws_lambda_event_source_mapping" "q_receiver_event_source_mapping" {
