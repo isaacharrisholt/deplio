@@ -1,6 +1,8 @@
+import os
 import subprocess
 import signal
 import json
+
 from pathlib import Path
 
 
@@ -14,15 +16,28 @@ def get_secrets() -> dict[str, str]:
 
 def start_localstack():
     print("Starting localstack... ", end="", flush=True)
+    os.environ["DEBUG"] = "1"
     result = subprocess.run(
-        ["localstack", "start", "-d"],
+        ["localstack", "start", "-d", "-e", "LAMBDA_DOCKER_NETWORK=bridge", "--network", "bridge"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
     if result.returncode != 0:
         print("failed")
+        print(result.stdout.decode("utf-8"))
         print(result.stderr.decode("utf-8"))
         raise Exception("Failed to start localstack")
+
+    result = subprocess.run(
+        ["localstack", "wait", "-t", "60"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if result.returncode != 0:
+        print("failed")
+        print(result.stdout.decode("utf-8"))
+        print(result.stderr.decode("utf-8"))
+        raise Exception("Failed to wait for localstack")
     print("done")
 
 
@@ -102,6 +117,7 @@ def main():
         setup_secrets(secrets)
         apply_tf()
     except Exception as e:
+        print(e)
         print("Failed to start local environment")
         stop_localstack()
         exit(1)
