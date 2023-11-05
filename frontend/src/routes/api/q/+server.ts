@@ -1,17 +1,23 @@
 import { AWS_SQS_QUEUE_URL } from '$env/static/private'
 import { hashApiKey } from '$lib/apiKeys'
-import { sendMessage } from '$lib/aws/sqs'
+import { sendMessages } from '$lib/aws/sqs'
 import { getSupabaseAdminClient } from '$lib/utils.server'
 import { z } from 'zod'
 import type { RequestHandler } from './$types'
 
-const deplioQRequestSchema = z.object({
+const deplioQMessageSchema = z.object({
   destination: z.string().url(),
   body: z.string().optional(),
   method: z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
 })
+type DeplioQMessage = z.infer<typeof deplioQMessageSchema>
 
-type DeplioQMessage = {
+const deplioQRequestSchema = z.union([
+  deplioQMessageSchema,
+  z.array(deplioQMessageSchema).max(10),
+])
+
+type DeplioQSQSMessage = {
   destination: string
   body?: string
   method: string
@@ -40,6 +46,14 @@ function getForwardHeaders(headers: Headers) {
     }
   })
   return forwardHeaders
+}
+
+async function sendQMessages(messages: DeplioQSQSMessage[]) {
+  const entries = messages.map((m) => ({
+    Id: m.request_id,
+    MessageBody: JSON.stringify(m),
+  }))
+  return await sendMessages(entries, AWS_SQS_QUEUE_URL)
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -86,47 +100,51 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 
   const qRequestData = parsedRequest.data
-  const qDestination = new URL(qRequestData.destination)
+
+  let requests: DeplioQMessage[]
+  if (Array.isArray(qRequestData)) {
+    requests = qRequestData
+  } else {
+    requests = [qRequestData]
+  }
 
   const requestHeadersObject = getForwardHeaders(headers)
   const requestHeaders = Object.entries(requestHeadersObject).length
     ? requestHeadersObject
     : null
-  const requestParams = searchParamsToObject(qDestination.searchParams)
 
-  const { data: qRequest, error: qRequestInsertError } = await supabase
+  console.log(`Inserting ${requests.length} requests into DB`)
+  const { data: qRequests, error: qRequestInsertError } = await supabase
     .from('q_request')
-    .insert({
-      api_key_id: storedApiKey.id,
-      destination: qDestination.toString(),
-      method: qRequestData.method,
-      body: qRequestData.body,
-      headers: requestHeaders,
-      query_params: requestParams,
-      team_id: storedApiKey.team_id,
-    })
+    .insert(
+      requests.map((r) => ({
+        api_key_id: storedApiKey.id,
+        destination: r.destination,
+        method: r.method,
+        body: r.body,
+        headers: requestHeaders,
+        query_params: searchParamsToObject(new URL(r.destination).searchParams),
+        team_id: storedApiKey.team_id,
+      })),
+    )
     .select()
-    .single()
 
   if (qRequestInsertError) {
-    console.error('error inserting q request', qRequestInsertError)
+    console.error('error inserting q requests', qRequestInsertError)
     return new Response('Internal server error', { status: 500 })
   }
 
-  const message: DeplioQMessage = {
-    destination: qRequest.destination,
-    body: qRequest.body,
-    method: qRequest.method,
+  const messages: DeplioQSQSMessage[] = qRequests.map((r) => ({
+    destination: r.destination,
+    method: r.method,
+    body: r.body ?? undefined,
     headers: requestHeaders,
-    request_id: qRequest.id,
-  }
+    request_id: r.id,
+  }))
 
-  console.log('sending message', message)
-
-  try {
-    await sendMessage(JSON.stringify(message), AWS_SQS_QUEUE_URL)
-  } catch (e) {
-    console.error('error sending message', e)
+  const result = await sendQMessages(messages)
+  if (result.Failed) {
+    console.error('error sending messages to SQS', result.Failed)
     return new Response('Internal server error', { status: 500 })
   }
 

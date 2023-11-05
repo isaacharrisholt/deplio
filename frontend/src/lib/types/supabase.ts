@@ -26,6 +26,9 @@ export type TeamUser = Select<'team_user'>
 export type TeamUserInsert = Insert<'team_user'>
 export type TeamUserUpdate = Update<'team_user'>
 
+// api_key
+export type APIKey = Select<'api_key'>
+
 /*
  * Enums
  */

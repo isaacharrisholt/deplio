@@ -40,7 +40,7 @@
 
   let newApiKey = ''
 
-  function getStatusChip(apiKey: (typeof data.apiKeys)[number]) {
+  function getStatusChip(apiKey: typeof data.apiKeys[number]) {
     if (apiKey.revoked_at) {
       return {
         text: `Revoked by ${
