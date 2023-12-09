@@ -107,43 +107,19 @@ $$)
 ;
 
 -- q_request
-create or replace function can_read_q_request_using(qr q_request)
-returns boolean
-language sql
-security definer
-as $$
-    select (
-        user_in_team(qr.team_id)
-        and not is_deleted(qr.deleted_at)
+call rls.create_rls_select_policy('public', 'q_request', $$
+    (
+        user_in_team(q_request.team_id)
+        and not is_deleted(q_request.deleted_at)
     )
-$$
+$$)
 ;
-
-create policy "q_request: select"
-on q_request
-for select
-to authenticated
-using (can_read_q_request_using(q_request));
 
 -- q_response
-create or replace function can_read_q_response_using(qr q_response)
-returns boolean
-language sql
-security definer
-as $$
-    select (
-        can_read_q_request_using((
-            select q_req
-            from q_request as q_req
-            where q_req.id = qr.request_id
-        ))
-        and not is_deleted(qr.deleted_at)
+call rls.create_rls_select_policy('public', 'q_response', $$
+    (
+        q_response.request_id = any(select rls.can_read_q_request_using())
+        and not is_deleted(q_response.deleted_at)
     )
-$$
+$$)
 ;
-
-create policy "q_response: select"
-on q_response
-for select
-to authenticated
-using (can_read_q_response_using(q_response));
