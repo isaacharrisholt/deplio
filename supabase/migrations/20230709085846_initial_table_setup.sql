@@ -287,79 +287,42 @@ $$)
 ;
 
 -- team_user
-create or replace function can_read_team_user_using(tu team_user)
-returns boolean
-security definer
-language sql
-as $$
-    select ( -- User is self
-        auth.uid() = tu.user_id
-        and not is_deleted(tu.deleted_at)
+call rls.create_rls_select_policy('public', 'team_user', $$
+    ( -- User is self
+        (select auth.uid()) = team_user.user_id
+        and not is_deleted(team_user.deleted_at)
     ) or ( -- User in same team
-        tu.team_id in (select * from public.team_ids())
-        and not is_deleted(tu.deleted_at)
-    );
-$$
+        team_user.team_id in (select public.team_ids())
+        and not is_deleted(team_user.deleted_at)
+    )
+$$)
 ;
 
-create or replace function can_update_team_user_using(tu team_user)
-returns boolean
-security definer
-language sql
-as $$
-    select ( -- User is self
-        auth.uid() = tu.user_id
-        and not is_deleted(tu.deleted_at)
+call rls.create_rls_update_policy('public', 'team_user', $$
+    ( -- User is self
+        (select auth.uid()) = team_user.user_id
+        and not is_deleted(team_user.deleted_at)
     ) or ( -- User is admin of team
-        public.user_is_team_admin(tu.team_id)
-        and not is_deleted(tu.deleted_at)
-    );
+        public.user_is_team_admin(team_user.team_id)
+        and not is_deleted(team_user.deleted_at)
+    )
+$$,
 $$
-;
-
-create or replace function can_update_team_user_with_check(tu team_user)
-returns boolean
-security definer
-language sql
-as $$
-    select ( -- User is self
-        auth.uid() = tu.user_id
+    ( -- User is self
+        (select auth.uid()) = team_user.user_id
     ) or ( -- User is admin of team
-        public.user_is_team_admin(tu.team_id)
-    );
-$$
+        public.user_is_team_admin(team_user.team_id)
+    )
+$$)
 ;
 
-create or replace function can_insert_team_user_with_check(tu team_user)
-returns boolean
-security definer
-language sql
-as $$
-    select ( -- User is admin of team
-        public.user_is_team_admin(tu.team_id)
-        and not is_deleted(tu.deleted_at)
-    );
-$$
+call rls.create_rls_insert_policy('public', 'team_user', $$
+    ( -- User is admin of team
+        public.user_is_team_admin(team_user.team_id)
+        and not is_deleted(team_user.deleted_at)
+    )
+$$)
 ;
-
-create policy "team_user: select"
-on team_user
-for select
-to authenticated
-using (can_read_team_user_using(team_user));
-
-create policy "team_user: update"
-on team_user
-for update
-to authenticated
-using (can_update_team_user_using(team_user))
-with check (can_update_team_user_with_check(team_user));
-
-create policy "team_user: insert"
-on team_user
-for insert
-to authenticated
-with check (can_insert_team_user_with_check(team_user));
 
 -- team
 create or replace function can_read_team_using(t team)
