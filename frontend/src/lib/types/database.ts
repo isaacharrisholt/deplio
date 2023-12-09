@@ -218,6 +218,7 @@ export interface Database {
         Row: {
           created_at: string
           deleted_at: string | null
+          id: string
           role: Database['public']['Enums']['user_role']
           team_id: string
           user_id: string
@@ -225,6 +226,7 @@ export interface Database {
         Insert: {
           created_at?: string
           deleted_at?: string | null
+          id?: string
           role?: Database['public']['Enums']['user_role']
           team_id: string
           user_id: string
@@ -232,6 +234,7 @@ export interface Database {
         Update: {
           created_at?: string
           deleted_at?: string | null
+          id?: string
           role?: Database['public']['Enums']['user_role']
           team_id?: string
           user_id?: string
@@ -289,108 +292,6 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      can_insert_api_key_with_check: {
-        Args: {
-          ak: unknown
-        }
-        Returns: boolean
-      }
-      can_insert_team_user_with_check: {
-        Args: {
-          tu: unknown
-        }
-        Returns: boolean
-      }
-      can_insert_team_with_check: {
-        Args: {
-          t: unknown
-        }
-        Returns: boolean
-      }
-      can_read_api_key_using: {
-        Args: {
-          ak: unknown
-        }
-        Returns: boolean
-      }
-      can_read_q_request_using: {
-        Args: {
-          qr: unknown
-        }
-        Returns: boolean
-      }
-      can_read_q_response_using: {
-        Args: {
-          qr: unknown
-        }
-        Returns: boolean
-      }
-      can_read_team_user_using: {
-        Args: {
-          tu: unknown
-        }
-        Returns: boolean
-      }
-      can_read_team_using: {
-        Args: {
-          t: unknown
-        }
-        Returns: boolean
-      }
-      can_read_user_using: {
-        Args: {
-          u: unknown
-        }
-        Returns: boolean
-      }
-      can_update_api_key_using: {
-        Args: {
-          ak: unknown
-        }
-        Returns: boolean
-      }
-      can_update_api_key_with_check: {
-        Args: {
-          ak: unknown
-        }
-        Returns: boolean
-      }
-      can_update_team_user_using: {
-        Args: {
-          tu: unknown
-        }
-        Returns: boolean
-      }
-      can_update_team_user_with_check: {
-        Args: {
-          tu: unknown
-        }
-        Returns: boolean
-      }
-      can_update_team_using: {
-        Args: {
-          t: unknown
-        }
-        Returns: boolean
-      }
-      can_update_team_with_check: {
-        Args: {
-          t: unknown
-        }
-        Returns: boolean
-      }
-      can_update_user_using: {
-        Args: {
-          u: unknown
-        }
-        Returns: boolean
-      }
-      can_update_user_with_check: {
-        Args: {
-          u: unknown
-        }
-        Returns: boolean
-      }
       from_b64u: {
         Args: {
           val: string
