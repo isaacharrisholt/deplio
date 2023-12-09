@@ -8,6 +8,8 @@
 
   export let data: PageData
 
+  const EXISTING_KEY_MESSAGE = 'You already have an API key with this name.'
+
   const {
     form: newApiKeyForm,
     errors: newApiKeyErrors,
@@ -28,9 +30,9 @@
       )
     ) {
       if (!$newApiKeyErrors.name) $newApiKeyErrors.name = []
-      $newApiKeyErrors.name.push('You already have an API key with this name.')
+      $newApiKeyErrors.name.push(EXISTING_KEY_MESSAGE)
       $newApiKeyErrors = $newApiKeyErrors
-    } else {
+    } else if ($newApiKeyErrors.name?.includes(EXISTING_KEY_MESSAGE)) {
       $newApiKeyErrors.name = []
     }
   }

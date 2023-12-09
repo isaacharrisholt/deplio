@@ -14,15 +14,15 @@ export const load: PageServerLoad = async ({ locals: { supabase, user }, request
     .from('api_key')
     .select(
       `
-            id,
-            name,
-            created_at,
-            revoked_at,
-            expires_at,
-            created_by (first_name, last_name),
-            revoked_by (first_name, last_name),
-            key_prefix
-            `,
+      id,
+      name,
+      created_at,
+      revoked_at,
+      expires_at,
+      created_by (first_name, last_name),
+      revoked_by (first_name, last_name),
+      key_prefix
+      `,
     )
     .eq('team_id', user.currentTeamId)
 
@@ -97,10 +97,7 @@ export const actions: Actions = {
     })
   },
   revoke: async ({ locals: { supabase, user }, request }) => {
-    const form = await superValidate(
-      request,
-      revokeApiKeyFormSchema,
-    )
+    const form = await superValidate(request, revokeApiKeyFormSchema)
 
     if (!form.valid) {
       console.log(form)
