@@ -52,10 +52,7 @@ export const load: PageServerLoad = async ({ locals: { supabase, user }, request
     typeof newApiKeyFormSchema,
     FormMessageWithApiKey
   >(request, newApiKeyFormSchema)
-  const revokeApiKeyForm = await superValidate<
-    typeof revokeApiKeyFormSchema,
-    FormMessage
-  >(request, revokeApiKeyFormSchema)
+  const revokeApiKeyForm = await superValidate(request, revokeApiKeyFormSchema)
 
   return { apiKeys, newApiKeyForm, revokeApiKeyForm }
 }
@@ -100,7 +97,7 @@ export const actions: Actions = {
     })
   },
   revoke: async ({ locals: { supabase, user }, request }) => {
-    const form = await superValidate<typeof revokeApiKeyFormSchema, FormMessage>(
+    const form = await superValidate(
       request,
       revokeApiKeyFormSchema,
     )

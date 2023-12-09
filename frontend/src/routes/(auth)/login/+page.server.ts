@@ -3,7 +3,6 @@ import type { Actions, PageServerLoad } from './$types'
 import { AuthApiError } from '@supabase/supabase-js'
 import { setError, superValidate, message } from 'sveltekit-superforms/server'
 import { loginFormSchema, providerAuthFormSchema } from '$lib/forms/auth'
-import type { FormMessage } from '$lib/forms/client'
 
 export const load: PageServerLoad = async (event) => {
   const form = await superValidate(event, loginFormSchema)
@@ -16,10 +15,7 @@ export const actions: Actions = {
     const {
       locals: { supabase },
     } = event
-    const form = await superValidate<typeof loginFormSchema, FormMessage>(
-      event,
-      loginFormSchema,
-    )
+    const form = await superValidate(event, loginFormSchema)
 
     if (!form.valid) {
       return fail(400, { form })

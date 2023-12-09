@@ -1,4 +1,3 @@
-import type { FormMessage } from '$lib/forms/client'
 import { createNewProjectSchema } from '$lib/forms/projects'
 import { getGitHubReposForInstallation } from '$lib/github.server'
 import type { Database } from '$lib/types/database'
@@ -75,7 +74,7 @@ export const actions: Actions = {
       repos.map((r) => r.full_name) as [string, ...string[]],
     )
 
-    const form = await superValidate<typeof formSchema, FormMessage>(event, formSchema)
+    const form = await superValidate(event, formSchema)
 
     if (!form.valid) {
       return fail(400, { form })
