@@ -53,95 +53,58 @@ as $$
         select 1
         from public.team_user as tu
         where tu.team_id = check_team_id
-            and tu.user_id = coalesce(check_user_id, user_id())
+            and tu.user_id = coalesce(check_user_id, (select user_id()))
     )
 $$
 ;
 
 -- api_key
-create or replace function can_insert_api_key_with_check(ak api_key)
-returns boolean
-language sql
-security definer
-as $$
-    select (
-        user_in_team(ak.team_id)
-        and not is_deleted(ak.deleted_at)
+call rls.create_rls_insert_policy('public', 'api_key', $$
+    (
+        user_in_team(api_key.team_id)
+        and not is_deleted(api_key.deleted_at)
     )
-$$
+$$)
 ;
 
-create or replace function can_update_api_key_using(ak api_key)
-returns boolean
-language sql
-security definer
-as $$
-    select (
-        user_in_team(ak.team_id)
-        and not is_deleted(ak.deleted_at)
-        and not is_deleted(ak.revoked_at)
-        and not is_deleted(ak.expires_at)
+call rls.create_rls_update_policy('public', 'api_key', $$
+    (
+        user_in_team(api_key.team_id)
+        and not is_deleted(api_key.deleted_at)
+        and not is_deleted(api_key.revoked_at)
+        and not is_deleted(api_key.expires_at)
         and (
-            user_is_team_admin(ak.team_id)
-            or ak.created_by = user_id()
+            user_is_team_admin(api_key.team_id)
+            or api_key.created_by = (select user_id())
         )
     )
+$$,
 $$
-;
-
-create or replace function can_update_api_key_with_check(ak api_key)
-returns boolean
-language sql
-security definer
-as $$
-    select (
-        user_in_team(ak.team_id)
+    (
+        user_in_team(api_key.team_id)
         and (
-            not is_deleted(ak.deleted_at)
-            or user_is_team_admin(ak.team_id)
+            not is_deleted(api_key.deleted_at)
+            or user_is_team_admin(api_key.team_id)
         )
         and (
-            not is_deleted(ak.revoked_at)
-            or ak.revoked_by = user_id()
+            not is_deleted(api_key.revoked_at)
+            or api_key.revoked_by = (select user_id())
         )
         and (
-            user_is_team_admin(ak.team_id)
-            or ak.created_by = user_id()
+            user_is_team_admin(api_key.team_id)
+            or api_key.created_by = (select user_id())
         )
     )
-$$
+$$)
 ;
 
-create or replace function can_read_api_key_using(ak api_key)
-returns boolean
-language sql
-security definer
-as $$
-    select (
-        user_in_team(ak.team_id)
-        and not is_deleted(ak.deleted_at)
+call rls.create_rls_select_policy('public', 'api_key', $$
+    (
+        user_in_team(api_key.team_id)
+        and not is_deleted(api_key.deleted_at)
     )
-$$
+$$)
 ;
-
-create policy "api_key: select"
-on api_key
-for select
-to authenticated
-using (can_read_api_key_using(api_key));
-
-create policy "api_key: update"
-on api_key
-for update
-to authenticated
-using (can_update_api_key_using(api_key))
-with check (can_update_api_key_with_check(api_key));
-
-create policy "api_key: insert"
-on api_key
-for insert
-to authenticated
-with check (can_insert_api_key_with_check(api_key));
 
 -- q_request
 create or replace function can_read_q_request_using(qr q_request)
