@@ -17,7 +17,7 @@
   export let required = false
   export let disabled = false
   export let readonly = false
-  export let autocomplete: 'on' | 'off' = 'on'
+  export let autocomplete: HTMLInputElement['autocomplete'] | null = 'current-password'
   export let pattern: RegExp | null = null
   export let value: string
 

@@ -18,7 +18,7 @@
   export let required = false
   export let disabled = false
   export let readonly = false
-  export let autocomplete: 'on' | 'off' = 'on'
+  export let autocomplete: HTMLTextAreaElement['autocomplete'] | null = 'on'
   export let value = ''
   export let rows = 5
   export let cols = 20
