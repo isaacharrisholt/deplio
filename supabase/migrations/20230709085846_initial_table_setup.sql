@@ -90,6 +90,170 @@ as $$
 $$
 ;
 
+-- RLS creation functions
+create schema if not exists rls;
+grant usage
+on schema rls
+to authenticated
+;
+
+create or replace procedure
+    rls.create_rls_select_policy(
+        schema_name text,
+        table_name text,
+        using_expression text,
+        "column" text default 'id',
+        column_type text default 'uuid'
+    )
+language plpgsql
+as $$
+declare
+  policy_name text;
+begin
+  -- Create ID return function
+  execute format(
+    $function$ 
+    create or replace function rls.can_read_%s_using()
+    returns setof %s
+    security definer
+    language sql
+    as $q$
+        select %s
+        from %I.%I
+        where (%s)
+    $q$;
+    $function$,
+    table_name,
+    column_type,
+    "column",
+    schema_name,
+    table_name,
+    using_expression
+  );
+
+  -- Create policy
+  policy_name := format('select: %s.%s', schema_name, table_name);
+  execute format(
+    'drop policy if exists %I on %I.%I',
+    policy_name,
+    schema_name,
+    table_name
+  );
+  execute format(
+    $policy$
+    create policy %I
+    on %I.%I
+    for select
+    to authenticated
+    using (%s)
+    $policy$,
+    policy_name,
+    schema_name,
+    table_name,
+    using_expression
+  );
+end;
+$$
+;
+
+create or replace procedure
+    rls.create_rls_insert_policy(
+        schema_name text,
+        table_name text,
+        with_check_expression text
+    )
+language plpgsql
+as $$
+declare
+  policy_name text;
+begin
+  -- Create policy
+  policy_name := format('insert: %s.%s', schema_name, table_name);
+  execute format(
+    'drop policy if exists %I on %I.%I',
+    policy_name,
+    schema_name,
+    table_name
+  );
+  execute format(
+    $policy$
+    create policy %I
+    on %I.%I
+    for insert
+    to authenticated
+    with check (%s)
+    $policy$,
+    policy_name,
+    schema_name,
+    table_name,
+    with_check_expression
+  );
+end;
+$$
+;
+
+create or replace procedure
+    rls.create_rls_update_policy(
+        schema_name text,
+        table_name text,
+        using_expression text,
+        with_check_expression text,
+        "column" text default 'id',
+        column_type text default 'uuid'
+    )
+language plpgsql
+as $$
+declare
+  policy_name text;
+begin
+  -- Create ID return function
+  execute format(
+    $function$ 
+    create or replace function rls.can_update_%s_using()
+    returns setof %s
+    security definer
+    language sql
+    as $q$
+        select %s
+        from %I.%I
+        where (%s)
+    $q$;
+    $function$,
+    table_name,
+    column_type,
+    "column",
+    schema_name,
+    table_name,
+    using_expression
+  );
+
+  -- Create policy
+  policy_name := format('update: %s.%s', schema_name, table_name);
+  execute format(
+    'drop policy if exists %I on %I.%I',
+    policy_name,
+    schema_name,
+    table_name
+  );
+  execute format(
+    $policy$
+    create policy %I
+    on %I.%I
+    for update
+    to authenticated
+    using (%s)
+    with check (%s)
+    $policy$,
+    policy_name,
+    schema_name,
+    table_name,
+    using_expression,
+    with_check_expression
+  );
+end;
+$$
+;
+
 -- user
 create or replace function can_read_user_using(u "user")
 returns boolean
