@@ -4,12 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	supa "github.com/isaacharrisholt/deplio/pkg/supabase"
+	pg "github.com/supabase/postgrest-go"
 )
 
 type SQSAttributes struct {
@@ -43,65 +46,94 @@ type QMessage struct {
 	RequestID   string            `json:"request_id"`
 }
 
-type messageAndResponse struct {
-	message  QMessage
-	response *http.Response
+type messageSuccess struct {
+	sqsMessage SQSMessage
+	qMessage   QMessage
+	response   *http.Response
+}
+
+type messageError struct {
+	sqsMessage SQSMessage
+	error      error
+}
+
+type itemFailure struct {
+	ItemIdentifier string `json:"itemIdentifier"`
+}
+
+type itemFailuresResponse struct {
+	BatchItemFailures []itemFailure `json:"batchItemFailures"`
 }
 
 func HandleRequest(ctx context.Context, event *SQSEvent) (string, error) {
 	fmt.Println("event", *event)
 
-	var messages []QMessage
-
-	// Unmarshal the SQS message body into our message struct
-	for _, record := range event.Records {
-		fmt.Println("record", record)
-		var message QMessage
-		err := json.Unmarshal([]byte(record.Body), &message)
-		if err != nil {
-			fmt.Println("Error unmarshalling message", err, record.Body)
-			return "", err
-		}
-		messages = append(messages, message)
-	}
-
 	var wg sync.WaitGroup
 
-	errors := make(chan error, len(messages))
-	successes := make(chan messageAndResponse, len(messages))
+	errors := make(chan messageError, len(event.Records))
+	successes := make(chan messageSuccess, len(event.Records))
 
-	for _, message := range messages {
+	for _, message := range event.Records {
 		wg.Add(1)
 		m := message
 		go func() {
 			defer wg.Done()
 			// resp, err := handleMessage(message)
-			resp, err := handleMessage(m)
+			qMessage, resp, err := handleMessage(m)
 			if err != nil {
-				errors <- err
+				errors <- messageError{m, err}
 				return
 			}
-			successes <- messageAndResponse{m, resp}
+			successes <- messageSuccess{m, *qMessage, resp}
 		}()
 	}
 
 	wg.Wait()
 
-	// TODO: dead letter queue for errors
-
-	close(errors)
 	close(successes)
 
-	for s := range successes {
-		// TODO: store response in Supabase
-		fmt.Println("Success", s)
+	supabase, err := supa.NewClient()
+	if err != nil {
+		fmt.Println("Error creating Supabase client", err)
+		return "", err
 	}
 
-	return "Hello from Lambda!", nil
+	// TODO: make concurrent
+	for success := range successes {
+		s := success
+		err = handleSuccess(supabase, s)
+		if err != nil {
+			fmt.Println("Error handling success", err)
+			errors <- messageError{s.sqsMessage, err}
+		}
+	}
+
+	close(errors)
+
+	var itemFailures itemFailuresResponse
+	for err := range errors {
+		itemFailures.BatchItemFailures = append(itemFailures.BatchItemFailures, itemFailure{
+			ItemIdentifier: err.sqsMessage.MessageId,
+		})
+	}
+
+	response, err := json.Marshal(itemFailures)
+	if err != nil {
+		fmt.Println("Error marshalling response", err)
+		return "", err
+	}
+	return string(response), nil
 }
 
 // handleMessage sends the message to the destination
-func handleMessage(message QMessage) (*http.Response, error) {
+func handleMessage(sqsMessage SQSMessage) (*QMessage, *http.Response, error) {
+	var message QMessage
+	err := json.Unmarshal([]byte(sqsMessage.Body), &message)
+	if err != nil {
+		fmt.Println("Error unmarshalling message", err, sqsMessage.Body)
+		return nil, nil, err
+	}
+
 	client := &http.Client{
 		Timeout: 30 * time.Second,
 	}
@@ -110,7 +142,7 @@ func handleMessage(message QMessage) (*http.Response, error) {
 	req, err := http.NewRequest(message.Method, message.Destination, body)
 	if err != nil {
 		fmt.Println("Error creating request", err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	for key, value := range message.Headers {
@@ -120,11 +152,36 @@ func handleMessage(message QMessage) (*http.Response, error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("Error sending request", err)
-		return nil, err
+		return nil, nil, err
 	}
 
 	fmt.Println("Response", resp)
-	return resp, nil
+	return &message, resp, nil
+}
+
+func handleSuccess(supabase *pg.Client, m messageSuccess) error {
+	defer m.response.Body.Close()
+	body, err := io.ReadAll(m.response.Body)
+	if err != nil {
+		fmt.Println("Error reading response body", err)
+		return err
+	}
+
+	_, _, err = supabase.
+		From("q_response").
+		Insert(map[string]any{
+			"request_id":  m.qMessage.RequestID,
+			"status_code": m.response.StatusCode,
+			"body":        string(body),
+		}, false, "", "", "").
+		ExecuteString()
+
+	if err != nil {
+		fmt.Println("Error inserting response", err)
+		return err
+	}
+	fmt.Println("Inserted response", m.response.StatusCode, string(body))
+	return nil
 }
 
 func main() {
