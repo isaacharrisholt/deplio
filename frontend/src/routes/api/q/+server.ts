@@ -4,11 +4,13 @@ import { sendMessages } from '$lib/aws/sqs'
 import { getSupabaseAdminClient } from '$lib/utils.server'
 import { z } from 'zod'
 import type { RequestHandler } from './$types'
+import { json } from '@sveltejs/kit'
 
 const deplioQMessageSchema = z.object({
   destination: z.string().url(),
   body: z.string().optional(),
   method: z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
+  headers: z.record(z.string()).optional(),
 })
 type DeplioQMessage = z.infer<typeof deplioQMessageSchema>
 
@@ -122,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
         destination: r.destination,
         method: r.method,
         body: r.body,
-        headers: requestHeaders,
+        headers: { ...requestHeaders, ...r.headers },
         query_params: searchParamsToObject(new URL(r.destination).searchParams),
         team_id: storedApiKey.team_id,
       })),
@@ -138,7 +140,7 @@ export const POST: RequestHandler = async ({ request }) => {
     destination: r.destination,
     method: r.method,
     body: r.body ?? undefined,
-    headers: requestHeaders,
+    headers: r.headers as Record<string, string> | null,
     request_id: r.id,
   }))
 
@@ -148,5 +150,8 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response('Internal server error', { status: 500 })
   }
 
-  return new Response('ok')
+  return json({
+    request_ids: qRequests.map((r) => r.id),
+    messages_delivered: messages.length,
+  })
 }
