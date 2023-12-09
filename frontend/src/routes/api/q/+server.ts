@@ -7,13 +7,13 @@ import type { RequestHandler } from './$types'
 
 const deplioQRequestSchema = z.object({
   destination: z.string().url(),
-  body: z.any(),
+  body: z.string().optional(),
   method: z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
 })
 
 type DeplioQMessage = {
   destination: string
-  body: unknown
+  body?: string
   method: string
   headers: Record<string, string> | null
   request_id: string

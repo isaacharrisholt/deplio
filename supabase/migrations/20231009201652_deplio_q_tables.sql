@@ -22,7 +22,7 @@ create table if not exists q_request (
     api_key_id uuid not null references api_key (id),
     destination text not null,
     method text not null,
-    body jsonb,
+    body text,
     headers jsonb,
     query_params jsonb
 );
@@ -34,7 +34,7 @@ create table if not exists q_response (
     deleted_at timestamptz,
     request_id uuid not null references q_request (id),
     status_code integer,
-    body jsonb,
+    body text,
     headers jsonb,
     response_time_ns integer
 );

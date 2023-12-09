@@ -86,7 +86,7 @@ output "q_queue_url" {
 ##############
 resource "null_resource" "q_receiver_binary" {
   triggers = {
-    code_sha1 = "${sha1(join("", [for f in fileset("../lambda/q_receiver", "./**/*.go"): filesha1("../lambda/q_receiver/${f}")]))}"
+    code_sha1 = "${sha1(join("", [for f in fileset("../lambda/q_receiver", "./**/*.go") : filesha1("../lambda/q_receiver/${f}")]))}"
   }
   provisioner "local-exec" {
     command = "cd ../lambda/q_receiver && GOOS=linux GOARCH=arm64 go build -tags lambda.norpc -o bootstrap main.go"
@@ -96,7 +96,7 @@ resource "null_resource" "q_receiver_binary" {
 data "archive_file" "q_receiver_archive" {
   depends_on  = [null_resource.q_receiver_binary]
   type        = "zip"
-  source_file  = "../lambda/q_receiver/bootstrap"
+  source_file = "../lambda/q_receiver/bootstrap"
   output_path = "../lambda/q_receiver/q_receiver.zip"
 }
 
@@ -133,6 +133,7 @@ resource "aws_lambda_function" "q_receiver_function" {
   architectures    = ["arm64"]
   filename         = data.archive_file.q_receiver_archive.output_path
   source_code_hash = data.archive_file.q_receiver_archive.output_base64sha256
+  timeout          = 60
 
   runtime = "provided.al2"
 }
