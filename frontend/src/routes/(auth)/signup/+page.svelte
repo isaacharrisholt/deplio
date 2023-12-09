@@ -46,6 +46,7 @@
         placeholder="Password"
         bind:value={$emailSignupForm.password}
         errors={$emailSignupFormErrors.password}
+        autocomplete="new-password"
       />
       <PasswordInput
         id="passwordConfirmation"
@@ -53,6 +54,7 @@
         placeholder="Confirm password"
         bind:value={$emailSignupForm.passwordConfirmation}
         errors={$emailSignupFormErrors.passwordConfirmation}
+        autocomplete="new-password"
       />
       <button type="submit" class="btn variant-filled-secondary" disabled={!canSignUp}
         >Sign up</button
