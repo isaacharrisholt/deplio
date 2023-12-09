@@ -325,68 +325,31 @@ $$)
 ;
 
 -- team
-create or replace function can_read_team_using(t team)
-returns boolean
-security definer
-language sql
-as $$
-    select ( -- User is member of team
-        t.id in (select * from public.team_ids())
-        and not is_deleted(t.deleted_at)
-    );
-$$
+call rls.create_rls_select_policy('public', 'team', $$
+    ( -- User is member of team
+        team.id in (select public.team_ids())
+        and not is_deleted(team.deleted_at)
+    )
+$$)
 ;
 
-create or replace function can_update_team_using(t team)
-returns boolean
-security definer
-language sql
-as $$
-    select ( -- User is admin of team
-        public.user_is_team_admin(t.id)
-        and not is_deleted(t.deleted_at)
-    );
+call rls.create_rls_update_policy('public', 'team', $$
+    ( -- User is admin of team
+        public.user_is_team_admin(team.id)
+        and not is_deleted(team.deleted_at)
+    )
+$$,
 $$
+    ( -- User is admin of team
+        public.user_is_team_admin(team.id)
+    )
+$$)
 ;
 
-create or replace function can_update_team_with_check(t team)
-returns boolean
-security definer
-language sql
-as $$
-    select ( -- User is admin of team
-        public.user_is_team_admin(t.id)
-    );
-$$
+call rls.create_rls_insert_policy('public', 'team', $$
+    ( -- User is admin of team
+        public.user_is_team_admin(team.id)
+        and not is_deleted(team.deleted_at)
+    )
+$$)
 ;
-
-create or replace function can_insert_team_with_check(t team)
-returns boolean
-security definer
-language sql
-as $$
-    select ( -- User is admin of team
-        public.user_is_team_admin(t.id)
-        and not is_deleted(t.deleted_at)
-    );
-$$
-;
-
-create policy "team: select"
-on team
-for select
-to authenticated
-using (can_read_team_using(team));
-
-create policy "team: update"
-on team
-for update
-to authenticated
-using (can_update_team_using(team))
-with check (can_update_team_with_check(team));
-
-create policy "team: insert"
-on team
-for insert
-to authenticated
-with check (can_insert_team_with_check(team));
