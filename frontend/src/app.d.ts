@@ -2,6 +2,7 @@ import type { PageMeta } from '$lib/components/Meta.svelte'
 import type { Session, SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '$lib/types/database'
 import type { UserWithTeams, TeamWithRole } from '$lib/types/supabase'
+import type { FormMessage } from '$lib/forms/client'
 
 declare global {
   namespace App {
@@ -19,5 +20,9 @@ declare global {
     }
     // interface Error {}
     // interface Platform {}
+
+    namespace Superforms {
+      type Message = FormMessage
+    }
   }
 }
