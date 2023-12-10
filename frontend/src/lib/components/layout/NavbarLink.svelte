@@ -16,15 +16,13 @@
   export { linkClass as class }
 </script>
 
-<div class="relative w-fit">
+<div class="w-fit">
   <a
     href={link.href}
     class={twMerge(
-      'p-2 text-center transition-colors duration-200 rounded-token',
-      'after:absolute after:-bottom-2 after:block after:h-0.5 after:w-full after:bg-primary-50',
-      "after:rounded-full after:opacity-0 after:transition-all after:content-['']",
-      'hover:bg-surface-300-600-token hover:after:opacity-100',
-      $page.url.pathname.startsWith(link.href) && 'after:opacity-100',
+      'border-b-2 border-b-primary-500 border-opacity-0 p-2 text-center transition-all duration-200 rounded-tl-token rounded-tr-token',
+      'hover:border-opacity-100 hover:bg-surface-300-600-token',
+      $page.url.pathname.startsWith(link.href) && 'border-opacity-100',
       linkClass,
     )}
     on:click={drawerStore.close}
