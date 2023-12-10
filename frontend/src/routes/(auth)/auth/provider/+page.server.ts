@@ -27,6 +27,7 @@ export const actions: Actions = {
       })
 
     if (authError) {
+      console.log('error', authError)
       return message(
         form,
         {
