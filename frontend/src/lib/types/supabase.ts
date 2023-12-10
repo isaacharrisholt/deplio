@@ -40,6 +40,6 @@ export type TeamType = Enum<'team_type'>
  */
 export type TeamWithRole = Team & { role: UserRole }
 export type UserWithTeams = User & {
-  teams: TeamWithRole[]
+  teams: Pick<TeamWithRole, 'id' | 'name' | 'type' | 'avatar_url' | 'role'>[]
   currentTeamId: Team['id']
 }

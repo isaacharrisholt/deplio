@@ -5,6 +5,8 @@
   import ActionButtons from './ActionButtons.svelte'
   import { page } from '$app/stores'
   import DashboardNavbarLinks from './DashboardNavbarLinks.svelte'
+  import Logo from './Logo.svelte'
+  import AccountSelector from '../AccountSelector.svelte'
 
   $: isDashboard = $page.url.pathname.startsWith('/dashboard')
 </script>
@@ -20,9 +22,11 @@
     <button class="lg:hidden" on:click={() => drawerStore.open()}>
       <Menu />
     </button>
-    <a href="/" class="select-none">
-      <p class="h1 text-primary-500">Deplio</p>
-    </a>
+    {#if isDashboard}
+      <AccountSelector />
+    {:else}
+      <Logo />
+    {/if}
   </div>
 
   <nav class="hidden w-full flex-row items-center justify-center gap-4 lg:flex">

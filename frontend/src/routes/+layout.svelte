@@ -16,10 +16,18 @@
   import '../app.postcss'
   import { invalidate } from '$app/navigation'
   import { onMount } from 'svelte'
-  import { Toast, AppShell, Drawer } from '@skeletonlabs/skeleton'
+  import { Toast, AppShell, Drawer, storePopup } from '@skeletonlabs/skeleton'
   import Meta from '$lib/components/Meta.svelte'
   import Navbar from '$lib/components/layout/Navbar.svelte'
   import DrawerNav from '$lib/components/layout/DrawerNav.svelte'
+  import {
+    computePosition,
+    autoUpdate,
+    offset,
+    shift,
+    flip,
+    arrow,
+  } from '@floating-ui/dom'
 
   export let data
 
@@ -36,6 +44,15 @@
     })
 
     return () => subscription.unsubscribe()
+  })
+
+  storePopup.set({
+    computePosition,
+    autoUpdate,
+    offset,
+    shift,
+    flip,
+    arrow,
   })
 </script>
 
