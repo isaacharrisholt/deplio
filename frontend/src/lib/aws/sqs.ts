@@ -2,7 +2,7 @@ import {
   SQSClient,
   ListQueuesCommand,
   SendMessageBatchCommand,
-  type SendMessageBatchRequestEntry
+  type SendMessageBatchRequestEntry,
 } from '@aws-sdk/client-sqs'
 import { VERCEL_ENV } from '$env/static/private'
 
@@ -19,7 +19,10 @@ export function listQueues() {
   return client.send(command)
 }
 
-export function sendMessages(entries: SendMessageBatchRequestEntry[], queueUrl: string) {
+export function sendMessages(
+  entries: SendMessageBatchRequestEntry[],
+  queueUrl: string,
+) {
   const client = getSQSClient()
   console.log(`Sending ${entries.length} messages to queue`, queueUrl)
   const command = new SendMessageBatchCommand({
