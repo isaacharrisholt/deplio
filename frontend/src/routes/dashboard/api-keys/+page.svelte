@@ -89,6 +89,7 @@
           placeholder="{data.user.first_name}'s API key"
           bind:value={$newApiKeyForm.name}
           errors={$newApiKeyErrors.name}
+          autocomplete="off"
         />
         <Select
           id="expiry"
