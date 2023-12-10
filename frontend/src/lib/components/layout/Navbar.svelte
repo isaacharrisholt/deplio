@@ -12,7 +12,7 @@
 </script>
 
 <AppBar
-  regionRowMain="w-full lg:w-3/4 mx-auto"
+  regionRowMain="w-full mx-auto"
   regionRowHeadline="p-0 !-mb-4 -mx-4"
   shadow="shadow-lg"
   gridColumns="grid-cols-3"
