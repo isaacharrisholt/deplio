@@ -29,9 +29,10 @@ alter table team enable row level security;
 -- team_user join table
 create type user_role as enum ('admin', 'member');
 create table if not exists team_user (
+    id uuid not null default tuid6(),
     team_id uuid not null references team (id),
     user_id uuid not null references "user" (id),
-    primary key (team_id, user_id),
+    primary key (id, team_id, user_id),
     created_at timestamptz not null default now(),
     deleted_at timestamptz,
     role user_role not null default 'member'
