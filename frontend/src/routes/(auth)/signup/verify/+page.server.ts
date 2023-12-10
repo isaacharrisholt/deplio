@@ -1,7 +1,6 @@
 import { message, superValidate } from 'sveltekit-superforms/server'
 import type { Actions, PageServerLoad } from './$types'
 import { otpVerificationFormSchema } from '$lib/forms/auth'
-import type { FormMessage } from '$lib/forms/client'
 import { fail, redirect } from '@sveltejs/kit'
 
 export const load: PageServerLoad = async (event) => {
@@ -11,7 +10,7 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
   default: async (event) => {
-    const form = await superValidate<typeof otpVerificationFormSchema, FormMessage>(
+    const form = await superValidate(
       event,
       otpVerificationFormSchema,
     )

@@ -1,5 +1,4 @@
 import { emailSignupFormSchema, providerAuthFormSchema } from '$lib/forms/auth'
-import type { FormMessage } from '$lib/forms/client'
 import { getSiteUrl } from '$lib/utils.server'
 import { fail, redirect } from '@sveltejs/kit'
 import { message, setError, superValidate } from 'sveltekit-superforms/server'
@@ -16,10 +15,7 @@ export const actions: Actions = {
     const {
       locals: { supabase },
     } = event
-    const form = await superValidate<typeof emailSignupFormSchema, FormMessage>(
-      event,
-      emailSignupFormSchema,
-    )
+    const form = await superValidate(event, emailSignupFormSchema)
 
     if (!form.valid) {
       return fail(400, { form })
