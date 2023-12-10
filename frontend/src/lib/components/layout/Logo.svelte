@@ -1,3 +1,3 @@
 <a href="/" class="select-none">
-  <p class="h1 text-primary-500">Deplio</p>
+  <p class="h1">Deplio</p>
 </a>

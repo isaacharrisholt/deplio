@@ -28,6 +28,7 @@
     flip,
     arrow,
   } from '@floating-ui/dom'
+  import Footer from '$lib/components/layout/Footer.svelte'
 
   export let data
 
@@ -70,11 +71,13 @@
     <Navbar />
   </svelte:fragment>
 
-  <div class="mx-auto w-full p-4 sm:w-4/5 sm:p-8 lg:p-16 xl:w-2/3">
+  <div class="mx-auto h-full w-full p-4 sm:w-4/5 sm:p-8 lg:p-16 xl:w-2/3">
     <slot />
   </div>
 
-  <svelte:fragment slot="pageFooter">Footer</svelte:fragment>
+  <svelte:fragment slot="pageFooter">
+    <Footer />
+  </svelte:fragment>
 </AppShell>
 
 <style lang="postcss">
