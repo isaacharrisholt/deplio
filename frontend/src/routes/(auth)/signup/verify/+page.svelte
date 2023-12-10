@@ -7,8 +7,8 @@
 </script>
 
 <!-- Session is null when signing up -->
-<div class="grid h-screen w-full place-items-center">
-  <div class="flex w-fit flex-col gap-4">
+<div class="grid w-full place-items-center">
+  <div class="flex w-fit max-w-xs flex-col justify-center gap-4 sm:w-80">
     <p>
       Thanks for signing up. We've sent you an email with a link to prove you are who
       you say you are 👀
@@ -16,7 +16,7 @@
     <p>
       Either click the link in the email, or enter the included verification code below:
     </p>
-    <form method="post" class="w-full" use:enhance>
+    <form method="post" class="flex w-full flex-col gap-4" use:enhance>
       <TextInput
         id="verificationCode"
         name="verificationCode"

@@ -18,7 +18,7 @@
 
     <hr />
 
-    <form method="POST" use:enhance class="grid w-fit gap-4">
+    <form method="POST" use:enhance class="grid w-full gap-4">
       <EmailInput
         id="email"
         name="email"
