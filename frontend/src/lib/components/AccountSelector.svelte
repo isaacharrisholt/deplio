@@ -30,9 +30,16 @@
     }
   }
 
+  function formatForSearch(str: string) {
+    return str
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '')
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+  }
+
   $: filteredTeams = $page.data.user.teams.filter(
     (team) =>
-      !searchValue || team.name.toLowerCase().includes(searchValue.toLowerCase()),
+      !searchValue || formatForSearch(team.name).includes(formatForSearch(searchValue)),
   )
   $: personalTeam = filteredTeams.find((team) => team.type === 'personal')
   $: organizationTeams = filteredTeams.filter((team) => team.type === 'organization')
@@ -81,7 +88,7 @@
 
     <!-- Other teams -->
     <div class="flex flex-col gap-2">
-      <p class="text-sm text-surface-600-300-token">Teams</p>
+      <p class="text-sm text-surface-600-300-token">Teams (coming soon)</p>
       {#each organizationTeams as team}
         <button
           on:click={() => setTeam(team.id)}
@@ -93,9 +100,9 @@
       {/each}
     </div>
 
-    <a href="/dashboard/teams/new" class="btn variant-ghost-surface justify-start">
+    <button class="btn variant-ghost-surface justify-start" disabled>
       <PlusCircle size={20} class="text-secondary-500" />
       <p>Create team</p>
-    </a>
+    </button>
   </div>
 </div>
