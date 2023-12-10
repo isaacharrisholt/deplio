@@ -256,62 +256,35 @@ $$
 ;
 
 -- user
-create or replace function can_read_user_using(u "user")
-returns boolean
-security definer
-language sql
-as $$
-    select ( -- User is self
-        auth.uid() = u.user_id
-        and not is_deleted(u.deleted_at)
+call rls.create_rls_select_policy('public', 'user', $$
+    ( -- User is self
+        (select auth.uid()) = "user".user_id
+        and not is_deleted("user".deleted_at)
     ) or ( -- User in same team
-        u.id in (
+        "user".id = any(
             select tu.user_id
             from public.team_user as tu
-            where tu.team_id in (select * from public.team_ids())
+            where tu.team_id in (select public.team_ids())
                 and not is_deleted(tu.deleted_at)
         )
-        and not is_deleted(u.deleted_at)
-    );
-$$
+        and not is_deleted("user".deleted_at)
+    )
+$$)
 ;
 
-create or replace function can_update_user_using(u "user")
-returns boolean
-security definer
-language sql
-as $$
-    select ( -- User is self
-        auth.uid() = u.user_id
-        and not is_deleted(u.deleted_at)
-    );
+call rls.create_rls_update_policy('public', 'user', $$
+    ( -- User is self
+        (select auth.uid()) = "user".user_id
+        and not is_deleted("user".deleted_at)
+    )
+$$,
 $$
+    ( -- User is self
+        (select auth.uid()) = "user".user_id
+        and not is_deleted("user".deleted_at)
+    )
+$$)
 ;
-
-create or replace function can_update_user_with_check(u "user")
-returns boolean
-security definer
-language sql
-as $$
-    select ( -- User is self
-        auth.uid() = u.user_id
-        and not is_deleted(u.deleted_at)
-    );
-$$
-;
-
-create policy "user: select"
-on "user"
-for select
-to authenticated
-using (can_read_user_using("user"));
-
-create policy "user: update"
-on "user"
-for update
-to authenticated
-using (can_update_user_using("user"))
-with check (can_update_user_with_check("user"));
 
 -- team_user
 create or replace function can_read_team_user_using(tu team_user)
