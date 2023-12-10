@@ -76,23 +76,23 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "api_key_created_by_fkey"
-            columns: ["created_by"]
-            referencedRelation: "user"
-            referencedColumns: ["id"]
+            foreignKeyName: 'api_key_created_by_fkey'
+            columns: ['created_by']
+            referencedRelation: 'user'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "api_key_revoked_by_fkey"
-            columns: ["revoked_by"]
-            referencedRelation: "user"
-            referencedColumns: ["id"]
+            foreignKeyName: 'api_key_revoked_by_fkey'
+            columns: ['revoked_by']
+            referencedRelation: 'user'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "api_key_team_id_fkey"
-            columns: ["team_id"]
-            referencedRelation: "team"
-            referencedColumns: ["id"]
-          }
+            foreignKeyName: 'api_key_team_id_fkey'
+            columns: ['team_id']
+            referencedRelation: 'team'
+            referencedColumns: ['id']
+          },
         ]
       }
       q_request: {
@@ -134,17 +134,17 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "q_request_api_key_id_fkey"
-            columns: ["api_key_id"]
-            referencedRelation: "api_key"
-            referencedColumns: ["id"]
+            foreignKeyName: 'q_request_api_key_id_fkey'
+            columns: ['api_key_id']
+            referencedRelation: 'api_key'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "q_request_team_id_fkey"
-            columns: ["team_id"]
-            referencedRelation: "team"
-            referencedColumns: ["id"]
-          }
+            foreignKeyName: 'q_request_team_id_fkey'
+            columns: ['team_id']
+            referencedRelation: 'team'
+            referencedColumns: ['id']
+          },
         ]
       }
       q_response: {
@@ -180,11 +180,11 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "q_response_request_id_fkey"
-            columns: ["request_id"]
-            referencedRelation: "q_request"
-            referencedColumns: ["id"]
-          }
+            foreignKeyName: 'q_response_request_id_fkey'
+            columns: ['request_id']
+            referencedRelation: 'q_request'
+            referencedColumns: ['id']
+          },
         ]
       }
       team: {
@@ -194,7 +194,7 @@ export interface Database {
           deleted_at: string | null
           id: string
           name: string
-          type: Database["public"]["Enums"]["team_type"]
+          type: Database['public']['Enums']['team_type']
         }
         Insert: {
           avatar_url?: string | null
@@ -202,7 +202,7 @@ export interface Database {
           deleted_at?: string | null
           id?: string
           name: string
-          type: Database["public"]["Enums"]["team_type"]
+          type: Database['public']['Enums']['team_type']
         }
         Update: {
           avatar_url?: string | null
@@ -210,7 +210,7 @@ export interface Database {
           deleted_at?: string | null
           id?: string
           name?: string
-          type?: Database["public"]["Enums"]["team_type"]
+          type?: Database['public']['Enums']['team_type']
         }
         Relationships: []
       }
@@ -219,7 +219,7 @@ export interface Database {
           created_at: string
           deleted_at: string | null
           id: string
-          role: Database["public"]["Enums"]["user_role"]
+          role: Database['public']['Enums']['user_role']
           team_id: string
           user_id: string
         }
@@ -227,7 +227,7 @@ export interface Database {
           created_at?: string
           deleted_at?: string | null
           id?: string
-          role?: Database["public"]["Enums"]["user_role"]
+          role?: Database['public']['Enums']['user_role']
           team_id: string
           user_id: string
         }
@@ -235,23 +235,23 @@ export interface Database {
           created_at?: string
           deleted_at?: string | null
           id?: string
-          role?: Database["public"]["Enums"]["user_role"]
+          role?: Database['public']['Enums']['user_role']
           team_id?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "team_user_team_id_fkey"
-            columns: ["team_id"]
-            referencedRelation: "team"
-            referencedColumns: ["id"]
+            foreignKeyName: 'team_user_team_id_fkey'
+            columns: ['team_id']
+            referencedRelation: 'team'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "team_user_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "user"
-            referencedColumns: ["id"]
-          }
+            foreignKeyName: 'team_user_user_id_fkey'
+            columns: ['user_id']
+            referencedRelation: 'user'
+            referencedColumns: ['id']
+          },
         ]
       }
       user: {
@@ -397,8 +397,8 @@ export interface Database {
       }
     }
     Enums: {
-      team_type: "personal" | "organization"
-      user_role: "admin" | "member"
+      team_type: 'personal' | 'organization'
+      user_role: 'admin' | 'member'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -442,11 +442,11 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "buckets_owner_fkey"
-            columns: ["owner"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
+            foreignKeyName: 'buckets_owner_fkey'
+            columns: ['owner']
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
         ]
       }
       migrations: {
@@ -509,11 +509,11 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "objects_bucketId_fkey"
-            columns: ["bucket_id"]
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          }
+            foreignKeyName: 'objects_bucketId_fkey'
+            columns: ['bucket_id']
+            referencedRelation: 'buckets'
+            referencedColumns: ['id']
+          },
         ]
       }
     }
@@ -584,4 +584,3 @@ export interface Database {
     }
   }
 }
-
