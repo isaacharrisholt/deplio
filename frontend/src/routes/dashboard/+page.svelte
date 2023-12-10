@@ -1,11 +1,42 @@
-<script lang="ts">
-  import type { PageData } from './$types'
-
-  export let data: PageData
+<script>
+  import { SquareStack, Mails, Ship } from 'lucide-svelte'
 </script>
 
-<h1 class="h1">Dashboard</h1>
-<h4 class="h4">{JSON.stringify(data.user)}</h4>
-<h4 class="h4">{JSON.stringify(data.team)}</h4>
+<section class="grid gap-8 md:grid-cols-2">
+  <a
+    href="/dashboard/q"
+    class="card flex h-60 flex-row items-center justify-between gap-4 p-8"
+  >
+    <div class="flex flex-col gap-4">
+      <h2 class="h2">Q</h2>
+      <p>Effortless serverless message queueing.</p>
+    </div>
 
-<a href="/dashboard/projects" class="btn variant-filled-secondary">Projects</a>
+    <SquareStack size={64} strokeWidth={0.9} />
+  </a>
+
+  <div
+    class="card flex h-60 flex-row items-center justify-between gap-4 p-8 text-primary-100-800-token"
+  >
+    <div class="flex flex-col gap-4">
+      <h2 class="h2">Email</h2>
+      <p>SQL-based email scheduling for developers. Coming soon.</p>
+    </div>
+
+    <Mails size={64} strokeWidth={0.9} />
+  </div>
+
+  <div
+    class="card col-span-full flex h-80 flex-row items-center justify-between gap-4 p-16 text-primary-100-800-token"
+  >
+    <div class="flex flex-col gap-4">
+      <h2 class="h2">Deploy</h2>
+      <h3 class="h3">
+        Preview branches. For your <span class="font-medium">backend</span>.
+      </h3>
+      <p>Coming soon.</p>
+    </div>
+
+    <Ship size={128} strokeWidth={0.6} />
+  </div>
+</section>
