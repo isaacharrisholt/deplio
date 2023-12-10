@@ -3,6 +3,22 @@ import { passwordSchema } from '$lib/types/zodCommon'
 
 export const emailSignupFormSchema = z
   .object({
+    username: z
+      .string()
+      .min(3, { message: 'Username must be at least 3 characters long' })
+      .max(20, { message: 'Username must be at most 20 characters long' })
+      .transform((val, ctx) => {
+        val = val.toLowerCase().trim()
+        if (!/^[a-z0-9_-]+$/.test(val)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message:
+              'Username can only contain alphanumeric characters, dashes and underscores',
+          })
+          return z.NEVER
+        }
+        return val
+      }),
     email: z.string().email(),
     password: passwordSchema,
     passwordConfirmation: z.string(),
