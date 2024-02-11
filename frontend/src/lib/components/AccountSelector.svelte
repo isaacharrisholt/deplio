@@ -47,10 +47,12 @@
 
 <div class="flex flex-row items-center gap-2">
   <a href="/">
-    <p class="h3 text-primary-500">Deplio</p>
+    <p class="h3">Deplio</p>
   </a>
 
-  <p class="h3 -mt-1 select-none pl-4 text-primary-900">{isWindows ? '\\' : '/'}</p>
+  <p class="h3 -mt-1 select-none pl-4 text-primary-900">
+    {isWindows ? '\\' : '/'}
+  </p>
 
   <button
     class="btn flex flex-row items-center gap-2 bg-none hover:variant-soft-surface"

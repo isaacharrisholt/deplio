@@ -5,7 +5,7 @@
 <section class="grid gap-8 md:grid-cols-2">
   <a
     href="/dashboard/q"
-    class="card flex h-60 flex-row items-center justify-between gap-4 p-8"
+    class="card flex h-60 flex-row items-center justify-between gap-4 p-8 !transition-none"
   >
     <div class="flex flex-col gap-4">
       <h2 class="h2">Q</h2>
@@ -16,7 +16,7 @@
   </a>
 
   <div
-    class="card flex h-60 flex-row items-center justify-between gap-4 p-8 text-primary-100-800-token"
+    class="card flex h-60 flex-row items-center justify-between gap-4 p-8 text-surface-500-400-token"
   >
     <div class="flex flex-col gap-4">
       <h2 class="h2">Email</h2>
@@ -27,7 +27,7 @@
   </div>
 
   <div
-    class="card col-span-full flex h-80 flex-row items-center justify-between gap-4 p-16 text-primary-100-800-token"
+    class="card col-span-full flex h-80 flex-row items-center justify-between gap-4 p-16 text-surface-500-400-token"
   >
     <div class="flex flex-col gap-4">
       <h2 class="h2">Deploy</h2>

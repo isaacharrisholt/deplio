@@ -21,7 +21,7 @@
     href={link.href}
     class={twMerge(
       'border-b-2 border-b-primary-500 border-opacity-0 p-2 text-center transition-all duration-200 rounded-tl-token rounded-tr-token',
-      'hover:border-opacity-100 hover:bg-surface-300-600-token',
+      'hover:border-opacity-100 hover:bg-surface-200-700-token',
       $page.url.pathname.startsWith(link.href) && 'border-opacity-100',
       linkClass,
     )}

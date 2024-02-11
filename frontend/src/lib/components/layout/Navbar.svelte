@@ -40,7 +40,7 @@
   <!-- Using the headline slot to add a nice gradient separator -->
   <div
     slot="headline"
-    class="grid h-[1px] w-full bg-gradient-to-r from-transparent via-primary-50 to-transparent"
+    class="grid h-[1px] w-full bg-gradient-to-r from-transparent via-primary-50 to-transparent dark:via-primary-900"
     class:hidden={isDashboard}
   />
 </AppBar>
