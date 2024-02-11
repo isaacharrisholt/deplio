@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AppBar, drawerStore } from '@skeletonlabs/skeleton'
+  import { AppBar, getDrawerStore } from '@skeletonlabs/skeleton'
   import { Menu } from 'lucide-svelte'
   import NavbarLinks from './NavbarLinks.svelte'
   import ActionButtons from './ActionButtons.svelte'
@@ -7,6 +7,8 @@
   import DashboardNavbarLinks from './DashboardNavbarLinks.svelte'
   import Logo from './Logo.svelte'
   import AccountSelector from '../AccountSelector.svelte'
+
+  const drawerStore = getDrawerStore()
 
   $: isDashboard = $page.url.pathname.startsWith('/dashboard')
 </script>

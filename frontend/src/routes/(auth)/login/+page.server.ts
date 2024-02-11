@@ -4,18 +4,15 @@ import { AuthApiError } from '@supabase/supabase-js'
 import { setError, superValidate, message } from 'sveltekit-superforms/server'
 import { loginFormSchema, providerAuthFormSchema } from '$lib/forms/auth'
 
-export const load: PageServerLoad = async (event) => {
-  const form = await superValidate(event, loginFormSchema)
-  const providerAuthForm = await superValidate(event, providerAuthFormSchema)
+export const load: PageServerLoad = async ({ request }) => {
+  const form = await superValidate(request, loginFormSchema)
+  const providerAuthForm = await superValidate(request, providerAuthFormSchema)
   return { form, providerAuthForm }
 }
 
 export const actions: Actions = {
-  default: async (event) => {
-    const {
-      locals: { supabase },
-    } = event
-    const form = await superValidate(event, loginFormSchema)
+  default: async ({ request, locals: { supabase } }) => {
+    const form = await superValidate(request, loginFormSchema)
 
     if (!form.valid) {
       return fail(400, { form })

@@ -1,4 +1,9 @@
 /*place global styles here */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
 html,
 body {
   @apply h-full;
@@ -8,4 +13,28 @@ body {
   font-family: 'Space Grotesk';
   src: url('/fonts/SpaceGrotesk.ttf');
   font-display: swap;
+}
+
+:global(h1) {
+  @apply h1;
+}
+
+:global(h2) {
+  @apply h2;
+}
+
+:global(h3) {
+  @apply h3;
+}
+
+:global(h4) {
+  @apply h4;
+}
+
+:global(h5) {
+  @apply h5;
+}
+
+:global(h6) {
+  @apply h6;
 }
