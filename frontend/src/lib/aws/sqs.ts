@@ -4,12 +4,12 @@ import {
   SendMessageBatchCommand,
   type SendMessageBatchRequestEntry,
 } from '@aws-sdk/client-sqs'
-import { VERCEL_ENV } from '$env/static/private'
+import { PUBLIC_DEPLOYMENT_ENV } from '$env/static/public'
 
 function getSQSClient() {
   return new SQSClient({
     region: 'us-east-1',
-    endpoint: VERCEL_ENV === 'development' ? 'http://localhost:4566' : undefined,
+    endpoint: PUBLIC_DEPLOYMENT_ENV === 'local' ? 'http://localhost:4566' : undefined,
   })
 }
 

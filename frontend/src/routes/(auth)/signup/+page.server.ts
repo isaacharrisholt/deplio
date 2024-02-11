@@ -1,8 +1,9 @@
 import { emailSignupFormSchema, providerAuthFormSchema } from '$lib/forms/auth'
-import { getSiteUrl, getSupabaseAdminClient } from '$lib/utils.server'
+import { getSupabaseAdminClient } from '$lib/utils.server'
 import { fail, redirect } from '@sveltejs/kit'
 import { message, setError, superValidate } from 'sveltekit-superforms/server'
 import type { Actions, PageServerLoad } from './$types'
+import { PUBLIC_DEPLIO_URL } from '$env/static/public'
 
 export const load: PageServerLoad = async (event) => {
   const emailSignupForm = await superValidate(event, emailSignupFormSchema)
@@ -49,7 +50,7 @@ export const actions: Actions = {
       email: form.data.email,
       password: form.data.password,
       options: {
-        emailRedirectTo: `${getSiteUrl()}/auth/callback?redirectUrl=/dashboard`,
+        emailRedirectTo: `${PUBLIC_DEPLIO_URL}/auth/callback?redirectUrl=/dashboard`,
         data: {
           username: form.data.username,
         },
