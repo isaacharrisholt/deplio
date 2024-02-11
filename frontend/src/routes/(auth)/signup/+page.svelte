@@ -2,7 +2,7 @@
   import EmailInput from '$lib/components/forms/EmailInput.svelte'
   import PasswordInput from '$lib/components/forms/PasswordInput.svelte'
   import ProviderAuthForm from '$lib/components/forms/ProviderAuthForm.svelte'
-  import { emailSignupFormSchema } from '$lib/forms/auth'
+  import TextInput from '$lib/components/forms/TextInput.svelte'
   import { createForm } from '$lib/forms/client'
   import type { PageData } from './$types'
 
@@ -11,9 +11,7 @@
     form: emailSignupForm,
     errors: emailSignupFormErrors,
     enhance: emailSignupFormEnhance,
-  } = createForm(data.emailSignupForm, {
-    validators: emailSignupFormSchema,
-  })
+  } = createForm(data.emailSignupForm)
 
   $: canSignUp =
     !!$emailSignupForm.email &&
@@ -22,7 +20,7 @@
 </script>
 
 <div class="grid w-full place-items-center">
-  <div class="flex w-fit flex-col gap-4">
+  <div class="flex w-fit max-w-xs flex-col gap-4 sm:w-80">
     <ProviderAuthForm data={data.providerAuthForm} />
 
     <hr />
@@ -33,17 +31,28 @@
       class="grid w-full gap-4"
       use:emailSignupFormEnhance
     >
+      <TextInput
+        id="username"
+        name="username"
+        label="Username"
+        placeholder="isaacharrisholt"
+        bind:value={$emailSignupForm.username}
+        errors={$emailSignupFormErrors.username}
+        autocomplete="username"
+      />
       <EmailInput
         id="email"
         name="email"
-        placeholder="Email"
+        label="Email"
+        placeholder="isaac@depl.io"
         bind:value={$emailSignupForm.email}
         errors={$emailSignupFormErrors.email}
       />
       <PasswordInput
         id="password"
         name="password"
-        placeholder="Password"
+        label="Password"
+        placeholder="••••••••••••••••"
         bind:value={$emailSignupForm.password}
         errors={$emailSignupFormErrors.password}
         autocomplete="new-password"
@@ -51,7 +60,8 @@
       <PasswordInput
         id="passwordConfirmation"
         name="passwordConfirmation"
-        placeholder="Confirm password"
+        label="Confirm password"
+        placeholder="••••••••••••••••"
         bind:value={$emailSignupForm.passwordConfirmation}
         errors={$emailSignupFormErrors.passwordConfirmation}
         autocomplete="new-password"

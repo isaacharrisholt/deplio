@@ -13,7 +13,7 @@
 </script>
 
 <div class="grid w-full place-items-center">
-  <div class="flex w-fit flex-col gap-4">
+  <div class="flex w-fit max-w-xs flex-col gap-4 sm:w-80">
     <ProviderAuthForm data={data.providerAuthForm} action="Log in" />
 
     <hr />
@@ -22,14 +22,16 @@
       <EmailInput
         id="email"
         name="email"
-        placeholder="Email"
+        label="Email"
+        placeholder="isaac@depl.io"
         bind:value={$form.email}
         errors={$errors.email}
       />
       <PasswordInput
         id="password"
         name="password"
-        placeholder="Password"
+        label="Password"
+        placeholder="••••••••••••••••"
         bind:value={$form.password}
         errors={$errors.password}
       />
