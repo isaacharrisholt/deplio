@@ -3,11 +3,12 @@ create table if not exists "user" (
     id uuid not null primary key default tuid6(),
     created_at timestamptz not null default now(),
     deleted_at timestamptz,
-    -- Note, we're not creating a foreign key to auth.users.id because
+    -- Note, we're not making user_id nullable because
     -- we want to be able to delete a user from auth.users without
     -- deleting their data from public.user.
-    user_id uuid not null unique,
+    user_id uuid unique,
     email text not null unique,
+    username text unique nulls not distinct,
     first_name text,
     last_name text,
     avatar_url text

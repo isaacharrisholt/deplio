@@ -5,8 +5,8 @@ declare
     first_name text;
     last_name text;
     avatar_url text;
+    username text;
     new_user public."user";
-    team_name text;
     personal_team public.team;
 begin
     if new.raw_user_meta_data is not null then
@@ -19,6 +19,8 @@ begin
             avatar_url := new.raw_user_meta_data->>'avatar_url';
         end if;
 
+        username := coalesce(new.raw_user_meta_data->>'username', new.raw_user_meta_data->>'preferred_username', new.raw_user_meta_data->>'user_name', new.email);
+
         if new.raw_user_meta_data->>'first_name' is not null then
             first_name := new.raw_user_meta_data->>'first_name';
         end if;
@@ -28,24 +30,19 @@ begin
         end if;
     end if;
 
-    insert into public."user" (user_id, email, first_name, last_name, avatar_url)
+    insert into public."user" (user_id, email, username, first_name, last_name, avatar_url)
     values (
         new.id,
         new.email,
+        username,
         first_name,
         last_name,
         avatar_url
     ) returning * into new_user;
 
-    if new_user.first_name is not null and new_user.last_name is not null then
-        team_name := new_user.first_name || ' ' || new_user.last_name || '''s Team';
-    else
-        team_name := new_user.email || '''s Team';
-    end if;
-
     insert into public.team (name, type)
     values (
-        team_name,
+        username,
         'personal'
     ) returning * into personal_team;
 
@@ -75,7 +72,8 @@ as $$
 begin
     update public."user"
     set
-        deleted_at = now()
+        deleted_at = now(),
+        user_id = null
     where user_id = old.id;
     return old;
 end;
