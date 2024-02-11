@@ -70,14 +70,18 @@ export const handle: Handle = async ({ event, resolve }) => {
     const userWithTeams: UserWithTeams = {
       ...extractedUser,
       currentTeamId: earliestTeam.id,
-      teams: teamUser.map(
-        (teamWithRole) =>
-          ({
-            id: teamWithRole.team?.id,
-            created_at: teamWithRole.team?.created_at,
-            name: teamWithRole.team?.name,
-          } as TeamWithRole),
-      ),
+      teams: teamUser.map((teamWithRole) => {
+        if (!teamWithRole.team) {
+          throw error(404, 'Team not found')
+        }
+        return {
+          id: teamWithRole.team.id,
+          name: teamWithRole.team.name,
+          type: teamWithRole.team.type,
+          avatar_url: teamWithRole.team.avatar_url,
+          role: teamWithRole.role,
+        }
+      }),
     }
 
     await cache.hset(`user:${session?.user.id}`, userWithTeams, {
@@ -87,7 +91,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   }
   event.locals.user = user
 
-  const newTeamId = event.url.searchParams.get('teamId')
+  const newTeamId = event.url.searchParams.get('team')
 
   if (newTeamId) {
     event.locals.user.currentTeamId = newTeamId
