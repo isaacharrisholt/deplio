@@ -1,9 +1,12 @@
 <script lang="ts">
   import { createForm } from '$lib/forms/client'
   import TextInput from '$lib/components/forms/TextInput.svelte'
+  import { getToastStore } from '@skeletonlabs/skeleton'
+
+  const toastStore = getToastStore()
 
   export let data
-  const { form, errors, enhance } = createForm(data.form)
+  const { form, errors, enhance } = createForm(data.form, toastStore)
 </script>
 
 <!-- Session is null when signing up -->

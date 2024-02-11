@@ -1,6 +1,6 @@
 import { error, fail } from '@sveltejs/kit'
 import type { PageServerLoad, Actions } from './$types'
-import { message, superValidate } from 'sveltekit-superforms/client'
+import { message, setError, superValidate } from 'sveltekit-superforms/client'
 import { newApiKeyFormSchema, revokeApiKeyFormSchema } from '$lib/forms/settings'
 import { generateApiKey, hashApiKey } from '$lib/apiKeys'
 import parseDuration from 'parse-duration'
@@ -70,6 +70,20 @@ export const actions: Actions = {
 
     const key = generateApiKey()
     const hash = await hashApiKey(key)
+
+    const { data: apiKeys, error: apiKeyFetchError } = await supabase
+      .from('api_key')
+      .select('name')
+      .eq('team_id', user.currentTeamId)
+
+    if (apiKeyFetchError) {
+      console.error('error fetching api keys', apiKeyFetchError)
+      return message(form, { status: 'error', message: 'Error creating API key' })
+    }
+
+    if (apiKeys.find((k) => k.name.toLowerCase() === form.data.name.toLowerCase())) {
+      return setError(form, 'name', 'You already have an API key with this name.')
+    }
 
     const expiresAt =
       form.data.expiry === 'never'
