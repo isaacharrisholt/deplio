@@ -5,17 +5,18 @@
   import { createForm } from '$lib/forms/client'
   import { Undo2 } from 'lucide-svelte'
   import type { PageData } from './$types'
+  import { getToastStore } from '@skeletonlabs/skeleton'
+
+  const toastStore = getToastStore()
 
   export let data: PageData
-
-  const EXISTING_KEY_MESSAGE = 'You already have an API key with this name.'
 
   const {
     form: newApiKeyForm,
     errors: newApiKeyErrors,
     enhance: newApiKeyEnhance,
     submitting: newApiKeySubmitting,
-  } = createForm(data.newApiKeyForm, {
+  } = createForm(data.newApiKeyForm, toastStore, {
     async onUpdated({ form }) {
       if (form.message?.apiKey) {
         newApiKey = form.message.apiKey
@@ -23,22 +24,9 @@
       }
     },
   })
-  $: {
-    if (
-      data.apiKeys.find(
-        (apiKey) => apiKey.name.toLowerCase() === $newApiKeyForm.name.toLowerCase(),
-      )
-    ) {
-      if (!$newApiKeyErrors.name) $newApiKeyErrors.name = []
-      $newApiKeyErrors.name.push(EXISTING_KEY_MESSAGE)
-      $newApiKeyErrors = $newApiKeyErrors
-    } else if ($newApiKeyErrors.name?.includes(EXISTING_KEY_MESSAGE)) {
-      $newApiKeyErrors.name = []
-    }
-  }
 
   const { enhance: revokeApiKeyEnhance, submitting: revokeApiKeySubmitting } =
-    createForm(data.revokeApiKeyForm)
+    createForm(data.revokeApiKeyForm, toastStore)
 
   let newApiKey = ''
 
@@ -110,8 +98,7 @@
       <button
         type="submit"
         class="btn variant-filled-primary w-fit"
-        disabled={!!($newApiKeySubmitting || $newApiKeyErrors.name?.length)}
-        >Create</button
+        disabled={$newApiKeySubmitting}>Create</button
       >
     </form>
   </div>

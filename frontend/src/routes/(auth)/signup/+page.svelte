@@ -5,13 +5,16 @@
   import TextInput from '$lib/components/forms/TextInput.svelte'
   import { createForm } from '$lib/forms/client'
   import type { PageData } from './$types'
+  import { getToastStore } from '@skeletonlabs/skeleton'
+
+  const toastStore = getToastStore()
 
   export let data: PageData
   const {
     form: emailSignupForm,
     errors: emailSignupFormErrors,
     enhance: emailSignupFormEnhance,
-  } = createForm(data.emailSignupForm)
+  } = createForm(data.emailSignupForm, toastStore)
 
   $: canSignUp =
     !!$emailSignupForm.email &&

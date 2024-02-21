@@ -5,9 +5,12 @@
   import PasswordInput from '$lib/components/forms/PasswordInput.svelte'
   import { loginFormSchema } from '$lib/forms/auth'
   import ProviderAuthForm from '$lib/components/forms/ProviderAuthForm.svelte'
+  import { getToastStore } from '@skeletonlabs/skeleton'
+
+  const toastStore = getToastStore()
 
   export let data: PageData
-  const { form, errors, enhance, allErrors } = createForm(data.form, {
+  const { form, errors, enhance, allErrors } = createForm(data.form, toastStore, {
     validators: loginFormSchema,
   })
 </script>
