@@ -36,7 +36,7 @@
     </div>
   {/if}
 
-  <button on:click={doDownload} class="variant-form-material btn"> Test </button>
+  <button on:click={doDownload} class="btn variant-form-material"> Test </button>
 
   {#each displayProjects as project}
     <a

@@ -16,7 +16,7 @@ const config = {
       regions: ['lhr1'],
     }),
     csrf: {
-      checkOrigin: process.env.VERCEL_ENV !== 'development',
+      checkOrigin: process.env.PUBLIC_DEPLOYMENT_ENV !== 'local',
     },
   },
 }
