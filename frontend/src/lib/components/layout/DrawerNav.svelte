@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { drawerStore } from '@skeletonlabs/skeleton'
+  import { getDrawerStore } from '@skeletonlabs/skeleton'
   import ActionButtons from './ActionButtons.svelte'
   import NavbarLinks from './NavbarLinks.svelte'
+
+  const drawerStore = getDrawerStore()
 </script>
 
 <div class="flex flex-col items-start gap-4 p-16">

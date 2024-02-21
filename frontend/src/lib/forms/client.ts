@@ -5,7 +5,7 @@ import {
 } from 'sveltekit-superforms/client'
 import type { SuperValidated, ZodValidation } from 'sveltekit-superforms'
 import type { AnyZodObject } from 'zod'
-import { toastStore, type ToastSettings } from '@skeletonlabs/skeleton'
+import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton'
 
 export type FormMessage = {
   status: 'error' | 'success'
@@ -20,6 +20,7 @@ export const displayToast = (formMessage: FormMessage, settings?: ToastSettings)
         ? 'variant-filled-error'
         : 'variant-filled-success',
   }
+  const toastStore = getToastStore()
   toastStore.trigger({ ...t, ...settings })
 }
 

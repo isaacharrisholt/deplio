@@ -1,6 +1,8 @@
 <script lang="ts">
   import { page } from '$app/stores'
-  import { drawerStore } from '@skeletonlabs/skeleton'
+  import { getDrawerStore } from '@skeletonlabs/skeleton'
+
+  const drawerStore = getDrawerStore()
 </script>
 
 {#if !$page.data.session}

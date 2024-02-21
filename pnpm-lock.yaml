@@ -36,8 +36,11 @@ importers:
         specifier: ^1.28.1
         version: 1.28.1
       '@skeletonlabs/skeleton':
-        specifier: ^1.9.0
-        version: 1.9.0(svelte@4.0.0)
+        specifier: ^2.8.0
+        version: 2.8.0(svelte@4.0.0)
+      '@skeletonlabs/tw-plugin':
+        specifier: ^0.3.1
+        version: 0.3.1(tailwindcss@3.3.2)
       '@supabase/auth-helpers-sveltekit':
         specifier: ^0.10.3
         version: 0.10.3(@supabase/supabase-js@2.38.4)(@sveltejs/kit@1.24.1)
@@ -1985,13 +1988,21 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /@skeletonlabs/skeleton@1.9.0(svelte@4.0.0):
-    resolution: {integrity: sha512-8dPp2l4d7p07FD4PXejY4p4my8SpurHwGPw2SCMvKPVde49js13BTvZ26dWo7pfPuPozrXsOzEF2mZxpSv2W+A==}
+  /@skeletonlabs/skeleton@2.8.0(svelte@4.0.0):
+    resolution: {integrity: sha512-R6spSJSyW9MA6cnVQ8IV7uoYSXxHmP/oWJ9IHdGDU9epPZaZMmOXUHJSzA1gngccB2jFaA/6jXfS1O1CsIlGMg==}
     peerDependencies:
       svelte: ^3.56.0 || ^4.0.0
     dependencies:
       esm-env: 1.0.0
       svelte: 4.0.0
+    dev: true
+
+  /@skeletonlabs/tw-plugin@0.3.1(tailwindcss@3.3.2):
+    resolution: {integrity: sha512-DjjeOHN3HhFQf6gYPT2MUZMkIdw1jeB9mbuKC8etQxUlOR4XitfC7hssRWFJ8RJsvrrN0myCBbdWkVG1JVA96g==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0'
+    dependencies:
+      tailwindcss: 3.3.2
     dev: true
 
   /@smithy/abort-controller@2.0.12:

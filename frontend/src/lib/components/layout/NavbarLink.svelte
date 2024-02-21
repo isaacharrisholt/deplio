@@ -9,7 +9,9 @@
 <script lang="ts">
   import { page } from '$app/stores'
   import { twMerge } from 'tailwind-merge'
-  import { drawerStore } from '@skeletonlabs/skeleton'
+  import { getDrawerStore } from '@skeletonlabs/skeleton'
+
+  const drawerStore = getDrawerStore()
 
   export let link: Navlink
   let linkClass = ''
