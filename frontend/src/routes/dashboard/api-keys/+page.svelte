@@ -57,7 +57,7 @@
 <div class="flex flex-col gap-12">
   {#if newApiKey}
     <div class="card variant-soft-tertiary flex flex-col gap-4 p-8">
-      <h3>Your new API key</h3>
+      <h2>Your new API key</h2>
       <p>You'll only see this once, so keep it safe!</p>
       <CopyClick text={newApiKey} />
       <button class="btn variant-filled-primary w-fit" on:click={() => (newApiKey = '')}
@@ -67,7 +67,7 @@
   {/if}
 
   <div class="card variant-soft-surface flex flex-col gap-4 p-8">
-    <h3>New API key</h3>
+    <h2>New API key</h2>
     <form method="POST" action="?/new" class="flex flex-col gap-4" use:newApiKeyEnhance>
       <div class="flex flex-row gap-4">
         <TextInput
@@ -104,7 +104,7 @@
   </div>
 
   <div class="card variant-soft-surface flex flex-col gap-4 p-8">
-    <h3>API keys</h3>
+    <h2>API keys</h2>
     <div class="table-container">
       <table class="table">
         <thead>
