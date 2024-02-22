@@ -64,6 +64,21 @@ def setup_secrets(env_vars: dict[str, str]):
             raise Exception("Failed to create secret")
         print(f'Created secret "{key_name}"')
 
+def create_tf_workspace():
+    print("Creating terraform workspace... ", end="", flush=True)
+    result = subprocess.run(
+        ["tflocal", "workspace", "new", "local"],
+        cwd="terraform",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    # Ignore error if workspace already exists
+    if result.returncode != 0 and "already exists" not in result.stderr.decode("utf-8"):
+        print("failed")
+        print(result.stderr.decode("utf-8"))
+        raise Exception("Failed to create terraform workspace")
+    print("done")
+
 
 def apply_tf():
     print("Applying terraform... ", end="", flush=True)
@@ -115,6 +130,7 @@ def main():
     start_localstack()
     try:
         setup_secrets(secrets)
+        create_tf_workspace()
         apply_tf()
     except Exception as e:
         print(e)
