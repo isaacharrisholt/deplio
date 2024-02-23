@@ -1,5 +1,9 @@
-<script>
+<script lang="ts">
+  import type { PageData } from './$types'
   import TabbedCodeBlock from '$lib/components/TabbedCodeBlock.svelte'
+  import QRequestPanel from '$lib/components/q/QRequestPanel.svelte'
+
+  export let data: PageData
 </script>
 
 <div class="flex flex-col gap-12">
@@ -39,5 +43,11 @@ const response = await fetch('https://api.deplio.com/api/q', {
 
   <div class="card variant-soft-surface flex flex-col gap-4 p-8">
     <h2>Requests</h2>
+
+    <div class="flex flex-col gap-2">
+      {#each data.qRequests as qRequest}
+        <QRequestPanel {qRequest} qResponses={qRequest.q_response} />
+      {/each}
+    </div>
   </div>
 </div>

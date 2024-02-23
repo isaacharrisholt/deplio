@@ -29,6 +29,12 @@ export type TeamUserUpdate = Update<'team_user'>
 // api_key
 export type APIKey = Select<'api_key'>
 
+// q_request
+export type QRequest = Select<'q_request'>
+
+// q_response
+export type QResponse = Select<'q_response'>
+
 /*
  * Enums
  */
