@@ -6,9 +6,9 @@ import { cache } from '$lib/cache'
 import type { TeamWithRole, UserWithTeams } from '$lib/types/supabase'
 import { sequence } from '@sveltejs/kit/hooks'
 import { createTRPCHandle } from 'trpc-sveltekit'
-import { createContext } from '$lib/trpc/context'
+import { create_trpc_context } from '$lib/trpc/context'
 import { router } from '$lib/trpc/router'
-import { trpcServer } from '$lib/trpc/server'
+import { trpc_server } from '$lib/trpc/server'
 
 // Note: tRPC handle is at the bottom of the file
 export const handle: Handle = sequence(
@@ -117,9 +117,9 @@ export const handle: Handle = sequence(
       },
     })
   },
-  createTRPCHandle({ router, createContext }),
+  createTRPCHandle({ router, createContext: create_trpc_context }),
   async ({ event, resolve }) => {
-    event.locals.trpc = await trpcServer(event)
+    event.locals.trpc = await trpc_server(event)
     return resolve(event)
   },
 )

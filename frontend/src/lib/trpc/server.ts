@@ -1,7 +1,7 @@
 import type { RequestEvent } from '@sveltejs/kit'
-import { createContext } from './context'
-import { createCaller } from './router'
+import { create_trpc_context } from './context'
+import { create_caller } from './router'
 
-export async function trpcServer<TEvent extends RequestEvent>(event: TEvent) {
-  return createCaller(await createContext(event))
+export async function trpc_server<TEvent extends RequestEvent>(event: TEvent) {
+  return create_caller(await create_trpc_context(event))
 }

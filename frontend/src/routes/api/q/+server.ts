@@ -2,22 +2,9 @@ import { AWS_SQS_QUEUE_URL } from '$env/static/private'
 import { hashApiKey } from '$lib/apiKeys'
 import { sendMessages } from '$lib/aws/sqs'
 import { getSupabaseAdminClient } from '$lib/utils.server'
-import { z } from 'zod'
 import type { RequestHandler } from './$types'
 import { json } from '@sveltejs/kit'
-
-const deplioQMessageSchema = z.object({
-  destination: z.string().url(),
-  body: z.string().optional(),
-  method: z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
-  headers: z.record(z.string()).optional(),
-})
-type DeplioQMessage = z.infer<typeof deplioQMessageSchema>
-
-const deplioQRequestSchema = z.union([
-  deplioQMessageSchema,
-  z.array(deplioQMessageSchema).max(10),
-])
+import { post_q_request_schema, type DeplioQMessage } from '$lib/types/api/q'
 
 type DeplioQSQSMessage = {
   destination: string
@@ -96,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (e) {
     return new Response('Invalid JSON', { status: 400 })
   }
-  const parsedRequest = deplioQRequestSchema.safeParse(body)
+  const parsedRequest = post_q_request_schema.safeParse(body)
   if (!parsedRequest.success) {
     return new Response(parsedRequest.error.message, { status: 400 })
   }
