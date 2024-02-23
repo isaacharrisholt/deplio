@@ -5,7 +5,7 @@
   export let statusCode: number | null | undefined
   function getStatusClass(statusCode?: number | null) {
     if (!statusCode) {
-      return 'hidden'
+      return 'variant-filled-surface'
     }
 
     if (statusCode > 400) {
