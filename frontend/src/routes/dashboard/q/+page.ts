@@ -1,18 +1,11 @@
-import { error } from '@sveltejs/kit'
 import type { PageLoad } from './$types'
+import { trpc } from '$lib/trpc/client'
 
-export const load: PageLoad = async ({ parent }) => {
-  const { supabase } = await parent()
-  const { data: requests, error: requestsFetchError } = await supabase
-    .from('q_request')
-    .select('*, q_response (*)')
-    .order('created_at', { ascending: false })
-    .order('created_at', { ascending: true, foreignTable: 'q_response' })
-    .limit(25)
+export const load: PageLoad = async (event) => {
+  const { team } = await event.parent()
+  const { qRequests } = await trpc(event).get_q_requests.query({
+    team_id: team.id,
+  })
 
-  if (requestsFetchError) {
-    throw error(500, requestsFetchError?.message || 'No requests')
-  }
-
-  return { qRequests: requests }
+  return { qRequests }
 }
