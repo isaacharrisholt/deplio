@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "deplio"
+version = "0.1.0"
+description = ""
+authors = ["Isaac Harris-Holt <isaac@withpluto.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.110.0"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.27"}
+asyncpg = "^0.29.0"
+cadwyn = "^3.6.3"
+httpx = "^0.25"
+supabase = "^2.3.6"
+
+
+[tool.poetry.group.dev.dependencies]
+alembic = "^1.13.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
