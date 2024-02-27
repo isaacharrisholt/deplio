@@ -1,6 +1,7 @@
 from datetime import date
 from pydantic_settings import BaseSettings
 from deplio.models.versions import version_bundle
+from pydantic import Field
 
 earliest_version = sorted(version_bundle.version_dates)[0]
 
@@ -8,6 +9,12 @@ earliest_version = sorted(version_bundle.version_dates)[0]
 class Settings(BaseSettings):
     version_header: str = 'X-Deplio-Api-Version'
     default_version: date = earliest_version
+
+    supabase_url: str = Field(validation_alias='PUBLIC_SUPABASE_URL')
+    supabase_anon_key: str = Field(validation_alias='PUBLIC_SUPABASE_ANON_KEY')
+    supabase_service_role_key: str = Field(
+        validation_alias='PRIVATE_SUPABASE_SERVICE_ROLE_KEY',
+    )
 
 
 settings = Settings()
