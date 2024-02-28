@@ -2,10 +2,7 @@ import json
 from typing import Self, TypeVar, Type, Any
 import httpx
 
-# import redis.asyncio as r
-import upstash_redis.asyncio as r
-
-from deplio.models.data.latest.user_with_teams import UserWithTeams
+from deplio.models.data.latest.db.user_with_teams import UserWithTeams
 from deplio.models.data.latest._base import DeplioModel
 from deplio.config import settings
 

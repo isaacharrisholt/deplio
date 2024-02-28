@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import AnyUrl
-from ._base import TimestampedDeplioModel
+from .._base import TimestampedDeplioModel
 from .enums import TeamType
 
 

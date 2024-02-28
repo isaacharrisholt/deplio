@@ -9,3 +9,11 @@ class TeamType(StrEnum):
 class UserRole(StrEnum):
     ADMIN = 'admin'
     MEMBER = 'member'
+
+
+class HTTPMethod(StrEnum):
+    GET = 'GET'
+    POST = 'POST'
+    PUT = 'PUT'
+    DELETE = 'DELETE'
+    PATCH = 'PATCH'
