@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ locals: { supabase, user }, request
       key_prefix
       `,
     )
-    .eq('team_id', user.currentTeamId)
+    .eq('team_id', user.current_team_id)
 
   if (apiKeyFetchError) {
     console.error('error fetching api keys', apiKeyFetchError)
@@ -74,7 +74,7 @@ export const actions: Actions = {
     const { data: apiKeys, error: apiKeyFetchError } = await supabase
       .from('api_key')
       .select('name')
-      .eq('team_id', user.currentTeamId)
+      .eq('team_id', user.current_team_id)
 
     if (apiKeyFetchError) {
       console.error('error fetching api keys', apiKeyFetchError)
@@ -92,7 +92,7 @@ export const actions: Actions = {
 
     const { error: apiKeyInsertError } = await supabase.from('api_key').insert({
       created_by: user.id,
-      team_id: user.currentTeamId,
+      team_id: user.current_team_id,
       key_hash: hash,
       name: form.data.name,
       expires_at: expiresAt,
@@ -124,7 +124,7 @@ export const actions: Actions = {
         revoked_by: user.id,
         revoked_at: new Date().toISOString(),
       })
-      .match({ id: form.data.id, team_id: user.currentTeamId })
+      .match({ id: form.data.id, team_id: user.current_team_id })
 
     if (apiKeyRevokeError) {
       console.error('error revoking api key', apiKeyRevokeError)
