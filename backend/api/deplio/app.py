@@ -6,7 +6,13 @@ from datetime import date
 from deplio.routers import create_router
 from deplio.routes.q import router as q_router
 
-app = Cadwyn(versions=version_bundle, api_version_header_name=settings.version_header)
+app = Cadwyn(
+    title='Deplio',
+    summary='Simple utils for serverless applications',
+    version=settings.current_version.isoformat(),
+    versions=version_bundle,
+    api_version_header_name=settings.version_header,
+)
 router = create_router()
 
 
