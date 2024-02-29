@@ -1,7 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException
-from fastapi import status
+from fastapi import Depends, HTTPException, status, Query
 from deplio.auth.dependencies import AuthCredentials, auth
 from deplio.models.data.latest.endpoints.q import GetQRequestsResponse
 from deplio.routers import create_router
@@ -14,8 +13,8 @@ router = create_router(prefix='/q')
 async def get_q_requests(
     auth: Annotated[AuthCredentials, Depends(auth)],
     supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
-    page: int = 1,
-    page_size: int = 25,
+    page: Annotated[int, Query(ge=1)] = 1,
+    page_size: Annotated[int, Query(ge=1, le=100)] = 25,
 ) -> GetQRequestsResponse:
     try:
         response = (
