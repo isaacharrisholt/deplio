@@ -14,3 +14,4 @@ vite.config.ts.timestamp-*
 .venv
 supabase/gcloud.json
 .terraform
+__pycache__
