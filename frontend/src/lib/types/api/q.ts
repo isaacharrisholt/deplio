@@ -8,10 +8,14 @@ export const deplio_q_message_schema = z.object({
 })
 export type DeplioQMessage = z.infer<typeof deplio_q_message_schema>
 
-export const post_q_request_schema = z.union([
+export const q_messages_schema = z.union([
   deplio_q_message_schema,
   z.array(deplio_q_message_schema).max(10),
 ])
+export const post_q_request_schema = z.object({
+  requests: q_messages_schema,
+  headers: z.instanceof(Headers),
+})
 
 export const get_q_requests_schema = z.object({
   page_size: z.number().int().optional().default(25),
