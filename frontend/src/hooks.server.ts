@@ -76,16 +76,13 @@ export const handle: Handle = sequence(
 
       const userWithTeams: UserWithTeams = {
         ...extractedUser,
-        currentTeamId: earliestTeam.id,
+        current_team_id: earliestTeam.id,
         teams: teamUser.map((teamWithRole) => {
           if (!teamWithRole.team) {
             throw error(404, 'Team not found')
           }
           return {
-            id: teamWithRole.team.id,
-            name: teamWithRole.team.name,
-            type: teamWithRole.team.type,
-            avatar_url: teamWithRole.team.avatar_url,
+            ...teamWithRole.team,
             role: teamWithRole.role,
           }
         }),
@@ -101,14 +98,14 @@ export const handle: Handle = sequence(
     const newTeamId = event.url.searchParams.get('team')
 
     if (newTeamId) {
-      event.locals.user.currentTeamId = newTeamId
+      event.locals.user.current_team_id = newTeamId
       cache.hset(`user:${session?.user.id}`, event.locals.user, {
         ttlSeconds: 60 * 60, // 1 hour
       })
     }
 
     event.locals.team = event.locals.user.teams.find(
-      (team) => team.id === event.locals.user.currentTeamId,
+      (team) => team.id === event.locals.user.current_team_id,
     ) as TeamWithRole
 
     return resolve(event, {

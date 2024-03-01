@@ -12,6 +12,8 @@ cadwyn = "^3.6.3"
 httpx = "^0.25"
 supabase = "^2.3.6"
 pydantic-settings = "^2.2.1"
+redis = {extras = ["hiredis"], version = "^5.0.1"}
+upstash-redis = "^1.0.0"
 
 
 [tool.poetry.group.dev.dependencies]

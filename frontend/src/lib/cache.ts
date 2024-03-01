@@ -13,7 +13,7 @@ type CacheKey = keyof CacheMapping
 type CacheValue = CacheMapping[keyof CacheMapping]
 
 type Expires<T extends CacheValue> = {
-  expiresAt: number | null
+  expires_at: number | null
   value: T
 }
 
@@ -30,7 +30,7 @@ export const cache = {
       return null
     }
 
-    if (value.expiresAt && value.expiresAt < Date.now()) {
+    if (value.expires_at && value.expires_at < Date.now()) {
       await kv.del(key)
       return null
     }
