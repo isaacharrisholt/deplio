@@ -31,16 +31,27 @@
   export let code: string
   export let lineNumbers = false
 
-  hljs.registerLanguage('shell', shell)
-  hljs.registerLanguage('typescript', typescript)
-  hljs.registerLanguage('xml', xml)
-  hljs.registerLanguage('json', json)
+  if (!$storeHighlightJs) {
+    hljs.registerLanguage('shell', shell)
+    hljs.registerLanguage('typescript', typescript)
+    hljs.registerLanguage('xml', xml)
+    hljs.registerLanguage('json', json)
 
-  storeHighlightJs.set(hljs)
+    storeHighlightJs.set(hljs)
+  }
+
+  let displayCode = code
+  $: if (language === 'JSON') {
+    try {
+      displayCode = JSON.stringify(JSON.parse(code), null, 2)
+    } catch (e) {
+      // Ignore
+    }
+  }
 </script>
 
 <CodeBlock
-  {code}
+  code={displayCode}
   language={languageMappings[language]}
   {lineNumbers}
   background="bg-surface-600 max-h-96 overflow-y-auto"
