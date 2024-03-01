@@ -63,13 +63,13 @@ files = [
 
 [[package]]
 name = "cadwyn"
-version = "3.6.3"
+version = "3.6.6"
 description = "Production-ready community-driven modern Stripe-like API versioning in FastAPI"
 optional = false
 python-versions = ">=3.10,<4.0"
 files = [
-    {file = "cadwyn-3.6.3-py3-none-any.whl", hash = "sha256:af5f488980f26ceb614d0599d4e4f6dbdcab7f205142469001f5a21b8f0f72c5"},
-    {file = "cadwyn-3.6.3.tar.gz", hash = "sha256:aa8a2d67daa0ef7c875ab20a27ed21d7822d887c046cecb80da6abffc3293d3b"},
+    {file = "cadwyn-3.6.6-py3-none-any.whl", hash = "sha256:f904ee922052b88f6eec78e7f65537b35d898959dd37639c42de6fbad805b476"},
+    {file = "cadwyn-3.6.6.tar.gz", hash = "sha256:cc055f0c4d988d7e6cced13525ef84b80521576adfc6375ed74dab7fe331b113"},
 ]
 
 [package.dependencies]
