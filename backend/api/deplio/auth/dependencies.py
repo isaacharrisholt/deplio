@@ -1,11 +1,10 @@
 from typing import Annotated, NamedTuple, Optional
 from fastapi import Depends, Request, HTTPException
-from supabase._async.client import create_client, AsyncClient as SupabaseClient
 from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
-from deplio.config import settings
-from deplio.models.data.latest.team import Team
-from deplio.models.data.latest.user import User
+from deplio.models.data.latest.db.team import Team
+from deplio.models.data.latest.db.user import User
 from deplio.services.redis import Redis, RedisUserRequest, redis
+from deplio.services.supabase import SupabaseClient, supabase_admin
 from datetime import datetime
 import hashlib
 
@@ -26,17 +25,19 @@ def hash_api_key(api_key: str) -> str:
 
 
 async def _get_user_and_team_from_jwt(
-    supabase: SupabaseClient, redis: Redis, jwt: str
+    supabase_admin: SupabaseClient,
+    redis: Redis,
+    jwt: str,
 ) -> tuple[User, Team] | None:
     try:
-        user = await supabase.auth.get_user(jwt=jwt)
+        user = await supabase_admin.auth.get_user(jwt=jwt)
     except Exception:
         return None
     if user is None:
         return None
 
     db_user = (
-        await supabase.table('user')
+        await supabase_admin.table('user')
         .select('*')
         .eq('user_id', user.user.id)
         .single()
@@ -64,19 +65,23 @@ async def _get_user_and_team_from_jwt(
     return fetched_user, team
 
 
-async def _get_team_from_api_key(supabase: SupabaseClient, api_key: str) -> Team | None:
+async def _get_team_from_api_key(
+    supabase_admin: SupabaseClient,
+    api_key: str,
+) -> Team | None:
     key_hash = hash_api_key(api_key)
     key_prefix = api_key[:6]
     now = datetime.now().isoformat()
 
     api_key_result = await (
-        supabase.table('api_key')
+        supabase_admin.table('api_key')
         .select('*, team (*)')
         .eq('key_hash', key_hash)
         .eq('key_prefix', key_prefix)
         .or_(f'expires_at.lte.{now}, expires_at.is.null')
         .is_('revoked_at', 'null')
         .is_('deleted_at', 'null')
+        .limit(1)
         .maybe_single()
         .execute()
     )
@@ -90,35 +95,33 @@ async def _get_team_from_api_key(supabase: SupabaseClient, api_key: str) -> Team
 
 
 AuthCredentials = NamedTuple(
-    'AuthCredentials', [('user', Optional[User]), ('team', Team)]
+    'AuthCredentials',
+    [('user', Optional[User]), ('team', Team)],
 )
 RequiredAuthCredentials = NamedTuple(
-    'RequiredAuthCredentials', [('user', User), ('team', Team)]
+    'RequiredAuthCredentials',
+    [('user', User), ('team', Team)],
 )
 
 
 async def auth(
     request: Request,
+    supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
     auth_header: Annotated[
         HTTPAuthorizationCredentials,
         Depends(auth_header_scheme),
     ],
     redis: Annotated[Redis, Depends(redis)],
 ) -> AuthCredentials:
-    supabase = await create_client(
-        settings.supabase_url,
-        settings.supabase_service_role_key,
-    )
-
     user_and_team = await _get_user_and_team_from_jwt(
-        supabase,
+        supabase_admin,
         redis,
         auth_header.credentials,
     )
     if user_and_team is not None:
         return AuthCredentials(*user_and_team)
 
-    team = await _get_team_from_api_key(supabase, auth_header.credentials)
+    team = await _get_team_from_api_key(supabase_admin, auth_header.credentials)
     if team is not None:
         request.state.team = team
         return AuthCredentials(None, team)

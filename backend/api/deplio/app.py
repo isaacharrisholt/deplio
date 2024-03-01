@@ -1,14 +1,13 @@
-from fastapi import Depends, Request
-from deplio.auth.dependencies import auth
-from cadwyn import Cadwyn, VersionedAPIRouter
+from fastapi import Request
+from cadwyn import Cadwyn
 from deplio.models.versions import version_bundle
 from deplio.config import settings
 from datetime import date
-from deplio.routers import create_router, create_authenticated_router
+from deplio.routers import create_router
+from deplio.routes.q import router as q_router
 
 app = Cadwyn(versions=version_bundle, api_version_header_name=settings.version_header)
 router = create_router()
-auth_router = create_authenticated_router()
 
 
 @router.get('/')
@@ -16,9 +15,8 @@ async def home():
     return {'message': 'Hello, World!'}
 
 
-@auth_router.get('/version')
-async def version(request: Request):
-    print(request.state._state)
+@router.get('/version')
+async def version():
     return '1.0.0'
 
 
@@ -39,4 +37,4 @@ async def set_default_version(request: Request, call_next):
     return await call_next(request)
 
 
-app.generate_and_include_versioned_routers(router, auth_router)
+app.generate_and_include_versioned_routers(router, q_router)
