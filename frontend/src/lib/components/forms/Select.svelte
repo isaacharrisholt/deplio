@@ -43,6 +43,7 @@
     aria-errormessage={errors?.length ? `${id}-error` : null}
     aria-required={required}
     class:input-error={!!errors?.length}
+    on:change
   >
     <slot />
   </select>

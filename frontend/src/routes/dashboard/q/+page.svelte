@@ -2,8 +2,40 @@
   import type { PageData } from './$types'
   import TabbedCodeBlock from '$lib/components/TabbedCodeBlock.svelte'
   import QRequestPanel from '$lib/components/q/QRequestPanel.svelte'
+  import Select from '$lib/components/forms/Select.svelte'
+  import { invalidateAll } from '$app/navigation'
+  import { localStorageStore } from '@skeletonlabs/skeleton'
+  import { onMount } from 'svelte'
+  import LoadingSpinner from '$lib/components/LoadingSpinner.svelte'
 
   export let data: PageData
+
+  const refreshFrequency = localStorageStore('q-refresh-frequency', 'never', {
+    storage: 'local',
+  })
+  let refreshInterval: NodeJS.Timeout
+  let refreshing = false
+
+  async function refresh(): Promise<void> {
+    refreshing = true
+    await invalidateAll()
+    refreshing = false
+  }
+
+  async function setRefreshFrequency() {
+    refreshInterval && clearInterval(refreshInterval)
+
+    if ($refreshFrequency === 'never') return
+
+    await refresh()
+    refreshInterval = setInterval(async () => {
+      await refresh()
+    }, parseInt($refreshFrequency) * 1000)
+  }
+
+  onMount(async () => {
+    await setRefreshFrequency()
+  })
 </script>
 
 <div class="flex flex-col gap-12">
@@ -43,6 +75,26 @@ const response = await fetch('https://api.deplio.com/api/q', {
 
   <div class="card variant-soft-surface flex flex-col gap-4 p-8">
     <h2>Requests</h2>
+
+    <div class="flex flex-row items-center justify-end gap-2">
+      {#if refreshing}
+        <LoadingSpinner width="w-8" />
+      {/if}
+      <Select
+        id="refreshFrequency"
+        name="refreshFrequency"
+        placeholder="Refresh"
+        containerClass="min-w-[12rem] w-fit"
+        bind:value={$refreshFrequency}
+        on:change={setRefreshFrequency}
+      >
+        <option value="never">Never</option>
+        <option value="5">Every 5s</option>
+        <option value="15">Every 15s</option>
+        <option value="30">Every 30s</option>
+        <option value="60">Every 60s</option>
+      </Select>
+    </div>
 
     <div class="flex flex-col gap-2">
       {#each data.qRequests as qRequest}
