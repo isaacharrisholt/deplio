@@ -3,6 +3,7 @@ import type { Session, SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '$lib/types/database'
 import type { UserWithTeams, TeamWithRole } from '$lib/types/supabase'
 import type { FormMessage } from '$lib/forms/client'
+import type { trpcServer } from '$lib/trpc/server'
 
 declare global {
   namespace App {
@@ -11,6 +12,7 @@ declare global {
       getSession: () => Promise<Session | null>
       user: UserWithTeams
       team: TeamWithRole
+      trpc: Awaited<ReturnType<typeof trpcServer>>
     }
     interface PageData {
       session: Session | null
