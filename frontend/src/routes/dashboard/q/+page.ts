@@ -10,7 +10,7 @@ export const load: PageLoad = async (event) => {
     page = undefined
   }
 
-  const { qRequests } = await trpc(event).get_q_requests.query({
+  const { qRequests } = await trpc(event).q.requests.get.query({
     team_id: team.id,
     page,
   })

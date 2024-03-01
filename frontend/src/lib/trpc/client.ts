@@ -2,15 +2,15 @@ import type { Router } from '$lib/trpc/router'
 import { createTRPCClient, type TRPCClientInit } from 'trpc-sveltekit'
 import { browser } from '$app/environment'
 
-let browserClient: ReturnType<typeof createTRPCClient<Router>>
+let browser_client: ReturnType<typeof createTRPCClient<Router>>
 
 export function trpc(init?: TRPCClientInit) {
-  if (browser && browserClient) {
-    return browserClient
+  if (browser && browser_client) {
+    return browser_client
   }
   const client = createTRPCClient<Router>({ init })
   if (browser) {
-    browserClient = client
+    browser_client = client
   }
   return client
 }
