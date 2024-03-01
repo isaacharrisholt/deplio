@@ -1,0 +1,8 @@
+{
+  "name": "api",
+  "scripts": {
+    "dev": "poetry run uvicorn deplio.app:app",
+    "format": "poetry run ruff format",
+    "lint": "poetry run ruff check"
+  }
+}
