@@ -6,6 +6,7 @@
     "format": "turbo format"
   },
   "devDependencies": {
+    "dotenv-cli": "^7.3.0",
     "supabase": "^1.106.1",
     "turbo": "^1.12.4"
   }

@@ -3,7 +3,7 @@ from enum import StrEnum
 
 class Tags(StrEnum):
     MISC = 'Misc'
-    Q = 'Deplio Q'
+    Q = 'Q'
 
 
 tags_metadata = [

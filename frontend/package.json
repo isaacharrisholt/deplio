@@ -17,6 +17,7 @@
     "@aws-sdk/client-codebuild": "^3.388.0",
     "@aws-sdk/client-s3": "^3.388.0",
     "@aws-sdk/client-sqs": "^3.438.0",
+    "@deplio/sdk": "workspace:*",
     "@floating-ui/dom": "^1.4.3",
     "@fontsource-variable/space-grotesk": "^5.0.5",
     "@fontsource/ubuntu": "^5.0.5",

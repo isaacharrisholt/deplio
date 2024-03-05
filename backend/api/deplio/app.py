@@ -1,3 +1,4 @@
+from fastapi.routing import APIRoute
 from deplio.models.versions import version_bundle
 from deplio.config import settings
 from deplio.routers import create_router
@@ -6,6 +7,13 @@ from deplio.tags import tags_metadata, Tags
 from fastapi.middleware import Middleware
 from cadwyn import Cadwyn
 from deplio.middleware.default_version import DefaultVersioningMiddleware
+
+
+def generate_openapi_id(route: APIRoute) -> str:
+    print(route)
+    if not route.tags:
+        return route.name
+    return f'{str(route.tags[0]).lower().replace(' ', '_')}:{route.name}'
 
 
 app = Cadwyn(
@@ -23,6 +31,8 @@ app = Cadwyn(
         ),
     ],
     openapi_tags=tags_metadata,
+    servers=[{'url': 'https://api.depl.io'}],
+    generate_unique_id_function=generate_openapi_id,
 )
 router = create_router()
 

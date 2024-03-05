@@ -1,7 +1,7 @@
 {
   "name": "api",
   "scripts": {
-    "dev": "poetry run uvicorn deplio.app:app --reload",
+    "dev": "pnpm dotenv -e ../../.env -- poetry run uvicorn deplio.app:app --reload",
     "format": "poetry run ruff check --fix .; poetry run ruff format",
     "lint": "poetry run ruff check ."
   }

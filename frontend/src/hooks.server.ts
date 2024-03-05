@@ -9,6 +9,7 @@ import { createTRPCHandle } from 'trpc-sveltekit'
 import { create_trpc_context } from '$lib/trpc/context'
 import { router } from '$lib/trpc/router'
 import { trpc_server } from '$lib/trpc/server'
+import { Configuration, Deplio } from '@deplio/sdk'
 
 // Note: tRPC handle is at the bottom of the file
 export const handle: Handle = sequence(
@@ -31,6 +32,11 @@ export const handle: Handle = sequence(
       return session
     }
     const session = await event.locals.getSession()
+    event.locals.api = new Deplio(
+      new Configuration({
+        accessToken: session?.access_token,
+      }),
+    )
 
     if (event.url.pathname.startsWith('/dashboard') && !session) {
       if (!session) {
