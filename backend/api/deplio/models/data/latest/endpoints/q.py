@@ -1,11 +1,12 @@
 from typing import Annotated, Optional
 from uuid import UUID
 from pydantic import AnyHttpUrl, BaseModel, Field
-from deplio.models.data.latest.db.enums import HTTPMethod
-from deplio.models.data.latest.db.q import QRequest, QResponse
+from ..db.enums import HTTPMethod
+from ..db.q import QRequest, QResponse
+from ..responses import DeplioResponse
 
 
-class GetQMessagesResponse(BaseModel):
+class GetQMessagesResponse(DeplioResponse):
     class QRequestWithResponses(QRequest):
         responses: list[QResponse]
 
@@ -26,6 +27,6 @@ class QMessage(BaseModel):
 PostQMessagesRequest = QMessage | Annotated[list[QMessage], Field(..., max_length=10)]
 
 
-class PostQMessagesResponse(BaseModel):
+class PostQMessagesResponse(DeplioResponse):
     request_ids: list[UUID]
     messages_delivered: int

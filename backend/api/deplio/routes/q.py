@@ -8,6 +8,7 @@ from deplio.auth.dependencies import (
     api_key_auth,
 )
 from deplio.config import settings
+from deplio.context import Context, context
 from deplio.models.data.latest.db.q import QRequest
 from deplio.models.data.latest.endpoints.q import (
     GetQMessagesResponse,
@@ -28,6 +29,7 @@ router = create_router(prefix='/q')
 async def get_q_requests(
     auth: Annotated[AuthCredentials, Depends(any_auth)],
     supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
+    context: Annotated[Context, Depends(context)],
     page: Annotated[int, Query(ge=1)] = 1,
     page_size: Annotated[int, Query(ge=1, le=100)] = 25,
 ) -> GetQMessagesResponse:
@@ -60,6 +62,7 @@ async def get_q_requests(
         total=response.count,
         page=page,
         page_size=page_size,
+        warnings=context.warnings,
     )
 
 
@@ -67,6 +70,7 @@ async def get_q_requests(
 async def post_q_requests(
     auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],
     supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
+    context: Annotated[Context, Depends(context)],
     request: Request,
     message_request: PostQMessagesRequest,
 ) -> PostQMessagesResponse:
@@ -149,4 +153,5 @@ async def post_q_requests(
     return PostQMessagesResponse(
         request_ids=[q_request.id for q_request in q_requests],
         messages_delivered=len(sqs_messages),
+        warnings=context.warnings,
     )
