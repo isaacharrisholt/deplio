@@ -1,9 +1,10 @@
 from pydantic import BaseModel
-from deplio.models.data.latest.responses import Warning
+from deplio.models.data.latest.responses import DeplioWarning, DeplioError
 
 
 class Context(BaseModel):
-    warnings: list[Warning] = []
+    warnings: list[DeplioWarning] = []
+    errors: list[DeplioError] = []
 
 
 def context():
