@@ -8,7 +8,7 @@ latest_version = sorted(version_bundle.version_dates)[-1]
 
 
 class Settings(BaseSettings):
-    version_header: str = 'X-Deplio-Api-Version'
+    version_header: str = 'Deplio-Version'
     default_version: date = earliest_version
     current_version: date = latest_version
 
