@@ -9,9 +9,9 @@ from deplio.models.data.latest.db.q import QRequest, QResponse
 
 class GetQMessagesResponse(BaseModel):
     class QRequestWithResponses(QRequest):
-        q_response: list[QResponse]
+        responses: list[QResponse]
 
-    q_requests: list[QRequestWithResponses]
+    requests: list[QRequestWithResponses]
     count: int
     total: int
     page: int

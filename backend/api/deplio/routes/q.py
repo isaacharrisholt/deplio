@@ -34,7 +34,7 @@ async def get_q_requests(
     try:
         response = (
             await supabase_admin.table('q_request')
-            .select('*, q_response(*)', count='exact')  # type: ignore
+            .select('*, responses:q_response (*)', count='exact')  # type: ignore
             .eq('team_id', auth.team.id)
             .order('created_at', desc=True)
             .order('created_at', foreign_table='q_response', desc=True)
@@ -55,7 +55,7 @@ async def get_q_requests(
 
     print('response:', response.data)
     return GetQMessagesResponse(
-        q_requests=response.data,
+        requests=response.data,
         count=len(response.data),
         total=response.count,
         page=page,
