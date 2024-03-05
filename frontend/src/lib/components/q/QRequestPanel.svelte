@@ -5,6 +5,8 @@
   import CodeBlock from '../CodeBlock.svelte'
   // import { ArrowRight, Eye } from 'lucide-svelte'
 
+  const MAX_RESPONSE_BODY_LENGTH = 1000
+
   export let qRequest: QRequest
   // Even though we're only using the latest response, require all
   // as we'll use them in the future once each request can have multiple responses
@@ -12,6 +14,23 @@
   export let qResponses: QResponse[]
 
   $: latestResponse = qResponses[qResponses.length - 1]
+  $: language = latestResponse?.body?.startsWith('<')
+    ? ('HTML' as const)
+    : ('JSON' as const)
+  $: formattedBody =
+    language === 'JSON' && latestResponse?.body
+      ? JSON.stringify(JSON.parse(latestResponse.body), null, 2)
+      : latestResponse?.body
+  let displayBody: string
+  let truncated = false
+
+  $: if ((formattedBody?.length ?? 0) > MAX_RESPONSE_BODY_LENGTH) {
+    displayBody = formattedBody?.slice(0, MAX_RESPONSE_BODY_LENGTH) + '...'
+    truncated = true
+  } else {
+    displayBody = formattedBody ?? ''
+    truncated = false
+  }
 </script>
 
 <div class="card">
@@ -36,11 +55,22 @@
           <p>Loading...</p>
         {:else}
           <p>Latest response:</p>
+          {#if truncated}
+            <p class="text-sm text-gray-500">
+              The response body is too long ({latestResponse?.body?.length ?? 0} characters)
+              to display in full.&nbsp;
+              <a
+                href="/dashboard/q/requests/{qRequest.id}"
+                class="underline"
+                on:click={(e) => e.stopPropagation()}
+                on:keypress={(e) => e.stopPropagation()}
+              >
+                View full response.
+              </a>
+            </p>
+          {/if}
           <!-- TODO: Add support for other content types -->
-          <CodeBlock
-            code={latestResponse.body}
-            language={latestResponse.body.startsWith('<') ? 'HTML' : 'JSON'}
-          />
+          <CodeBlock code={displayBody} {language} />
         {/if}
       </div>
     </AccordionItem>
