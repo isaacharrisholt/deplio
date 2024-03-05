@@ -95,6 +95,18 @@ export interface Database {
           },
         ]
       }
+      api_version: {
+        Row: {
+          version: string
+        }
+        Insert: {
+          version: string
+        }
+        Update: {
+          version?: string
+        }
+        Relationships: []
+      }
       q_request: {
         Row: {
           api_key_id: string
@@ -189,6 +201,7 @@ export interface Database {
       }
       team: {
         Row: {
+          api_version: string
           avatar_url: string | null
           created_at: string
           deleted_at: string | null
@@ -197,6 +210,7 @@ export interface Database {
           type: Database['public']['Enums']['team_type']
         }
         Insert: {
+          api_version?: string
           avatar_url?: string | null
           created_at?: string
           deleted_at?: string | null
@@ -205,6 +219,7 @@ export interface Database {
           type: Database['public']['Enums']['team_type']
         }
         Update: {
+          api_version?: string
           avatar_url?: string | null
           created_at?: string
           deleted_at?: string | null
@@ -212,7 +227,14 @@ export interface Database {
           name?: string
           type?: Database['public']['Enums']['team_type']
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'team_api_version_fkey'
+            columns: ['api_version']
+            referencedRelation: 'api_version'
+            referencedColumns: ['version']
+          },
+        ]
       }
       team_user: {
         Row: {
@@ -264,7 +286,7 @@ export interface Database {
           id: string
           last_name: string | null
           user_id: string | null
-          username: string
+          username: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -275,7 +297,7 @@ export interface Database {
           id?: string
           last_name?: string | null
           user_id?: string | null
-          username: string
+          username?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -286,7 +308,7 @@ export interface Database {
           id?: string
           last_name?: string | null
           user_id?: string | null
-          username?: string
+          username?: string | null
         }
         Relationships: []
       }
@@ -299,6 +321,10 @@ export interface Database {
         Args: {
           val: string
         }
+        Returns: string
+      }
+      get_latest_api_version: {
+        Args: Record<PropertyKey, never>
         Returns: string
       }
       is_deleted: {
