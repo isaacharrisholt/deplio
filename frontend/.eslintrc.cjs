@@ -26,5 +26,11 @@ module.exports = {
         parser: '@typescript-eslint/parser',
       },
     },
+    {
+      files: ['*.ts'],
+      rules: {
+        'no-undef': 'off',
+      },
+    },
   ],
 }
