@@ -5,7 +5,6 @@ from deplio.routes.q import router as q_router
 from fastapi.middleware import Middleware
 from cadwyn import Cadwyn
 from deplio.middleware.default_version import DefaultVersioningMiddleware
-from deplio.middleware.default_content_type import DefaultContentTypeMiddleware
 
 
 app = Cadwyn(
@@ -21,7 +20,6 @@ app = Cadwyn(
             DefaultVersioningMiddleware,
             api_version_var=version_bundle.api_version_var,
         ),
-        Middleware(DefaultContentTypeMiddleware),
     ],
 )
 router = create_router()
