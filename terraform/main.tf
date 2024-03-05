@@ -143,9 +143,9 @@ resource "aws_lambda_function" "q_receiver_function" {
 
   environment {
     variables = {
-      "PUBLIC_DEPLOYMENT_ENV" = terraform.workspace
-      "PUBLIC_SUPABASE_URL" = data.aws_secretsmanager_secret_version.supabase_url.secret_string
-      "PUBLIC_SUPABASE_ANON_KEY" = data.aws_secretsmanager_secret_version.supabase_anon_key.secret_string
+      "PUBLIC_DEPLOYMENT_ENV"             = terraform.workspace
+      "PUBLIC_SUPABASE_URL"               = data.aws_secretsmanager_secret_version.supabase_url.secret_string
+      "PUBLIC_SUPABASE_ANON_KEY"          = data.aws_secretsmanager_secret_version.supabase_anon_key.secret_string
       "PRIVATE_SUPABASE_SERVICE_ROLE_KEY" = data.aws_secretsmanager_secret_version.supabase_service_role_key.secret_string
     }
   }
