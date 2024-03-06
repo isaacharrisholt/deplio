@@ -46,9 +46,53 @@ export interface QApiSendRequest {
 }
 
 /**
+ * QApi - interface
+ * 
+ * @export
+ * @interface QApiInterface
+ */
+export interface QApiInterface {
+    /**
+     * Get a list of messages that have been sent to Deplio Q and their responses (if any).
+     * @summary List Deplio Q messages
+     * @param {number} [page] 
+     * @param {number} [page_size] 
+     * @param {Date} [deplio_version] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof QApiInterface
+     */
+    listRaw(requestParameters: QApiListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetQMessagesResponse>>;
+
+    /**
+     * Get a list of messages that have been sent to Deplio Q and their responses (if any).
+     * List Deplio Q messages
+     */
+    list(requestParameters: QApiListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetQMessagesResponse>;
+
+    /**
+     * Send messages to Deplio Q to be processed asynchronously.
+     * @summary Send messages to Deplio Q
+     * @param {Messages} messages 
+     * @param {Date} [deplio_version] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof QApiInterface
+     */
+    sendRaw(requestParameters: QApiSendRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PostQMessagesResponse>>;
+
+    /**
+     * Send messages to Deplio Q to be processed asynchronously.
+     * Send messages to Deplio Q
+     */
+    send(requestParameters: QApiSendRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PostQMessagesResponse>;
+
+}
+
+/**
  * 
  */
-export class QApi extends runtime.BaseAPI {
+export class QApi extends runtime.BaseAPI implements QApiInterface {
 
     /**
      * Get a list of messages that have been sent to Deplio Q and their responses (if any).

@@ -13,37 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { Body } from './Body';
-import {
-    BodyFromJSON,
-    BodyFromJSONTyped,
-    BodyToJSON,
-} from './Body';
-import type { DeletedAt } from './DeletedAt';
-import {
-    DeletedAtFromJSON,
-    DeletedAtFromJSONTyped,
-    DeletedAtToJSON,
-} from './DeletedAt';
-import type { Headers } from './Headers';
-import {
-    HeadersFromJSON,
-    HeadersFromJSONTyped,
-    HeadersToJSON,
-} from './Headers';
-import type { ResponseTimeNs } from './ResponseTimeNs';
-import {
-    ResponseTimeNsFromJSON,
-    ResponseTimeNsFromJSONTyped,
-    ResponseTimeNsToJSON,
-} from './ResponseTimeNs';
-import type { StatusCode } from './StatusCode';
-import {
-    StatusCodeFromJSON,
-    StatusCodeFromJSONTyped,
-    StatusCodeToJSON,
-} from './StatusCode';
-
 /**
  * 
  * @export
@@ -64,10 +33,10 @@ export interface QResponse {
     created_at: Date;
     /**
      * 
-     * @type {DeletedAt}
+     * @type {Date}
      * @memberof QResponse
      */
-    deleted_at: DeletedAt;
+    deleted_at: Date;
     /**
      * 
      * @type {string}
@@ -76,28 +45,28 @@ export interface QResponse {
     request_id: string;
     /**
      * 
-     * @type {StatusCode}
+     * @type {number}
      * @memberof QResponse
      */
-    status_code: StatusCode;
+    status_code: number;
     /**
      * 
-     * @type {Body}
+     * @type {string}
      * @memberof QResponse
      */
-    body: Body;
+    body: string;
     /**
      * 
-     * @type {Headers}
+     * @type {{ [key: string]: string; }}
      * @memberof QResponse
      */
-    headers: Headers;
+    headers: { [key: string]: string; };
     /**
      * 
-     * @type {ResponseTimeNs}
+     * @type {number}
      * @memberof QResponse
      */
-    response_time_ns: ResponseTimeNs;
+    response_time_ns: number;
 }
 
 /**
@@ -129,12 +98,12 @@ export function QResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         
         'id': json['id'],
         'created_at': (new Date(json['created_at'])),
-        'deleted_at': DeletedAtFromJSON(json['deleted_at']),
+        'deleted_at': (new Date(json['deleted_at'])),
         'request_id': json['request_id'],
-        'status_code': StatusCodeFromJSON(json['status_code']),
-        'body': BodyFromJSON(json['body']),
-        'headers': HeadersFromJSON(json['headers']),
-        'response_time_ns': ResponseTimeNsFromJSON(json['response_time_ns']),
+        'status_code': json['status_code'],
+        'body': json['body'],
+        'headers': json['headers'],
+        'response_time_ns': json['response_time_ns'],
     };
 }
 
@@ -149,12 +118,12 @@ export function QResponseToJSON(value?: QResponse | null): any {
         
         'id': value.id,
         'created_at': (value.created_at.toISOString()),
-        'deleted_at': DeletedAtToJSON(value.deleted_at),
+        'deleted_at': (value.deleted_at.toISOString()),
         'request_id': value.request_id,
-        'status_code': StatusCodeToJSON(value.status_code),
-        'body': BodyToJSON(value.body),
-        'headers': HeadersToJSON(value.headers),
-        'response_time_ns': ResponseTimeNsToJSON(value.response_time_ns),
+        'status_code': value.status_code,
+        'body': value.body,
+        'headers': value.headers,
+        'response_time_ns': value.response_time_ns,
     };
 }
 

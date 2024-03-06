@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { Data } from './Data';
-import {
-    DataFromJSON,
-    DataFromJSONTyped,
-    DataToJSON,
-} from './Data';
-
 /**
  * 
  * @export
@@ -34,10 +27,10 @@ export interface DeplioError {
     message: string;
     /**
      * 
-     * @type {Data}
+     * @type {object}
      * @memberof DeplioError
      */
-    data?: Data;
+    data?: object;
     /**
      * 
      * @type {string}
@@ -67,7 +60,7 @@ export function DeplioErrorFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         
         'message': json['message'],
-        'data': !exists(json, 'data') ? undefined : DataFromJSON(json['data']),
+        'data': !exists(json, 'data') ? undefined : json['data'],
         'timestamp': !exists(json, 'timestamp') ? undefined : json['timestamp'],
     };
 }
@@ -82,7 +75,7 @@ export function DeplioErrorToJSON(value?: DeplioError | null): any {
     return {
         
         'message': value.message,
-        'data': DataToJSON(value.data),
+        'data': value.data,
         'timestamp': value.timestamp,
     };
 }

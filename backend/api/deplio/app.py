@@ -28,6 +28,7 @@ app = Cadwyn(
         Middleware(
             DefaultVersioningMiddleware,
             api_version_var=version_bundle.api_version_var,
+            latest_version=settings.current_version,
         ),
     ],
     openapi_tags=tags_metadata,

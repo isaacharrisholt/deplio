@@ -15,6 +15,7 @@
           "enumPropertyNaming": "original",
           "paramNaming": "original",
           "stringEnums": true,
+          "withInterfaces": false,
           "prefixParameterInterfaces": true
         }
       }

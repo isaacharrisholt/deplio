@@ -13,19 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { Current } from './Current';
-import {
-    CurrentFromJSON,
-    CurrentFromJSONTyped,
-    CurrentToJSON,
-} from './Current';
-import type { Team } from './Team';
-import {
-    TeamFromJSON,
-    TeamFromJSONTyped,
-    TeamToJSON,
-} from './Team';
-
 /**
  * 
  * @export
@@ -40,16 +27,16 @@ export interface Versions {
     latest: Date;
     /**
      * 
-     * @type {Current}
+     * @type {Date}
      * @memberof Versions
      */
-    current: Current;
+    current: Date;
     /**
      * 
-     * @type {Team}
+     * @type {Date}
      * @memberof Versions
      */
-    team: Team;
+    team: Date;
 }
 
 /**
@@ -75,8 +62,8 @@ export function VersionsFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     return {
         
         'latest': (new Date(json['latest'])),
-        'current': CurrentFromJSON(json['current']),
-        'team': TeamFromJSON(json['team']),
+        'current': (new Date(json['current'])),
+        'team': (new Date(json['team'])),
     };
 }
 
@@ -90,8 +77,8 @@ export function VersionsToJSON(value?: Versions | null): any {
     return {
         
         'latest': (value.latest.toISOString().substring(0,10)),
-        'current': CurrentToJSON(value.current),
-        'team': TeamToJSON(value.team),
+        'current': (value.current.toISOString().substring(0,10)),
+        'team': (value.team.toISOString().substring(0,10)),
     };
 }
 

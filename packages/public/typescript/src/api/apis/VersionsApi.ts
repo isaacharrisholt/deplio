@@ -33,9 +33,34 @@ export interface VersionsApiGetRequest {
 }
 
 /**
+ * VersionsApi - interface
+ * 
+ * @export
+ * @interface VersionsApiInterface
+ */
+export interface VersionsApiInterface {
+    /**
+     * Retrieve the latest version of the API, along with your current version and (if using a team API key) your team\'s API version.
+     * @summary Get API versions
+     * @param {Date} [deplio_version] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof VersionsApiInterface
+     */
+    getRaw(requestParameters: VersionsApiGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Versions>>;
+
+    /**
+     * Retrieve the latest version of the API, along with your current version and (if using a team API key) your team\'s API version.
+     * Get API versions
+     */
+    get(requestParameters: VersionsApiGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Versions>;
+
+}
+
+/**
  * 
  */
-export class VersionsApi extends runtime.BaseAPI {
+export class VersionsApi extends runtime.BaseAPI implements VersionsApiInterface {
 
     /**
      * Retrieve the latest version of the API, along with your current version and (if using a team API key) your team\'s API version.

@@ -13,18 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { Body } from './Body';
-import {
-    BodyFromJSON,
-    BodyFromJSONTyped,
-    BodyToJSON,
-} from './Body';
-import type { Headers } from './Headers';
-import {
-    HeadersFromJSON,
-    HeadersFromJSONTyped,
-    HeadersToJSON,
-} from './Headers';
 import type { ModelHTTPMethod } from './ModelHTTPMethod';
 import {
     ModelHTTPMethodFromJSON,
@@ -46,10 +34,10 @@ export interface Messages {
     destination: string;
     /**
      * 
-     * @type {Body}
+     * @type {string}
      * @memberof Messages
      */
-    body?: Body;
+    body?: string;
     /**
      * 
      * @type {ModelHTTPMethod}
@@ -58,10 +46,10 @@ export interface Messages {
     method: ModelHTTPMethod;
     /**
      * 
-     * @type {Headers}
+     * @type {{ [key: string]: string; }}
      * @memberof Messages
      */
-    headers?: Headers;
+    headers?: { [key: string]: string; };
 }
 
 /**
@@ -86,9 +74,9 @@ export function MessagesFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     return {
         
         'destination': json['destination'],
-        'body': !exists(json, 'body') ? undefined : BodyFromJSON(json['body']),
+        'body': !exists(json, 'body') ? undefined : json['body'],
         'method': ModelHTTPMethodFromJSON(json['method']),
-        'headers': !exists(json, 'headers') ? undefined : HeadersFromJSON(json['headers']),
+        'headers': !exists(json, 'headers') ? undefined : json['headers'],
     };
 }
 
@@ -102,9 +90,9 @@ export function MessagesToJSON(value?: Messages | null): any {
     return {
         
         'destination': value.destination,
-        'body': BodyToJSON(value.body),
+        'body': value.body,
         'method': ModelHTTPMethodToJSON(value.method),
-        'headers': HeadersToJSON(value.headers),
+        'headers': value.headers,
     };
 }
 
