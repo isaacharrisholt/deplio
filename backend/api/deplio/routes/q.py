@@ -7,6 +7,7 @@ from deplio.auth.dependencies import (
     any_auth,
     api_key_auth,
 )
+from deplio.config import settings
 from deplio.models.data.latest.db.q import QRequest
 from deplio.models.data.latest.endpoints.q import (
     GetQMessagesResponse,
@@ -15,6 +16,7 @@ from deplio.models.data.latest.endpoints.q import (
     QMessage,
 )
 from deplio.routers import create_router
+from deplio.services.sqs import SQS, SQSMessage
 from deplio.services.supabase import SupabaseClient, supabase_admin
 from deplio.types.q import QSQSMessage
 from deplio.utils.q import get_forward_headers, query_params_to_dict
@@ -32,7 +34,7 @@ async def get_q_requests(
     try:
         response = (
             await supabase_admin.table('q_request')
-            .select('*, q_response(*)', count='exact')  # type: ignore
+            .select('*, responses:q_response (*)', count='exact')  # type: ignore
             .eq('team_id', auth.team.id)
             .order('created_at', desc=True)
             .order('created_at', foreign_table='q_response', desc=True)
@@ -53,7 +55,7 @@ async def get_q_requests(
 
     print('response:', response.data)
     return GetQMessagesResponse(
-        q_requests=response.data,
+        requests=response.data,
         count=len(response.data),
         total=response.count,
         page=page,
@@ -125,7 +127,24 @@ async def post_q_requests(
             )
         )
 
-    # TODO: send to SQS
+    sqs = SQS()
+    sqs_response = sqs.send_messages(
+        [
+            SQSMessage(
+                Id=str(message.request_id),
+                MessageBody=message.model_dump_json(),
+            )
+            for message in sqs_messages
+        ],
+        settings.aws_sqs_queue_url,
+    )
+
+    if 'Successful' not in sqs_response:
+        print(f'Error sending messages to SQS: {sqs_response}')
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail='Internal server error',
+        )
 
     return PostQMessagesResponse(
         request_ids=[q_request.id for q_request in q_requests],

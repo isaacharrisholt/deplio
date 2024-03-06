@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     kv_rest_api_url: str = Field(validation_alias='KV_REST_API_URL')
     kv_rest_api_token: str = Field(validation_alias='KV_REST_API_TOKEN')
 
+    aws_sqs_queue_url: str = Field(validation_alias='AWS_SQS_QUEUE_URL')
+
 
 settings = Settings()
 
