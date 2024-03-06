@@ -13,6 +13,7 @@
   const refreshFrequency = localStorageStore('q-refresh-frequency', 'never', {
     storage: 'local',
   })
+  // eslint-disable-next-line no-undef
   let refreshInterval: NodeJS.Timeout
   let refreshing = false
 

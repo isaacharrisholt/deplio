@@ -86,18 +86,24 @@ const post_q_requests = authenticated_procedure
 
     const supabase_admin = getSupabaseAdminClient()
 
+    const api_key = ctx.api_key
+    if (!api_key) {
+      console.error('no api key in context')
+      return new Response('Internal server error', { status: 500 })
+    }
+
     console.log(`Inserting ${requests.length} requests into DB`)
     const { data: q_requests, error: q_request_insert_error } = await supabase_admin
       .from('q_request')
       .insert(
         requests.map((r) => ({
-          api_key_id: ctx.api_key!.id,
+          api_key_id: api_key.id,
           destination: r.destination,
           method: r.method,
           body: r.body,
           headers: { ...request_headers, ...r.headers },
           query_params: search_params_to_object(new URL(r.destination).searchParams),
-          team_id: ctx.api_key!.team_id,
+          team_id: api_key.team_id,
         })),
       )
       .select()

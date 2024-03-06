@@ -3,7 +3,7 @@
   import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
   import QResponseStatus from './QResponseStatus.svelte'
   import CodeBlock from '../CodeBlock.svelte'
-  import { ArrowRight, Eye } from 'lucide-svelte'
+  // import { ArrowRight, Eye } from 'lucide-svelte'
 
   export let qRequest: QRequest
   // Even though we're only using the latest response, require all

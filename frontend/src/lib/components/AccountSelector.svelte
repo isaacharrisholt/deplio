@@ -77,7 +77,7 @@
       <div class="flex flex-col gap-2">
         <p class="text-sm text-surface-600-300-token">Personal account</p>
         <button
-          on:click={() => setTeam(personalTeam.id)}
+          on:click={() => setTeam(personalTeam?.id ?? '')}
           class="btn justify-start"
           class:variant-outline-tertiary={$page.data.team.id === personalTeam.id}
         >

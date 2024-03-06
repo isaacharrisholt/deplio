@@ -15,3 +15,6 @@ vite.config.ts.timestamp-*
 supabase/gcloud.json
 .terraform
 __pycache__
+.turbo/
+**/.turbo
+.turbo/*
