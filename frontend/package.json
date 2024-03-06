@@ -14,9 +14,6 @@
     "format": "prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
-    "@aws-sdk/client-codebuild": "^3.388.0",
-    "@aws-sdk/client-s3": "^3.388.0",
-    "@aws-sdk/client-sqs": "^3.438.0",
     "@deplio/sdk": "workspace:*",
     "@floating-ui/dom": "^1.4.3",
     "@fontsource-variable/space-grotesk": "^5.0.5",
@@ -30,8 +27,6 @@
     "@sveltejs/kit": "^1.24.1",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.9",
-    "@trpc/client": "^10.45.1",
-    "@trpc/server": "^10.45.1",
     "@types/adm-zip": "^0.5.0",
     "@types/node": "^20.11.24",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
@@ -59,7 +54,6 @@
     "sveltekit-superforms": "^1.11.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "^3.3.2",
-    "trpc-sveltekit": "^3.5.26",
     "tslib": "^2.4.1",
     "typescript": "^5.3.3",
     "vite": "^4.4.9",
