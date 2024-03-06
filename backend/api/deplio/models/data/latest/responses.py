@@ -44,7 +44,7 @@ def error_responses() -> dict[int | str, dict[str, Any]]:
 
 
 def generate_responses(
-    ok_response_model: type[DeplioResponse],
+    ok_response_model: type[BaseModel],
 ) -> dict[int | str, dict[str, Any]]:
     return {
         **error_responses(),
