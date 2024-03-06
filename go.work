@@ -2,5 +2,5 @@ go 1.21.0
 
 use (
 	./lambda/q_receiver
-	./packages/go/supabase
+	./packages/internal/go/supabase
 )
