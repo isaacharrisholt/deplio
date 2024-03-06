@@ -45,7 +45,7 @@
     return setRefreshFrequency()
   })
 
-  $: max_page = Math.ceil((data.count ?? 0) / data.pageSize)
+  $: max_page = Math.ceil((data.count ?? 0) / data.page_size)
 </script>
 
 <div class="flex flex-col gap-12">
@@ -111,7 +111,7 @@ const response = await fetch('https://api.deplio.com/api/q', {
             </div>
           {/if}
           <p class="text-sm">Page {data.page}</p>
-          {#if data.page < Math.ceil((data.count ?? 0) / data.pageSize)}
+          {#if data.page < Math.ceil((data.count ?? 0) / data.page_size)}
             <button
               class="flex flex-row items-center"
               on:click={() => {
@@ -157,8 +157,8 @@ const response = await fetch('https://api.deplio.com/api/q', {
     </div>
 
     <div class="flex flex-col gap-2">
-      {#each data.qRequests as qRequest}
-        <QRequestPanel {qRequest} qResponses={qRequest.q_response} />
+      {#each data.q_requests as request}
+        <QRequestPanel {request} />
       {/each}
     </div>
   </div>

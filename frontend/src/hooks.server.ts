@@ -1,4 +1,8 @@
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public'
+import {
+  PUBLIC_SUPABASE_URL,
+  PUBLIC_SUPABASE_ANON_KEY,
+  PUBLIC_API_URL,
+} from '$env/static/public'
 import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit'
 import type { Handle } from '@sveltejs/kit'
 import { error, redirect } from '@sveltejs/kit'
@@ -9,7 +13,7 @@ import { createTRPCHandle } from 'trpc-sveltekit'
 import { create_trpc_context } from '$lib/trpc/context'
 import { router } from '$lib/trpc/router'
 import { trpc_server } from '$lib/trpc/server'
-import { Configuration, Deplio } from '@deplio/sdk'
+import { Deplio } from '@deplio/sdk'
 
 // Note: tRPC handle is at the bottom of the file
 export const handle: Handle = sequence(
@@ -32,11 +36,10 @@ export const handle: Handle = sequence(
       return session
     }
     const session = await event.locals.getSession()
-    event.locals.api = new Deplio(
-      new Configuration({
-        accessToken: session?.access_token,
-      }),
-    )
+    event.locals.api = new Deplio({
+      accessToken: session?.access_token,
+      basePath: PUBLIC_API_URL,
+    })
 
     if (event.url.pathname.startsWith('/dashboard') && !session) {
       if (!session) {

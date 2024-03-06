@@ -80,22 +80,22 @@
               }
             }
           },
-          "500": {
-            "description": "An internal error occurred while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "422": {
             "description": "Validation Error",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An internal error occurred while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -196,22 +196,22 @@
               }
             }
           },
-          "500": {
-            "description": "An internal error occurred while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "422": {
             "description": "Validation Error",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An internal error occurred while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -313,22 +313,22 @@
               }
             }
           },
-          "500": {
-            "description": "An internal error occurred while processing the request.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "422": {
             "description": "Validation Error",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An internal error occurred while processing the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -346,15 +346,8 @@
             "title": "Message"
           },
           "data": {
-            "anyOf": [
-              {
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Data"
+            "title": "Data",
+            "type": "object"
           },
           "timestamp": {
             "type": "string",
@@ -374,15 +367,8 @@
             "title": "Message"
           },
           "data": {
-            "anyOf": [
-              {
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Data"
+            "title": "Data",
+            "type": "object"
           }
         },
         "type": "object",
@@ -527,32 +513,18 @@
             "title": "Destination"
           },
           "body": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Body"
+            "title": "Body",
+            "type": "string"
           },
           "method": {
             "$ref": "#/components/schemas/HTTPMethod"
           },
           "headers": {
-            "anyOf": [
-              {
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Headers"
+            "title": "Headers",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
           }
         },
         "type": "object",
@@ -575,16 +547,9 @@
             "title": "Created At"
           },
           "deleted_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Deleted At"
+            "title": "Deleted At",
+            "type": "string",
+            "format": "date-time"
           },
           "team_id": {
             "type": "string",
@@ -606,40 +571,19 @@
             "$ref": "#/components/schemas/HTTPMethod"
           },
           "body": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Body"
+            "title": "Body",
+            "type": "string"
           },
           "headers": {
-            "anyOf": [
-              {
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Headers"
+            "title": "Headers",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
           },
           "query_params": {
-            "anyOf": [
-              {
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Query Params"
+            "title": "Query Params",
+            "type": "object"
           },
           "responses": {
             "items": {
@@ -678,16 +622,9 @@
             "title": "Created At"
           },
           "deleted_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Deleted At"
+            "title": "Deleted At",
+            "type": "string",
+            "format": "date-time"
           },
           "request_id": {
             "type": "string",
@@ -695,51 +632,23 @@
             "title": "Request Id"
           },
           "status_code": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Status Code"
+            "title": "Status Code",
+            "type": "integer"
           },
           "body": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Body"
+            "title": "Body",
+            "type": "string"
           },
           "headers": {
-            "anyOf": [
-              {
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Headers"
+            "title": "Headers",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
           },
           "response_time_ns": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Response Time Ns"
+            "title": "Response Time Ns",
+            "type": "integer"
           }
         },
         "type": "object",
@@ -796,28 +705,14 @@
             "title": "Latest"
           },
           "current": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Current"
+            "title": "Current",
+            "type": "string",
+            "format": "date"
           },
           "team": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Team"
+            "title": "Team",
+            "type": "string",
+            "format": "date"
           }
         },
         "type": "object",

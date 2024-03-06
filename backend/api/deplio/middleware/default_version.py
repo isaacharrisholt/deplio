@@ -14,11 +14,16 @@ class DefaultVersioningMiddleware(BaseHTTPMiddleware):
         app: ASGIApp,
         *,
         api_version_var: ContextVar[date] | ContextVar[date | None],
+        latest_version: date,
     ):
         super().__init__(app)
         self.api_version_var = api_version_var
+        self.latest_version = latest_version
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint):
+        # Set default version to latest
+        self.api_version_var.set(self.latest_version)
+
         if request.url.path.startswith('/docs') or request.url.path.startswith(
             '/openapi.json'
         ):

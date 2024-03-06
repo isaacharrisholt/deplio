@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { QRequest, QResponse } from '$lib/types/supabase'
+  import type { QRequestWithResponses } from '@deplio/sdk'
   import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
   import QResponseStatus from './QResponseStatus.svelte'
   import CodeBlock from '../CodeBlock.svelte'
@@ -7,28 +7,25 @@
 
   const MAX_RESPONSE_BODY_LENGTH = 1000
 
-  export let qRequest: QRequest
-  // Even though we're only using the latest response, require all
-  // as we'll use them in the future once each request can have multiple responses
-  // (e.g. for retries)
-  export let qResponses: QResponse[]
+  export let request: QRequestWithResponses
+  $: q_responses = request.responses
 
-  $: latestResponse = qResponses[qResponses.length - 1]
-  $: language = latestResponse?.body?.startsWith('<')
+  $: latest_response = q_responses[q_responses.length - 1]
+  $: language = latest_response?.body?.startsWith('<')
     ? ('HTML' as const)
     : ('JSON' as const)
-  $: formattedBody =
-    language === 'JSON' && latestResponse?.body
-      ? JSON.stringify(JSON.parse(latestResponse.body), null, 2)
-      : latestResponse?.body
-  let displayBody: string
+  $: formatted_body =
+    language === 'JSON' && latest_response?.body
+      ? JSON.stringify(JSON.parse(latest_response.body), null, 2)
+      : latest_response?.body
+  let display_body: string
   let truncated = false
 
-  $: if ((formattedBody?.length ?? 0) > MAX_RESPONSE_BODY_LENGTH) {
-    displayBody = formattedBody?.slice(0, MAX_RESPONSE_BODY_LENGTH) + '...'
+  $: if ((formatted_body?.length ?? 0) > MAX_RESPONSE_BODY_LENGTH) {
+    display_body = formatted_body?.slice(0, MAX_RESPONSE_BODY_LENGTH) + '...'
     truncated = true
   } else {
-    displayBody = formattedBody ?? ''
+    display_body = formatted_body ?? ''
     truncated = false
   }
 </script>
@@ -47,20 +44,20 @@
         <!--     <Eye size={14} /> -->
         <!--   </button> -->
         <!-- </a> -->
-        <QResponseStatus statusCode={latestResponse?.status_code} />
-        <p class="font-mono text-sm">{qRequest.destination}</p>
+        <QResponseStatus statusCode={latest_response?.status_code} />
+        <p class="font-mono text-sm">{request.destination}</p>
       </div>
       <div slot="content" class="flex flex-col gap-2 pb-2">
-        {#if !latestResponse?.body}
+        {#if !latest_response?.body}
           <p>Loading...</p>
         {:else}
           <p>Latest response:</p>
           {#if truncated}
             <p class="text-sm text-gray-500">
-              The response body is too long ({latestResponse?.body?.length ?? 0} characters)
+              The response body is too long ({latest_response?.body?.length ?? 0} characters)
               to display in full.&nbsp;
               <a
-                href="/dashboard/q/requests/{qRequest.id}"
+                href="/dashboard/q/requests/{request.id}"
                 class="underline"
                 on:click={(e) => e.stopPropagation()}
                 on:keypress={(e) => e.stopPropagation()}
@@ -70,7 +67,7 @@
             </p>
           {/if}
           <!-- TODO: Add support for other content types -->
-          <CodeBlock code={displayBody} {language} />
+          <CodeBlock code={display_body} {language} />
         {/if}
       </div>
     </AccordionItem>

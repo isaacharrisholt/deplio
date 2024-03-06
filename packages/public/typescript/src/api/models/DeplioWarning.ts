@@ -13,13 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { Data } from './Data';
-import {
-    DataFromJSON,
-    DataFromJSONTyped,
-    DataToJSON,
-} from './Data';
-
 /**
  * 
  * @export
@@ -34,10 +27,10 @@ export interface DeplioWarning {
     message: string;
     /**
      * 
-     * @type {Data}
+     * @type {object}
      * @memberof DeplioWarning
      */
-    data?: Data;
+    data?: object;
 }
 
 /**
@@ -61,7 +54,7 @@ export function DeplioWarningFromJSONTyped(json: any, ignoreDiscriminator: boole
     return {
         
         'message': json['message'],
-        'data': !exists(json, 'data') ? undefined : DataFromJSON(json['data']),
+        'data': !exists(json, 'data') ? undefined : json['data'],
     };
 }
 
@@ -75,7 +68,7 @@ export function DeplioWarningToJSON(value?: DeplioWarning | null): any {
     return {
         
         'message': value.message,
-        'data': DataToJSON(value.data),
+        'data': value.data,
     };
 }
 
