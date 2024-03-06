@@ -37,13 +37,13 @@ export interface PostQMessagesResponse {
      * @type {Array<string>}
      * @memberof PostQMessagesResponse
      */
-    requestIds: Array<string>;
+    request_ids: Array<string>;
     /**
      * 
      * @type {number}
      * @memberof PostQMessagesResponse
      */
-    messagesDelivered: number;
+    messages_delivered: number;
 }
 
 /**
@@ -52,8 +52,8 @@ export interface PostQMessagesResponse {
 export function instanceOfPostQMessagesResponse(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "warnings" in value;
-    isInstance = isInstance && "requestIds" in value;
-    isInstance = isInstance && "messagesDelivered" in value;
+    isInstance = isInstance && "request_ids" in value;
+    isInstance = isInstance && "messages_delivered" in value;
 
     return isInstance;
 }
@@ -69,8 +69,8 @@ export function PostQMessagesResponseFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'warnings': ((json['warnings'] as Array<any>).map(DeplioWarningFromJSON)),
-        'requestIds': json['request_ids'],
-        'messagesDelivered': json['messages_delivered'],
+        'request_ids': json['request_ids'],
+        'messages_delivered': json['messages_delivered'],
     };
 }
 
@@ -84,8 +84,8 @@ export function PostQMessagesResponseToJSON(value?: PostQMessagesResponse | null
     return {
         
         'warnings': ((value.warnings as Array<any>).map(DeplioWarningToJSON)),
-        'request_ids': value.requestIds,
-        'messages_delivered': value.messagesDelivered,
+        'request_ids': value.request_ids,
+        'messages_delivered': value.messages_delivered,
     };
 }
 

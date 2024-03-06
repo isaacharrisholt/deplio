@@ -1,4 +1,4 @@
 /* tslint:disable */
 /* eslint-disable */
-export * from './MiscApi';
 export * from './QApi';
+export * from './VersionsApi';

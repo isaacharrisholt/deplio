@@ -39,7 +39,7 @@ router = create_router(prefix='/q')
     responses=generate_responses(GetQMessagesResponse),
     tags=[Tags.Q],
     response_description='List of messages and their responses',
-    operation_id='q:get',
+    operation_id='q:list',
 )
 async def get(
     auth: Annotated[AuthCredentials, Depends(any_auth)],
@@ -89,12 +89,12 @@ async def get(
 
 @router.post(
     '',
-    summary='Post messages to Deplio Q',
+    summary='Send messages to Deplio Q',
     description='Send messages to Deplio Q to be processed asynchronously.',
     responses=generate_responses(PostQMessagesResponse),
     tags=[Tags.Q],
     response_description='List of request IDs and number of messages delivered',
-    operation_id='q:post',
+    operation_id='q:send',
 )
 async def create(
     auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],

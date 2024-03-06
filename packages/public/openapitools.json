@@ -3,6 +3,21 @@
   "spaces": 2,
   "generator-cli": {
     "version": "7.3.0",
-    "useDocker": true
+    "useDocker": true,
+    "generators": {
+      "typescript": {
+        "generatorName": "typescript-fetch",
+        "output": "#{cwd}/typescript/src/api",
+        "inputSpec": "#{cwd}/openapi.json",
+        "additionalProperties": {
+          "supportsES6": true,
+          "modelPropertyNaming": "original",
+          "enumPropertyNaming": "original",
+          "paramNaming": "original",
+          "stringEnums": true,
+          "prefixParameterInterfaces": true
+        }
+      }
+    }
   }
 }

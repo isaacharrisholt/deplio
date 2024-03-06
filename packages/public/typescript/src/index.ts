@@ -1,11 +1,11 @@
-import { Configuration, MiscApi, QApi } from './api'
+import { Configuration, VersionsApi, QApi } from './api'
 
 export class Deplio {
-  public readonly misc: MiscApi
+  public readonly versions: VersionsApi
   public readonly q: QApi
 
   constructor(config?: Configuration) {
-    this.misc = new MiscApi(config)
+    this.versions = new VersionsApi(config)
     this.q = new QApi(config)
   }
 }

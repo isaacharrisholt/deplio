@@ -31,49 +31,43 @@ import {
     ModelHTTPMethodFromJSONTyped,
     ModelHTTPMethodToJSON,
 } from './ModelHTTPMethod';
-import type { QMessage } from './QMessage';
-import {
-    QMessageFromJSON,
-    QMessageFromJSONTyped,
-    QMessageToJSON,
-} from './QMessage';
 
 /**
  * 
  * @export
- * @interface MessageRequest
+ * @interface Messages
  */
-export interface MessageRequest {
+export interface Messages {
     /**
      * 
-     * @type {any}
-     * @memberof MessageRequest
+     * @type {string}
+     * @memberof Messages
      */
-    destination: any | null;
+    destination: string;
     /**
      * 
      * @type {Body}
-     * @memberof MessageRequest
+     * @memberof Messages
      */
     body?: Body;
     /**
      * 
      * @type {ModelHTTPMethod}
-     * @memberof MessageRequest
+     * @memberof Messages
      */
     method: ModelHTTPMethod;
     /**
      * 
      * @type {Headers}
-     * @memberof MessageRequest
+     * @memberof Messages
      */
     headers?: Headers;
 }
 
 /**
- * Check if a given object implements the MessageRequest interface.
+ * Check if a given object implements the Messages interface.
  */
-export function instanceOfMessageRequest(value: object): boolean {
+export function instanceOfMessages(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "destination" in value;
     isInstance = isInstance && "method" in value;
@@ -81,11 +75,11 @@ export function instanceOfMessageRequest(value: object): boolean {
     return isInstance;
 }
 
-export function MessageRequestFromJSON(json: any): MessageRequest {
-    return MessageRequestFromJSONTyped(json, false);
+export function MessagesFromJSON(json: any): Messages {
+    return MessagesFromJSONTyped(json, false);
 }
 
-export function MessageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): MessageRequest {
+export function MessagesFromJSONTyped(json: any, ignoreDiscriminator: boolean): Messages {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -98,7 +92,7 @@ export function MessageRequestFromJSONTyped(json: any, ignoreDiscriminator: bool
     };
 }
 
-export function MessageRequestToJSON(value?: MessageRequest | null): any {
+export function MessagesToJSON(value?: Messages | null): any {
     if (value === undefined) {
         return undefined;
     }

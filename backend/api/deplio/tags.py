@@ -2,8 +2,8 @@ from enum import StrEnum
 
 
 class Tags(StrEnum):
-    MISC = 'Misc'
     Q = 'Q'
+    VERSIONS = 'Versions'
 
 
 tags_metadata = [
@@ -12,7 +12,7 @@ tags_metadata = [
         'description': '**Deplio Q** is an asynchronous message queue for serverless applications. It allows you to send messages to be processed by your serverless functions.',
     },
     {
-        'name': Tags.MISC,
-        'description': 'Miscellaneous endpoints that do not fit into any other category.',
+        'name': Tags.VERSIONS,
+        'description': 'Operations related to **Deplio** API versions.',
     },
 ]

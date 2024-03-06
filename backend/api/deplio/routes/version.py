@@ -24,7 +24,7 @@ router = create_router(prefix='/version')
         "current version and (if using a team API key) your team's API version."
     ),
     responses=generate_responses(Versions),
-    tags=[Tags.MISC],
+    tags=[Tags.VERSIONS],
     response_description='API versions',
     operation_id='version:get',
 )

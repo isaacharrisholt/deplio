@@ -67,7 +67,7 @@ export interface GetQMessagesResponse {
      * @type {number}
      * @memberof GetQMessagesResponse
      */
-    pageSize: number;
+    page_size: number;
 }
 
 /**
@@ -80,7 +80,7 @@ export function instanceOfGetQMessagesResponse(value: object): boolean {
     isInstance = isInstance && "count" in value;
     isInstance = isInstance && "total" in value;
     isInstance = isInstance && "page" in value;
-    isInstance = isInstance && "pageSize" in value;
+    isInstance = isInstance && "page_size" in value;
 
     return isInstance;
 }
@@ -100,7 +100,7 @@ export function GetQMessagesResponseFromJSONTyped(json: any, ignoreDiscriminator
         'count': json['count'],
         'total': json['total'],
         'page': json['page'],
-        'pageSize': json['page_size'],
+        'page_size': json['page_size'],
     };
 }
 
@@ -118,7 +118,7 @@ export function GetQMessagesResponseToJSON(value?: GetQMessagesResponse | null):
         'count': value.count,
         'total': value.total,
         'page': value.page,
-        'page_size': value.pageSize,
+        'page_size': value.page_size,
     };
 }
 

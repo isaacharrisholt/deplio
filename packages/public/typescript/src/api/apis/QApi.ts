@@ -18,7 +18,7 @@ import type {
   ErrorResponse,
   GetQMessagesResponse,
   HTTPValidationError,
-  MessageRequest,
+  Messages,
   PostQMessagesResponse,
 } from '../models/index';
 import {
@@ -28,21 +28,21 @@ import {
     GetQMessagesResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-    MessageRequestFromJSON,
-    MessageRequestToJSON,
+    MessagesFromJSON,
+    MessagesToJSON,
     PostQMessagesResponseFromJSON,
     PostQMessagesResponseToJSON,
 } from '../models/index';
 
-export interface CreateQPostRequest {
-    messageRequest: MessageRequest;
-    deplioVersion?: Date;
+export interface QApiListRequest {
+    page?: number;
+    page_size?: number;
+    deplio_version?: Date;
 }
 
-export interface GetQGetRequest {
-    page?: number;
-    pageSize?: number;
-    deplioVersion?: Date;
+export interface QApiSendRequest {
+    messages: Messages;
+    deplio_version?: Date;
 }
 
 /**
@@ -51,71 +51,24 @@ export interface GetQGetRequest {
 export class QApi extends runtime.BaseAPI {
 
     /**
-     * Send messages to Deplio Q to be processed asynchronously.
-     * Post messages to Deplio Q
-     */
-    async createQPostRaw(requestParameters: CreateQPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PostQMessagesResponse>> {
-        if (requestParameters.messageRequest === null || requestParameters.messageRequest === undefined) {
-            throw new runtime.RequiredError('messageRequest','Required parameter requestParameters.messageRequest was null or undefined when calling createQPost.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (requestParameters.deplioVersion !== undefined && requestParameters.deplioVersion !== null) {
-            headerParameters['deplio-version'] = String(requestParameters.deplioVersion);
-        }
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("HTTPBearer", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/q`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: MessageRequestToJSON(requestParameters.messageRequest),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => PostQMessagesResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Send messages to Deplio Q to be processed asynchronously.
-     * Post messages to Deplio Q
-     */
-    async createQPost(requestParameters: CreateQPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PostQMessagesResponse> {
-        const response = await this.createQPostRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Get a list of messages that have been sent to Deplio Q and their responses (if any).
      * List Deplio Q messages
      */
-    async getQGetRaw(requestParameters: GetQGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetQMessagesResponse>> {
+    async listRaw(requestParameters: QApiListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GetQMessagesResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters.page !== undefined) {
             queryParameters['page'] = requestParameters.page;
         }
 
-        if (requestParameters.pageSize !== undefined) {
-            queryParameters['page_size'] = requestParameters.pageSize;
+        if (requestParameters.page_size !== undefined) {
+            queryParameters['page_size'] = requestParameters.page_size;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters.deplioVersion !== undefined && requestParameters.deplioVersion !== null) {
-            headerParameters['deplio-version'] = String(requestParameters.deplioVersion);
+        if (requestParameters.deplio_version !== undefined && requestParameters.deplio_version !== null) {
+            headerParameters['deplio-version'] = String(requestParameters.deplio_version);
         }
 
         if (this.configuration && this.configuration.accessToken) {
@@ -140,8 +93,56 @@ export class QApi extends runtime.BaseAPI {
      * Get a list of messages that have been sent to Deplio Q and their responses (if any).
      * List Deplio Q messages
      */
-    async getQGet(requestParameters: GetQGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetQMessagesResponse> {
-        const response = await this.getQGetRaw(requestParameters, initOverrides);
+    async list(requestParameters: QApiListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GetQMessagesResponse> {
+        const response = await this.listRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Send messages to Deplio Q to be processed asynchronously.
+     * Send messages to Deplio Q
+     */
+    async sendRaw(requestParameters: QApiSendRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PostQMessagesResponse>> {
+        if (requestParameters.messages === null || requestParameters.messages === undefined) {
+            throw new runtime.RequiredError('messages','Required parameter requestParameters.messages was null or undefined when calling send.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.messages !== undefined) {
+            queryParameters['messages'] = requestParameters.messages;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters.deplio_version !== undefined && requestParameters.deplio_version !== null) {
+            headerParameters['deplio-version'] = String(requestParameters.deplio_version);
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/q`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PostQMessagesResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Send messages to Deplio Q to be processed asynchronously.
+     * Send messages to Deplio Q
+     */
+    async send(requestParameters: QApiSendRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PostQMessagesResponse> {
+        const response = await this.sendRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -4,6 +4,7 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsup ./src/index.ts --format cjs,esm --minify --dts",
     "lint": "tsc && prettier --check ./src/**/*.ts",
