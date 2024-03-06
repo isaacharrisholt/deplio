@@ -52,9 +52,13 @@ async function send_q_messages(messages: DeplioQSQSMessage[]) {
 const get_q_requests = authenticated_procedure
   .input(get_q_requests_schema)
   .query(async ({ input, ctx }) => {
-    const { data: q_requests, error: q_request_fetch_error } = await ctx.supabase
+    const {
+      data: q_requests,
+      error: q_request_fetch_error,
+      count,
+    } = await ctx.supabase
       .from('q_request')
-      .select('*, q_response (*)')
+      .select('*, q_response (*)', { count: 'exact' })
       .eq('team_id', ctx.team.id)
       .order('created_at', { ascending: false })
       .order('created_at', { ascending: true, foreignTable: 'q_response' })
@@ -64,7 +68,7 @@ const get_q_requests = authenticated_procedure
       throw error(500, q_request_fetch_error?.message || 'No requests')
     }
 
-    return { qRequests: q_requests }
+    return { qRequests: q_requests, count, pageSize: input.page_size, page: input.page }
   })
 
 const post_q_requests = authenticated_procedure
