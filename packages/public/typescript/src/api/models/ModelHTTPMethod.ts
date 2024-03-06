@@ -12,19 +12,18 @@
  * Do not edit the class manually.
  */
 
-
 /**
  * 
  * @export
+ * @enum {string}
  */
-export const ModelHTTPMethod = {
-    Get: 'GET',
-    Post: 'POST',
-    Put: 'PUT',
-    Delete: 'DELETE',
-    Patch: 'PATCH'
-} as const;
-export type ModelHTTPMethod = typeof ModelHTTPMethod[keyof typeof ModelHTTPMethod];
+export enum ModelHTTPMethod {
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    DELETE = 'DELETE',
+    PATCH = 'PATCH'
+}
 
 
 export function ModelHTTPMethodFromJSON(json: any): ModelHTTPMethod {

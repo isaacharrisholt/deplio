@@ -67,25 +67,25 @@ export interface QRequestWithResponses {
      * @type {Date}
      * @memberof QRequestWithResponses
      */
-    createdAt: Date;
+    created_at: Date;
     /**
      * 
      * @type {DeletedAt}
      * @memberof QRequestWithResponses
      */
-    deletedAt: DeletedAt;
+    deleted_at: DeletedAt;
     /**
      * 
      * @type {string}
      * @memberof QRequestWithResponses
      */
-    teamId: string;
+    team_id: string;
     /**
      * 
      * @type {string}
      * @memberof QRequestWithResponses
      */
-    apiKeyId: string;
+    api_key_id: string;
     /**
      * 
      * @type {string}
@@ -115,7 +115,7 @@ export interface QRequestWithResponses {
      * @type {QueryParams}
      * @memberof QRequestWithResponses
      */
-    queryParams: QueryParams;
+    query_params: QueryParams;
     /**
      * 
      * @type {Array<QResponse>}
@@ -130,15 +130,15 @@ export interface QRequestWithResponses {
 export function instanceOfQRequestWithResponses(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "id" in value;
-    isInstance = isInstance && "createdAt" in value;
-    isInstance = isInstance && "deletedAt" in value;
-    isInstance = isInstance && "teamId" in value;
-    isInstance = isInstance && "apiKeyId" in value;
+    isInstance = isInstance && "created_at" in value;
+    isInstance = isInstance && "deleted_at" in value;
+    isInstance = isInstance && "team_id" in value;
+    isInstance = isInstance && "api_key_id" in value;
     isInstance = isInstance && "destination" in value;
     isInstance = isInstance && "method" in value;
     isInstance = isInstance && "body" in value;
     isInstance = isInstance && "headers" in value;
-    isInstance = isInstance && "queryParams" in value;
+    isInstance = isInstance && "query_params" in value;
     isInstance = isInstance && "responses" in value;
 
     return isInstance;
@@ -155,15 +155,15 @@ export function QRequestWithResponsesFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'id': json['id'],
-        'createdAt': (new Date(json['created_at'])),
-        'deletedAt': DeletedAtFromJSON(json['deleted_at']),
-        'teamId': json['team_id'],
-        'apiKeyId': json['api_key_id'],
+        'created_at': (new Date(json['created_at'])),
+        'deleted_at': DeletedAtFromJSON(json['deleted_at']),
+        'team_id': json['team_id'],
+        'api_key_id': json['api_key_id'],
         'destination': json['destination'],
         'method': ModelHTTPMethodFromJSON(json['method']),
         'body': BodyFromJSON(json['body']),
         'headers': HeadersFromJSON(json['headers']),
-        'queryParams': QueryParamsFromJSON(json['query_params']),
+        'query_params': QueryParamsFromJSON(json['query_params']),
         'responses': ((json['responses'] as Array<any>).map(QResponseFromJSON)),
     };
 }
@@ -178,15 +178,15 @@ export function QRequestWithResponsesToJSON(value?: QRequestWithResponses | null
     return {
         
         'id': value.id,
-        'created_at': (value.createdAt.toISOString()),
-        'deleted_at': DeletedAtToJSON(value.deletedAt),
-        'team_id': value.teamId,
-        'api_key_id': value.apiKeyId,
+        'created_at': (value.created_at.toISOString()),
+        'deleted_at': DeletedAtToJSON(value.deleted_at),
+        'team_id': value.team_id,
+        'api_key_id': value.api_key_id,
         'destination': value.destination,
         'method': ModelHTTPMethodToJSON(value.method),
         'body': BodyToJSON(value.body),
         'headers': HeadersToJSON(value.headers),
-        'query_params': QueryParamsToJSON(value.queryParams),
+        'query_params': QueryParamsToJSON(value.query_params),
         'responses': ((value.responses as Array<any>).map(QResponseToJSON)),
     };
 }

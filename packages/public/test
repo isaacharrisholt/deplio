@@ -13,7 +13,7 @@
     "/version": {
       "get": {
         "tags": [
-          "Versions"
+          "Misc"
         ],
         "summary": "Get API versions",
         "description": "Retrieve the latest version of the API, along with your current version and (if using a team API key) your team's API version.",
@@ -110,7 +110,7 @@
         ],
         "summary": "List Deplio Q messages",
         "description": "Get a list of messages that have been sent to Deplio Q and their responses (if any).",
-        "operationId": "list",
+        "operationId": "get",
         "security": [
           {
             "HTTPBearer": []
@@ -222,9 +222,9 @@
         "tags": [
           "Q"
         ],
-        "summary": "Send messages to Deplio Q",
+        "summary": "Post messages to Deplio Q",
         "description": "Send messages to Deplio Q to be processed asynchronously.",
-        "operationId": "send",
+        "operationId": "post",
         "security": [
           {
             "HTTPBearer": []
@@ -843,8 +843,8 @@
       "description": "**Deplio Q** is an asynchronous message queue for serverless applications. It allows you to send messages to be processed by your serverless functions."
     },
     {
-      "name": "Versions",
-      "description": "Operations related to **Deplio** API versions."
+      "name": "Misc",
+      "description": "Miscellaneous endpoints that do not fit into any other category."
     }
   ]
 }

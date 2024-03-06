@@ -1,8 +1,10 @@
-apis/MiscApi.ts
+.openapi-generator-ignore
 apis/QApi.ts
+apis/VersionsApi.ts
 apis/index.ts
 index.ts
 models/Body.ts
+models/Current.ts
 models/Data.ts
 models/DeletedAt.ts
 models/DeplioError.ts
@@ -11,7 +13,7 @@ models/ErrorResponse.ts
 models/GetQMessagesResponse.ts
 models/HTTPValidationError.ts
 models/Headers.ts
-models/MessageRequest.ts
+models/Messages.ts
 models/ModelHTTPMethod.ts
 models/PostQMessagesResponse.ts
 models/QMessage.ts
@@ -20,7 +22,9 @@ models/QResponse.ts
 models/QueryParams.ts
 models/ResponseTimeNs.ts
 models/StatusCode.ts
+models/Team.ts
 models/ValidationError.ts
 models/ValidationErrorLocInner.ts
+models/Versions.ts
 models/index.ts
 runtime.ts
