@@ -1,5 +1,5 @@
 from typing import Annotated, NamedTuple, Optional
-from fastapi import Depends, Request, HTTPException
+from fastapi import Depends, HTTPException
 from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
 from deplio.models.data.latest.db.api_key import APIKey
 from deplio.models.data.latest.db.team import Team
