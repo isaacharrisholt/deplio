@@ -1,6 +1,7 @@
 from typing import Annotated, NamedTuple, Optional
 from fastapi import Depends, Request, HTTPException
 from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
+from deplio.models.data.latest.db.api_key import APIKey
 from deplio.models.data.latest.db.team import Team
 from deplio.models.data.latest.db.user import User
 from deplio.services.redis import Redis, RedisUserRequest, redis
@@ -68,7 +69,7 @@ async def _get_user_and_team_from_jwt(
 async def _get_team_from_api_key(
     supabase_admin: SupabaseClient,
     api_key: str,
-) -> Team | None:
+) -> tuple[APIKey, Team] | None:
     key_hash = hash_api_key(api_key)
     key_prefix = api_key[:6]
     now = datetime.now().isoformat()
@@ -91,21 +92,28 @@ async def _get_team_from_api_key(
     if not api_key_result.data:
         return None
 
-    return Team(**api_key_result.data['team'])
+    team = Team(**api_key_result.data['team'])
+    api_key_result.data.pop('team')
+    api_key_result.data['team_id'] = team.id
+    api_key = APIKey(**api_key_result.data)
+    return api_key, team
 
 
 AuthCredentials = NamedTuple(
     'AuthCredentials',
-    [('user', Optional[User]), ('team', Team)],
+    [('user', Optional[User]), ('team', Team), ('api_key', Optional[APIKey])],
 )
-RequiredAuthCredentials = NamedTuple(
+JWTAuthCredentials = NamedTuple(
     'RequiredAuthCredentials',
     [('user', User), ('team', Team)],
 )
+APIKeyAuthCredentials = NamedTuple(
+    'RequiredAPIKeyAuthCredentials',
+    [('api_key', APIKey), ('team', Team)],
+)
 
 
-async def auth(
-    request: Request,
+async def any_auth(
     supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
     auth_header: Annotated[
         HTTPAuthorizationCredentials,
@@ -119,19 +127,29 @@ async def auth(
         auth_header.credentials,
     )
     if user_and_team is not None:
-        return AuthCredentials(*user_and_team)
+        return AuthCredentials(*user_and_team, None)
 
-    team = await _get_team_from_api_key(supabase_admin, auth_header.credentials)
-    if team is not None:
-        request.state.team = team
-        return AuthCredentials(None, team)
+    api_key_and_team = await _get_team_from_api_key(
+        supabase_admin, auth_header.credentials
+    )
+    if api_key_and_team is not None:
+        api_key, team = api_key_and_team
+        return AuthCredentials(None, team, api_key)
 
     raise unauthorized()
 
 
-async def requires_user(
-    auth: Annotated[AuthCredentials, Depends(auth)],
-) -> RequiredAuthCredentials:
+async def user_auth(
+    auth: Annotated[AuthCredentials, Depends(any_auth)],
+) -> JWTAuthCredentials:
     if auth.user is None:
         raise unauthorized()
-    return RequiredAuthCredentials(auth.user, auth.team)
+    return JWTAuthCredentials(auth.user, auth.team)
+
+
+async def api_key_auth(
+    auth: Annotated[AuthCredentials, Depends(any_auth)],
+) -> APIKeyAuthCredentials:
+    if auth.api_key is None:
+        raise unauthorized()
+    return APIKeyAuthCredentials(auth.api_key, auth.team)
