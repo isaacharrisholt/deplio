@@ -1,7 +1,8 @@
 {
   "scripts": {
     "download": "./download.sh",
-    "gen:api:typescript": "openapi-generator-cli generate -i /local/openapi.json -g typescript-fetch -o /local/api"
+    "gen:api:typescript": "openapi-generator-cli generate -i /local/openapi.json -g typescript-fetch -o /local/typescript/src/api",
+    "gen:api": "pnpm run download && pnpm run gen:api:typescript"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.10.0"

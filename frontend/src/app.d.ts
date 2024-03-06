@@ -4,6 +4,7 @@ import type { Database } from '$lib/types/database'
 import type { UserWithTeams, TeamWithRole } from '$lib/types/supabase'
 import type { FormMessage } from '$lib/forms/client'
 import type { trpc_server } from '$lib/trpc/server'
+import type { Deplio } from '@deplio/sdk'
 
 declare global {
   namespace App {
@@ -13,6 +14,7 @@ declare global {
       user: UserWithTeams
       team: TeamWithRole
       trpc: Awaited<ReturnType<typeof trpc_server>>
+      api: Deplio
     }
     interface PageData {
       session: Session | null

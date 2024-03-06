@@ -34,12 +34,12 @@ router = create_router(prefix='/q')
 
 @router.get(
     '',
-    name='List Deplio Q messages',
+    summary='List Deplio Q messages',
     description='Get a list of messages that have been sent to Deplio Q and their responses (if any).',
     responses=generate_responses(GetQMessagesResponse),
     tags=[Tags.Q],
 )
-async def get_q_requests(
+async def get(
     auth: Annotated[AuthCredentials, Depends(any_auth)],
     supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
     context: Annotated[Context, Depends(context)],
@@ -87,12 +87,12 @@ async def get_q_requests(
 
 @router.post(
     '',
-    name='Post messages to Deplio Q',
+    summary='Post messages to Deplio Q',
     description='Send messages to Deplio Q to be processed asynchronously.',
     responses=generate_responses(PostQMessagesResponse),
     tags=[Tags.Q],
 )
-async def post_q_requests(
+async def create(
     auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],
     supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
     context: Annotated[Context, Depends(context)],

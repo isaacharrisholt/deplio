@@ -1,0 +1,23 @@
+{
+  "name": "@deplio/sdk",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup ./src/index.ts --format cjs,esm --minify --dts",
+    "lint": "tsc && prettier --check ./src/**/*.ts",
+    "format": "prettier --write ./src/**/*.ts"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all",
+    "printWidth": 88,
+    "semi": false
+  }
+}
