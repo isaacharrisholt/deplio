@@ -47,12 +47,6 @@ class DefaultVersioningMiddleware(BaseHTTPMiddleware):
         version = team.api_version
 
         self.api_version_var.set(version)
-        request.scope['headers'].append(
-            (
-                settings.version_header.lower().encode(),
-                version.isoformat().encode(),
-            )
-        )
 
         response = await call_next(request)
         response.headers.append(settings.version_header, version.isoformat())
