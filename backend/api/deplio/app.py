@@ -1,17 +1,28 @@
-from fastapi import Request
-from cadwyn import Cadwyn
 from deplio.models.versions import version_bundle
 from deplio.config import settings
-from datetime import date
 from deplio.routers import create_router
 from deplio.routes.q import router as q_router
+from fastapi.middleware import Middleware
+from cadwyn import Cadwyn
+from deplio.middleware.default_version import DefaultVersioningMiddleware
+from deplio.middleware.default_content_type import DefaultContentTypeMiddleware
+
 
 app = Cadwyn(
     title='Deplio',
     summary='Simple utils for serverless applications',
+    docs_url=None,
+    redoc_url='/docs',
     version=settings.current_version.isoformat(),
     versions=version_bundle,
     api_version_header_name=settings.version_header,
+    middleware=[
+        Middleware(
+            DefaultVersioningMiddleware,
+            api_version_var=version_bundle.api_version_var,
+        ),
+        Middleware(DefaultContentTypeMiddleware),
+    ],
 )
 router = create_router()
 
@@ -23,24 +34,8 @@ async def home():
 
 @router.get('/version')
 async def version():
+    print(version_bundle.api_version_var.get(None))
     return '1.0.0'
-
-
-@app.middleware('http')
-async def set_default_version(request: Request, call_next):
-    # TODO: fetch default version from the database
-    if request.url.path.startswith('/docs') or request.url.path.startswith(
-        '/openapi.json'
-    ):
-        return await call_next(request)
-
-    version = request.headers.get(settings.version_header, settings.default_version)
-    if isinstance(version, str):
-        version = date.fromisoformat(version)
-    request.scope['headers'].append(
-        (settings.version_header.lower().encode(), version.isoformat().encode())
-    )
-    return await call_next(request)
 
 
 app.generate_and_include_versioned_routers(router, q_router)
