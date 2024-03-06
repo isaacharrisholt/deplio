@@ -66,7 +66,7 @@ async def _get_user_and_team_from_jwt(
     return fetched_user, team
 
 
-async def _get_team_from_api_key(
+async def get_team_from_api_key(
     supabase_admin: SupabaseClient,
     api_key: str,
 ) -> tuple[APIKey, Team] | None:
@@ -95,8 +95,8 @@ async def _get_team_from_api_key(
     team = Team(**api_key_result.data['team'])
     api_key_result.data.pop('team')
     api_key_result.data['team_id'] = team.id
-    api_key = APIKey(**api_key_result.data)
-    return api_key, team
+    db_api_key = APIKey(**api_key_result.data)
+    return db_api_key, team
 
 
 AuthCredentials = NamedTuple(
@@ -129,7 +129,7 @@ async def any_auth(
     if user_and_team is not None:
         return AuthCredentials(*user_and_team, None)
 
-    api_key_and_team = await _get_team_from_api_key(
+    api_key_and_team = await get_team_from_api_key(
         supabase_admin, auth_header.credentials
     )
     if api_key_and_team is not None:

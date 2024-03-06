@@ -3,7 +3,9 @@ from fastapi import Request
 from starlette.types import ASGIApp
 from datetime import date
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from deplio.auth.dependencies import get_team_from_api_key
 from deplio.config import settings
+from deplio.services.supabase import supabase_admin as get_supabase_admin
 
 
 class DefaultVersioningMiddleware(BaseHTTPMiddleware):
@@ -22,13 +24,27 @@ class DefaultVersioningMiddleware(BaseHTTPMiddleware):
         ):
             return await call_next(request)
 
-        version = request.headers.get(settings.version_header, None)
+        header_version = request.headers.get(settings.version_header, None)
 
-        if version is None:
-            version = settings.default_version
+        if header_version is not None:
+            return await call_next(request)
 
-        if isinstance(version, str):
-            version = date.fromisoformat(version)
+        auth_header = request.headers.get('Authorization', None)
+        if auth_header is None:
+            return await call_next(request)
+
+        if not auth_header.startswith('Bearer '):
+            return await call_next(request)
+
+        api_key = auth_header.split(' ')[1]
+        supabase_admin = await get_supabase_admin()
+        api_key_and_team = await get_team_from_api_key(supabase_admin, api_key)
+        if api_key_and_team is None:
+            return await call_next(request)
+
+        _, team = api_key_and_team
+
+        version = team.api_version
 
         self.api_version_var.set(version)
         request.scope['headers'].append(
@@ -37,4 +53,7 @@ class DefaultVersioningMiddleware(BaseHTTPMiddleware):
                 version.isoformat().encode(),
             )
         )
-        return await call_next(request)
+
+        response = await call_next(request)
+        response.headers.append(settings.version_header, version.isoformat())
+        return response

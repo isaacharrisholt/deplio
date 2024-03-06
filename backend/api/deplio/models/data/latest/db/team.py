@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Optional
 
 from pydantic import AnyUrl
@@ -9,3 +10,4 @@ class Team(TimestampedDeplioModel):
     name: str
     type: TeamType
     avatar_url: Optional[AnyUrl]
+    api_version: date
