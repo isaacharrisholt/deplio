@@ -38,6 +38,8 @@ router = create_router(prefix='/q')
     description='Get a list of messages that have been sent to Deplio Q and their responses (if any).',
     responses=generate_responses(GetQMessagesResponse),
     tags=[Tags.Q],
+    response_description='List of messages and their responses',
+    operation_id='q:get',
 )
 async def get(
     auth: Annotated[AuthCredentials, Depends(any_auth)],
@@ -91,25 +93,27 @@ async def get(
     description='Send messages to Deplio Q to be processed asynchronously.',
     responses=generate_responses(PostQMessagesResponse),
     tags=[Tags.Q],
+    response_description='List of request IDs and number of messages delivered',
+    operation_id='q:post',
 )
 async def create(
     auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],
     supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
     context: Annotated[Context, Depends(context)],
     request: Request,
-    message_request: PostQMessagesRequest,
+    messages: PostQMessagesRequest,
 ):
-    messages: list[QMessage]
+    messages_list: list[QMessage]
 
-    if not isinstance(message_request, list):
-        messages = [message_request]
+    if not isinstance(messages, list):
+        messages_list = [messages]
     else:
-        messages = message_request
+        messages_list = messages
 
     request_headers = get_forward_headers(request.headers) or None
 
     database_insert = []
-    for message in messages:
+    for message in messages_list:
         database_insert.append(
             {
                 'api_key_id': str(auth.api_key.id),
