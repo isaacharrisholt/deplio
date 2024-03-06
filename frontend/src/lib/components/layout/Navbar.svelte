@@ -4,9 +4,9 @@
   import NavbarLinks from './NavbarLinks.svelte'
   import ActionButtons from './ActionButtons.svelte'
   import { page } from '$app/stores'
-  import DashboardNavbarLinks from './DashboardNavbarLinks.svelte'
   import Logo from './Logo.svelte'
   import AccountSelector from '../AccountSelector.svelte'
+  import DashboardNavbar from './DashboardNavbar.svelte'
 
   const drawerStore = getDrawerStore()
 
@@ -47,11 +47,7 @@
   />
 </AppBar>
 {#if isDashboard}
-  <nav
-    class="flex w-full flex-row flex-wrap items-center gap-4 px-8 py-2 bg-surface-100-800-token"
-  >
-    <DashboardNavbarLinks />
-  </nav>
+  <DashboardNavbar />
   <div
     class="grid h-[1px] w-full bg-gradient-to-r from-transparent via-primary-50 to-transparent"
   />
