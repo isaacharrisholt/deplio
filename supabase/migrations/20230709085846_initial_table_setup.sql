@@ -23,7 +23,8 @@ create table if not exists team (
     deleted_at timestamptz,
     name text not null,
     type team_type not null,
-    avatar_url text
+    avatar_url text,
+    unique (name, deleted_at) nulls not distinct
 );
 alter table team enable row level security;
 

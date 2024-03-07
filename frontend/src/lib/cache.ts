@@ -6,6 +6,7 @@ import type { UserWithTeams } from '$lib/types/supabase'
  */
 type CacheMapping = {
   user: UserWithTeams
+  user_current_team: string
   githubInstallationAccessToken: string
 }
 

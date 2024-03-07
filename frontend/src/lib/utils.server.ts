@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import type { Database } from './types/database'
 import { PRIVATE_SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private'
 
-export function getSupabaseAdminClient() {
+export function get_supabase_admin_client() {
   return createClient<Database>(
     PUBLIC_SUPABASE_URL,
     PRIVATE_SUPABASE_SERVICE_ROLE_KEY,

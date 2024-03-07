@@ -99,7 +99,7 @@
         errors={$errors.name}
         disabled={data.team.role !== 'admin' || data.team.type === 'personal'}
       />
-      {#if data.team.role === 'admin' && !data.team.type === 'personal'}
+      {#if data.team.role === 'admin' && data.team.type !== 'personal'}
         <button
           type="submit"
           class="btn variant-filled-primary w-fit"

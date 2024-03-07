@@ -1,10 +1,11 @@
-import { message, superValidate } from 'sveltekit-superforms/server'
+import { message, setError, superValidate } from 'sveltekit-superforms/server'
 import type { Actions, PageServerLoad } from './$types'
 import { fail } from '@sveltejs/kit'
 import { null_form_schema } from '$lib/forms/null'
 import { construct_file_path, hash_file } from '$lib/storage'
 import { cache } from '$lib/cache'
 import { edit_team_details_form_schema } from '$lib/forms/team'
+import { get_supabase_admin_client } from '$lib/utils.server'
 
 export const load: PageServerLoad = async ({ request }) => {
   const form = await superValidate(request, edit_team_details_form_schema)
@@ -17,6 +18,30 @@ export const actions: Actions = {
     const form = await superValidate(request, edit_team_details_form_schema)
     if (!form.valid) {
       return fail(400, { form })
+    }
+
+    if (form.data.name && !user.teams.find((t) => t.name === form.data.name)) {
+      const supabase_admin = get_supabase_admin_client()
+      const { data: teams, error: teams_fetch_error } = await supabase_admin
+        .from('team')
+        .select('id')
+        .ilike('name', form.data.name.toLowerCase())
+
+      if (teams_fetch_error) {
+        console.error('error fetching teams', teams_fetch_error)
+        return message(
+          form,
+          {
+            status: 'error',
+            message: 'An internal error occurred. Please try again later.',
+          },
+          { status: 500 },
+        )
+      }
+
+      if (teams.length > 0) {
+        return setError(form, 'name', 'A team with this name already exists.')
+      }
     }
 
     await cache.del(`user:${user.user_id}`)

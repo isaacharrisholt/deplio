@@ -2,7 +2,7 @@ import { edit_user_details_form_schema } from '$lib/forms/user'
 import { message, setError, superValidate } from 'sveltekit-superforms/server'
 import type { Actions, PageServerLoad } from './$types'
 import { fail } from '@sveltejs/kit'
-import { getSupabaseAdminClient } from '$lib/utils.server'
+import { get_supabase_admin_client } from '$lib/utils.server'
 import { null_form_schema } from '$lib/forms/null'
 import { construct_file_path, hash_file } from '$lib/storage'
 import { cache } from '$lib/cache'
@@ -21,7 +21,7 @@ export const actions: Actions = {
     }
 
     if (form.data.username && form.data.username !== user.username) {
-      const supabase_admin = getSupabaseAdminClient()
+      const supabase_admin = get_supabase_admin_client()
       const { data: users, error: users_fetch_error } = await supabase_admin
         .from('user')
         .select('id')
