@@ -91,7 +91,7 @@
 
     <!-- Other teams -->
     <div class="flex flex-col gap-2">
-      <p class="text-sm text-surface-600-300-token">Teams (coming soon)</p>
+      <p class="text-sm text-surface-600-300-token">Teams</p>
       {#each organization_teams as team}
         <button
           on:click={() => set_team(team.id)}

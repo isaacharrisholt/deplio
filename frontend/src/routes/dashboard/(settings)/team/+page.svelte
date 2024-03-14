@@ -27,8 +27,21 @@
 
 <div class="flex flex-grow flex-col gap-4">
   <div class="flex flex-row items-center justify-between gap-4">
-    <h2>Your team</h2>
-    <a href="/dashboard/team/new" class="btn variant-filled-secondary">Create team</a>
+    <h2>Your {data.team.type === 'personal' ? 'personal ' : ''}team</h2>
+    <div class="flex flex-row gap-4">
+      <a
+        href="/dashboard/team/new"
+        class="btn"
+        class:variant-filled-secondary={data.team.type === 'personal'}
+        class:variant-outline-secondary={data.team.type === 'organization'}
+        >Create team</a
+      >
+      {#if data.team.type === 'organization' && data.team.role === 'admin'}
+        <a href="/dashboard/team/invite" class="btn variant-filled-secondary"
+          >Invite team members</a
+        >
+      {/if}
+    </div>
   </div>
 
   <div class="grid gap-12 md:grid-cols-[1fr_2fr]">
@@ -71,13 +84,12 @@
             }}
           />
           <p class="text-sm">
-            Avatar
+            Avatar (max 2MB)
             {#if $avatar_submitting}
               <LoadingSpinner width="w-2" />
             {/if}
           </p>
         </form>
-        <p>Max 2MB</p>
       {:else}
         <div class="max-w-[180px] rounded-full">
           <Avatar

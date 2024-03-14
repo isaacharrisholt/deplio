@@ -69,13 +69,12 @@
           }}
         />
         <p class="text-sm">
-          Avatar
+          Avatar (max 2MB)
           {#if $avatar_submitting}
             <LoadingSpinner width="w-2" />
           {/if}
         </p>
       </form>
-      <p>Max 2MB</p>
     </div>
     <form action="?/user" method="POST" class="flex flex-col gap-4" use:enhance>
       <TextInput

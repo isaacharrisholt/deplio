@@ -35,6 +35,10 @@ export type QRequest = Select<'q_request'>
 // q_response
 export type QResponse = Select<'q_response'>
 
+// Team invite
+export type TeamInvite = Select<'team_invite'>
+export type TeamInviteInsert = Insert<'team_invite'>
+
 /*
  * Enums
  */
