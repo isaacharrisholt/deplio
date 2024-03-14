@@ -26,9 +26,8 @@ router = create_router(prefix='/version')
     responses=generate_responses(Versions),
     tags=[Tags.VERSIONS],
     response_description='API versions',
-    operation_id='version:get',
 )
-async def latest_version(auth: Annotated[AuthCredentials, Depends(any_auth)]):
+async def get(auth: Annotated[AuthCredentials, Depends(any_auth)]):
     latest_version = settings.current_version
     current_version = version_bundle.api_version_var.get(None)
     team_version = None

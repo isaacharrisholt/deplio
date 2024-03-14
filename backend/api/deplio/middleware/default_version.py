@@ -21,13 +21,13 @@ class DefaultVersioningMiddleware(BaseHTTPMiddleware):
         self.latest_version = latest_version
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint):
-        # Set default version to latest
-        self.api_version_var.set(self.latest_version)
-
         if request.url.path.startswith('/docs') or request.url.path.startswith(
             '/openapi.json'
         ):
             return await call_next(request)
+
+        # Set default version to latest
+        self.api_version_var.set(self.latest_version)
 
         header_version = request.headers.get(settings.version_header, None)
 
