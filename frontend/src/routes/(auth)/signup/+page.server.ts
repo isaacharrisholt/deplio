@@ -1,5 +1,5 @@
 import { emailSignupFormSchema, providerAuthFormSchema } from '$lib/forms/auth'
-import { getSupabaseAdminClient } from '$lib/utils.server'
+import { get_supabase_admin_client } from '$lib/utils.server'
 import { fail, redirect } from '@sveltejs/kit'
 import { message, setError, superValidate } from 'sveltekit-superforms/server'
 import type { Actions, PageServerLoad } from './$types'
@@ -12,17 +12,14 @@ export const load: PageServerLoad = async (event) => {
 }
 
 export const actions: Actions = {
-  emailSignup: async (event) => {
-    const {
-      locals: { supabase },
-    } = event
-    const form = await superValidate(event, emailSignupFormSchema)
+  emailSignup: async ({ request, locals: { supabase } }) => {
+    const form = await superValidate(request, emailSignupFormSchema)
 
     if (!form.valid) {
       return fail(400, { form })
     }
 
-    const supabaseAdmin = getSupabaseAdminClient()
+    const supabaseAdmin = get_supabase_admin_client()
     // Check if username is already taken
     const { data: usernameData, error: usernameError } = await supabaseAdmin
       .from('user')

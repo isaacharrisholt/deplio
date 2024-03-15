@@ -47,39 +47,45 @@ export const handle: Handle = async ({ event, resolve }) => {
   }
 
   let user = await cache.hgetall(`user:${session?.user.id}`)
-  const refreshCache = event.url.searchParams.get('refreshCache')
+  const refresh_cache = event.url.searchParams.get('refresh_cache')
 
-  if (!user || refreshCache) {
-    const { data: userFetch, error: userFetchError } = await event.locals.supabase
+  if (!user || refresh_cache) {
+    const { data: user_fetch, error: user_fetch_error } = await event.locals.supabase
       .from('user')
       .select('*, team_user (team (*), role)')
       .eq('user_id', session?.user.id)
       .single()
 
-    if (userFetchError) {
-      throw error(500, `Error fetching user: ${userFetchError.message}`)
+    if (user_fetch_error) {
+      throw error(500, `Error fetching user: ${user_fetch_error.message}`)
     }
 
-    if (!userFetch) {
+    if (!user_fetch) {
       throw error(404, 'User not found')
     }
 
-    const { team_user: teamUser, ...extractedUser } = userFetch
+    const { team_user: team_user, ...extracted_user } = user_fetch
 
-    const earliestTeam = teamUser.sort((teamUser1, teamUser2) => {
-      return (teamUser1?.team?.created_at ?? 0) < (teamUser2?.team?.created_at ?? 0)
-        ? -1
-        : 1
-    })[0]?.team
+    let current_team_id = await cache.hgetall(`user_current_team:${session?.user.id}`)
 
-    if (!earliestTeam) {
-      throw error(404, 'User not found')
+    if (!current_team_id) {
+      const earliest_team = team_user.sort((teamUser1, teamUser2) => {
+        return (teamUser1?.team?.created_at ?? 0) < (teamUser2?.team?.created_at ?? 0)
+          ? -1
+          : 1
+      })[0]?.team
+
+      if (!earliest_team) {
+        throw error(404, 'User not found')
+      }
+      await cache.hset(`user_current_team:${session?.user.id}`, earliest_team.id)
+      current_team_id = earliest_team.id
     }
 
-    const userWithTeams: UserWithTeams = {
-      ...extractedUser,
-      current_team_id: earliestTeam.id,
-      teams: teamUser.map((teamWithRole) => {
+    const user_with_teams: UserWithTeams = {
+      ...extracted_user,
+      current_team_id,
+      teams: team_user.map((teamWithRole) => {
         if (!teamWithRole.team) {
           throw error(404, 'Team not found')
         }
@@ -90,20 +96,21 @@ export const handle: Handle = async ({ event, resolve }) => {
       }),
     }
 
-    await cache.hset(`user:${session?.user.id}`, userWithTeams, {
+    await cache.hset(`user:${session?.user.id}`, user_with_teams, {
       ttlSeconds: 60 * 60, // 1 hour
     })
-    user = userWithTeams
+    user = user_with_teams
   }
   event.locals.user = user
 
-  const newTeamId = event.url.searchParams.get('team')
+  const new_team_id = event.url.searchParams.get('team')
 
-  if (newTeamId) {
-    event.locals.user.current_team_id = newTeamId
-    cache.hset(`user:${session?.user.id}`, event.locals.user, {
+  if (new_team_id) {
+    event.locals.user.current_team_id = new_team_id
+    await cache.hset(`user:${session?.user.id}`, event.locals.user, {
       ttlSeconds: 60 * 60, // 1 hour
     })
+    await cache.hset(`user_current_team:${session?.user.id}`, new_team_id)
   }
 
   event.locals.team = event.locals.user.teams.find(

@@ -7,42 +7,43 @@
   import TextInput from './forms/TextInput.svelte'
   import { browser } from '$app/environment'
 
-  const teamPopup: PopupSettings = {
+  const team_popup: PopupSettings = {
     event: 'click',
     target: 'teamPopup',
     placement: 'bottom',
   }
 
-  async function setTeam(teamId: string) {
+  async function set_team(teamId: string) {
     const currentUrl = $page.url
     currentUrl.searchParams.set('team', teamId)
-    await goto(currentUrl.toString())
+    await goto(currentUrl.toString(), { invalidateAll: true })
   }
 
-  let searchValue = ''
+  let search_value = ''
 
-  let isWindows = false
+  let is_windows = false
   $: {
     if (browser) {
-      const uaData = (navigator as unknown as { userAgentData?: { platform: string } })
+      const ua_data = (navigator as unknown as { userAgentData?: { platform: string } })
         .userAgentData
-      isWindows = uaData?.platform === 'Windows'
+      is_windows = ua_data?.platform === 'Windows'
     }
   }
 
-  function formatForSearch(str: string) {
+  function format_for_search(str: string) {
     return str
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '')
       .replace(/([a-z])([A-Z])/g, '$1 $2')
   }
 
-  $: filteredTeams = $page.data.user.teams.filter(
+  $: filtered_teams = $page.data.user.teams.filter(
     (team) =>
-      !searchValue || formatForSearch(team.name).includes(formatForSearch(searchValue)),
+      !search_value ||
+      format_for_search(team.name).includes(format_for_search(search_value)),
   )
-  $: personalTeam = filteredTeams.find((team) => team.type === 'personal')
-  $: organizationTeams = filteredTeams.filter((team) => team.type === 'organization')
+  $: personal_team = filtered_teams.find((team) => team.type === 'personal')
+  $: organization_teams = filtered_teams.filter((team) => team.type === 'organization')
 </script>
 
 <div class="flex flex-row items-center gap-2">
@@ -51,12 +52,12 @@
   </a>
 
   <p class="h3 -mt-1 select-none pl-4 text-primary-900">
-    {isWindows ? '\\' : '/'}
+    {is_windows ? '\\' : '/'}
   </p>
 
   <button
     class="btn flex flex-row items-center gap-2 bg-none hover:variant-soft-surface"
-    use:popup={teamPopup}
+    use:popup={team_popup}
   >
     <p>{$page.data.team.name}</p>
     <ChevronsUpDown size={16} />
@@ -69,19 +70,19 @@
     id="team-search"
     placeholder="Search accounts..."
     class="w-full"
-    bind:value={searchValue}
+    bind:value={search_value}
   />
   <div class="flex flex-col gap-4 p-4">
     <!-- Personal team -->
-    {#if personalTeam}
+    {#if personal_team}
       <div class="flex flex-col gap-2">
         <p class="text-sm text-surface-600-300-token">Personal account</p>
         <button
-          on:click={() => setTeam(personalTeam?.id ?? '')}
+          on:click={() => set_team(personal_team?.id ?? '')}
           class="btn justify-start"
-          class:variant-outline-tertiary={$page.data.team.id === personalTeam.id}
+          class:variant-outline-tertiary={$page.data.team.id === personal_team.id}
         >
-          <p>{personalTeam.name}</p>
+          <p>{personal_team.name}</p>
         </button>
       </div>
 
@@ -91,9 +92,9 @@
     <!-- Other teams -->
     <div class="flex flex-col gap-2">
       <p class="text-sm text-surface-600-300-token">Teams (coming soon)</p>
-      {#each organizationTeams as team}
+      {#each organization_teams as team}
         <button
-          on:click={() => setTeam(team.id)}
+          on:click={() => set_team(team.id)}
           class="btn justify-start"
           class:variant-outline-tertiary={$page.data.team.id === team.id}
         >
@@ -102,9 +103,9 @@
       {/each}
     </div>
 
-    <button class="btn variant-ghost-surface justify-start" disabled>
+    <a href="/dashboard/team/new" class="btn variant-ghost-surface justify-start">
       <PlusCircle size={20} class="text-secondary-500" />
       <p>Create team</p>
-    </button>
+    </a>
   </div>
 </div>
