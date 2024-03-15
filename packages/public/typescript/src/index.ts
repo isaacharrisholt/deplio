@@ -1,18 +1,16 @@
-import { Configuration, VersionsApi, QApi, ResponseError } from './api'
-import type { ConfigurationParameters as DeplioConfig } from './api'
+import type { DeplioConfig } from './config'
+import type { DeplioResponse } from './apis/types'
+import { API_VERSION } from './version'
+import { QApi } from './apis/q'
 
 export class Deplio {
-  public readonly versions: VersionsApi
   public readonly q: QApi
-  private config: Configuration
 
-  constructor(config?: DeplioConfig) {
-    this.config = new Configuration(config)
-    this.versions = new VersionsApi(this.config)
-    this.q = new QApi(this.config)
+  constructor(private config: DeplioConfig) {
+    this.q = new QApi({ version: API_VERSION, ...config })
   }
 }
 
-export { ResponseError }
+export type { DeplioResponse }
 export type { DeplioConfig }
-export type * from './api'
+export type * from './generated/models'

@@ -39,6 +39,7 @@ router = create_router(prefix='/q')
     responses=generate_responses(GetQMessagesResponse),
     tags=[Tags.Q],
     response_description='List of messages and their responses',
+    operation_id='q:list',
 )
 async def get(
     auth: Annotated[AuthCredentials, Depends(any_auth)],

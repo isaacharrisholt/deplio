@@ -7,15 +7,12 @@ models/DeplioError.ts
 models/DeplioWarning.ts
 models/ErrorResponse.ts
 models/GetQMessagesResponse.ts
-models/HTTPValidationError.ts
 models/Messages.ts
 models/ModelHTTPMethod.ts
 models/PostQMessagesResponse.ts
 models/QMessage.ts
 models/QRequestWithResponses.ts
 models/QResponse.ts
-models/ValidationError.ts
-models/ValidationErrorLocInner.ts
 models/Versions.ts
 models/index.ts
 runtime.ts

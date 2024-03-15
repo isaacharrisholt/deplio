@@ -30,8 +30,8 @@ export const handle: Handle = async ({ event, resolve }) => {
   }
   const session = await event.locals.getSession()
   event.locals.api = new Deplio({
-    accessToken: session?.access_token,
-    basePath: PUBLIC_API_URL,
+    api_key: session?.access_token ?? '',
+    base_path: PUBLIC_API_URL,
   })
 
   if (event.url.pathname.startsWith('/dashboard') && !session) {

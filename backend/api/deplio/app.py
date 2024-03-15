@@ -1,4 +1,8 @@
+from fastapi import Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
+from deplio.models.data.latest.responses import ErrorResponse, DeplioError
 from deplio.models.versions import version_bundle
 from deplio.config import settings
 from deplio.routes.q import router as q_router
@@ -35,6 +39,24 @@ app = Cadwyn(
     servers=[{'url': 'https://api.depl.io'}],
     generate_unique_id_function=generate_openapi_id,
 )
+
+
+@app.exception_handler(RequestValidationError)
+def validation_exception_handler(
+    _: Request,
+    exc: RequestValidationError,
+):
+    return JSONResponse(
+        ErrorResponse(
+            errors=[
+                DeplioError(message='', data={'errors': e, 'body': exc.body})
+                for e in exc.errors()
+            ],
+            warnings=[],
+            message='There was an error validating your request against the schema',
+        ).model_dump(),
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    )
 
 
 app.generate_and_include_versioned_routers(version_router, q_router)
