@@ -1,7 +1,7 @@
 import { error, fail } from '@sveltejs/kit'
 import type { PageServerLoad, Actions } from './$types'
 import { message, setError, superValidate } from 'sveltekit-superforms/client'
-import { newApiKeyFormSchema, revokeApiKeyFormSchema } from '$lib/forms/settings'
+import { newApiKeyFormSchema, revokeApiKeyFormSchema } from '$lib/forms/api-key'
 import { generateApiKey, hashApiKey } from '$lib/apiKeys'
 import parseDuration from 'parse-duration'
 import { addHours } from 'date-fns'

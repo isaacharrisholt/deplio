@@ -229,13 +229,13 @@ crt = ["awscrt (==0.19.19)"]
 
 [[package]]
 name = "cadwyn"
-version = "3.11.0"
+version = "3.12.0"
 description = "Production-ready community-driven modern Stripe-like API versioning in FastAPI"
 optional = false
 python-versions = ">=3.10,<4.0"
 files = [
-    {file = "cadwyn-3.11.0-py3-none-any.whl", hash = "sha256:6c93c3f26fcca4388ebd5a1b871dd4692ca9777adc95bacfd362c841a169ce73"},
-    {file = "cadwyn-3.11.0.tar.gz", hash = "sha256:6d643eb02bd635717d161ee84bd5aab545d5b8b389966b50e76a7d56cd057a45"},
+    {file = "cadwyn-3.12.0-py3-none-any.whl", hash = "sha256:94952dd6cd243654e9f8bdeb762a2faed7401921ad640af4736fcf95b0a736fd"},
+    {file = "cadwyn-3.12.0.tar.gz", hash = "sha256:2de136e1b5043cd59b9d658c10986bb9e8b0e6c125c341145c7aa85725a037e1"},
 ]
 
 [package.dependencies]
@@ -1709,4 +1709,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "97653eb471fac480bb0bcbd9094977c2df5d65d21c8f18f3280606d03f03496a"
+content-hash = "24d483f90a2136e9ba4dbd91a217714ac5e717c83992403345a7a5070ac25d8d"
