@@ -22,3 +22,8 @@ export const invite_team_member_form_schema = z.object({
   emails: z.array(z.string().email('Invalid email address')),
   role: z.enum(['member', 'admin']),
 })
+
+export const respond_to_team_invite_form_schema = z.object({
+  invite_id: z.string(),
+  action: z.enum(['accept', 'reject']),
+})
