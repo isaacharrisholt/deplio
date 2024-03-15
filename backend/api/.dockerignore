@@ -1,1 +1,5 @@
 fly.toml
+generate_schemas.py
+package.json
+README.md
+Procfile

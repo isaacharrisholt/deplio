@@ -1,26 +1,27 @@
-# Supabase URL
-data "aws_secretsmanager_secret" "supabase_url" {
-    name = "${terraform.workspace}/supabase-url"
+#####################################
+# Secrets are managed using Doppler #
+#####################################
+variable "doppler_token" {
+  type        = string
+  description = "Doppler access token"
 }
 
-data "aws_secretsmanager_secret_version" "supabase_url" {
-    secret_id = data.aws_secretsmanager_secret.supabase_url.id
+provider "doppler" {
+  doppler_token = var.doppler_token
+  alias         = "globals"
 }
 
-# Supabase anon key
-data "aws_secretsmanager_secret" "supabase_anon_key" {
-    name = "${terraform.workspace}/supabase-anon-key"
+data "doppler_secrets" "globals" {
+  provider = doppler.globals
+  config   = terraform.workspace
 }
 
-data "aws_secretsmanager_secret_version" "supabase_anon_key" {
-    secret_id = data.aws_secretsmanager_secret.supabase_anon_key.id
-}
-
-# Supabase service role key
-data "aws_secretsmanager_secret" "supabase_service_role_key" {
-    name = "${terraform.workspace}/supabase-service-role-key"
-}
-
-data "aws_secretsmanager_secret_version" "supabase_service_role_key" {
-    secret_id = data.aws_secretsmanager_secret.supabase_service_role_key.id
+###########
+# OUTPUTS #
+###########
+resource "doppler_secret" "deplio_q_queue_url" {
+  project = "globals"
+  config  = terraform.workspace
+  name    = "DEPLIO_Q_QUEUE_URL"
+  value   = aws_sqs_queue.q_queue.url
 }

@@ -1,0 +1,3 @@
+setup:
+  - project: deplio-api
+    config: local_personal

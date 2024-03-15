@@ -174,7 +174,7 @@ async def create(
             )
             for message in sqs_messages
         ],
-        settings.aws_sqs_queue_url,
+        settings.deplio_q_queue_url,
     )
 
     if 'Successful' not in sqs_response:

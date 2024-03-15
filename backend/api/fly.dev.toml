@@ -7,7 +7,7 @@ app = 'deplio-api-dev'
 primary_region = 'iad'
 
 [build]
-  builder = 'paketobuildpacks/builder:base'
+  dockerfile = 'Dockerfile'
 
 [env]
   PORT = '8080'
