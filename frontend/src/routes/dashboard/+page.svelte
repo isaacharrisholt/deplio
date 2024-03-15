@@ -1,8 +1,81 @@
-<script>
-  import { SquareStack, Mails, Ship } from 'lucide-svelte'
+<script lang="ts">
+  import { SquareStack, Mails, Ship, Check, X } from 'lucide-svelte'
+  import type { PageData } from './$types'
+  import { format } from 'date-fns'
+  import { capitalise } from '$lib/formatting'
+  import { getToastStore } from '@skeletonlabs/skeleton'
+  import { createForm } from '$lib/forms/client'
+
+  export let data: PageData
+
+  const { enhance, submitting } = createForm(data.form, getToastStore())
 </script>
 
 <section class="grid gap-8 md:grid-cols-2">
+  {#if data.team_invites.length > 0}
+    <div class="card variant-outline-tertiary col-span-full flex flex-col gap-8 p-8">
+      <div class="flex flex-col gap-2">
+        <h2 class="h2">Team invites</h2>
+        <p>You have {data.team_invites.length} pending team invites.</p>
+      </div>
+
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th>Expiry</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each data.team_invites as invite}
+              <tr>
+                <td>{invite.team?.name ?? ''}</td>
+                <td>{format(new Date(invite.expires_at), 'MMMM dd, yyyy, HH:mm')}</td>
+                <td>{capitalise(invite.role)}</td>
+                <td class="flex flex-row items-center justify-end gap-4">
+                  <form method="POST" use:enhance>
+                    <input type="hidden" name="invite_id" value={invite.id} />
+                    <input type="hidden" name="action" value="accept" />
+                    <button
+                      type="submit"
+                      class="chip variant-filled-success ml-auto flex w-fit items-center gap-2"
+                      disabled={$submitting}
+                    >
+                      Accept
+                      <Check size={16} />
+                    </button>
+                  </form>
+
+                  <form method="POST" use:enhance>
+                    <input type="hidden" name="invite_id" value={invite.id} />
+                    <input type="hidden" name="action" value="reject" />
+                    <button
+                      type="submit"
+                      class="chip variant-filled-error ml-auto flex w-fit items-center gap-2"
+                      disabled={$submitting}
+                    >
+                      Reject
+                      <X size={16} />
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            {:else}
+              <tr>
+                <td colspan="5" class="text-center">
+                  No API keys found. Create one above!
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {/if}
+
   <a
     href="/dashboard/q"
     class="card flex h-60 flex-row items-center justify-between gap-4 p-8 !transition-none"

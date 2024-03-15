@@ -17,3 +17,7 @@ export function format_initials({
     .join('')
     .toUpperCase()
 }
+
+export function capitalise(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
