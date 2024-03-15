@@ -236,6 +236,58 @@ export interface Database {
           },
         ]
       }
+      team_invite: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          deleted_at: string | null
+          email: string
+          expires_at: string
+          id: string
+          role: Database['public']['Enums']['user_role']
+          status: Database['public']['Enums']['invite_status']
+          team_id: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          deleted_at?: string | null
+          email: string
+          expires_at: string
+          id?: string
+          role: Database['public']['Enums']['user_role']
+          status?: Database['public']['Enums']['invite_status']
+          team_id: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          deleted_at?: string | null
+          email?: string
+          expires_at?: string
+          id?: string
+          role?: Database['public']['Enums']['user_role']
+          status?: Database['public']['Enums']['invite_status']
+          team_id?: string
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'team_invite_created_by_fkey'
+            columns: ['created_by']
+            referencedRelation: 'user'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'team_invite_team_id_fkey'
+            columns: ['team_id']
+            referencedRelation: 'team'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       team_user: {
         Row: {
           created_at: string
@@ -423,6 +475,7 @@ export interface Database {
       }
     }
     Enums: {
+      invite_status: 'pending' | 'accepted' | 'rejected'
       team_type: 'personal' | 'organization'
       user_role: 'admin' | 'member'
     }
