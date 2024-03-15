@@ -6,7 +6,7 @@
 
   export let data: LayoutData
 
-  const pages = [
+  $: pages = [
     { href: 'team', label: data.team.name },
     { href: 'user', label: 'Your details' },
   ] as const

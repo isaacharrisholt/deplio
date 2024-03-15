@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from '$app/stores'
   import NavbarLink, { type Navlink } from './NavbarLink.svelte'
 
   const nav_links: Navlink[] = [
@@ -16,6 +17,9 @@
     {
       name: 'Settings',
       href: '/dashboard/team',
+      active:
+        $page.url.pathname.startsWith('/dashboard/team') ||
+        $page.url.pathname.startsWith('/dashboard/user'),
     },
   ]
 </script>
