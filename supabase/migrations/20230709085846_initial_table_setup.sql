@@ -24,7 +24,7 @@ create table if not exists team (
     name text not null,
     type team_type not null,
     avatar_url text,
-    unique (name, deleted_at) nulls not distinct
+    unique nulls not distinct (name, deleted_at)
 );
 alter table team enable row level security;
 
