@@ -16,14 +16,11 @@
 import * as runtime from '../runtime';
 import type {
   ErrorResponse,
-  HTTPValidationError,
   Versions,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-    HTTPValidationErrorFromJSON,
-    HTTPValidationErrorToJSON,
     VersionsFromJSON,
     VersionsToJSON,
 } from '../models/index';

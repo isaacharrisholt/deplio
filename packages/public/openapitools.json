@@ -7,7 +7,7 @@
     "generators": {
       "typescript": {
         "generatorName": "typescript-fetch",
-        "output": "#{cwd}/typescript/src/api",
+        "output": "#{cwd}/typescript/src/generated",
         "inputSpec": "#{cwd}/openapi.json",
         "additionalProperties": {
           "supportsES6": true,

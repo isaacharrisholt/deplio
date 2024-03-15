@@ -59,13 +59,13 @@
     <TabbedCodeBlock
       languages={[
         {
-          code: `curl -X POST https://api.deplio.com/api/q -H 'X-Deplio-API-Key: <KEY>' -H '{"destination": "https://example.com", "method": "GET"}'`,
+          code: `curl -X POST https://api.depl.io/q -H 'X-Deplio-API-Key: <KEY>' -H '{"destination": "https://example.com", "method": "GET"}'`,
           language: 'cURL',
           lineNumbers: false,
         },
         {
           code: `
-const response = await fetch('https://api.deplio.com/api/q', {
+const response = await fetch('https://api.depl.io/q', {
   method: 'POST',
   headers: {
     'X-Deplio-API-Key': '<KEY>',

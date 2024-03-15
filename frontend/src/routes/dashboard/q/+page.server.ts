@@ -1,5 +1,4 @@
 import type { PageServerLoad } from './$types'
-import { ResponseError } from '@deplio/sdk'
 import { error } from '@sveltejs/kit'
 
 export const load: PageServerLoad = async (event) => {
@@ -13,27 +12,19 @@ export const load: PageServerLoad = async (event) => {
     page = undefined
   }
 
-  try {
-    const {
-      page: usedPage,
-      count,
-      total,
-      requests,
-      page_size,
-    } = await api.q.list({ page })
-    return {
-      page: usedPage,
-      count,
-      total,
-      q_requests: requests,
-      page_size,
-    }
-  } catch (e: unknown) {
-    if (e instanceof ResponseError) {
-      console.log(await e.response.json())
-      throw error(500, 'Internal Server Error')
-    }
-    console.log('unknown error', e)
+  const { data: q_requests, error: q_requests_error } = await api.q.list({ page })
+  if (q_requests_error) {
+    console.log('error fetching q messages', q_requests_error)
     throw error(500, 'Internal Server Error')
+  }
+
+  const { page: usedPage, count, total, requests, page_size } = q_requests
+
+  return {
+    page: usedPage,
+    count,
+    total,
+    q_requests: requests,
+    page_size,
   }
 }
