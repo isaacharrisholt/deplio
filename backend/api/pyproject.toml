@@ -6,7 +6,7 @@ authors = ["Isaac Harris-Holt <isaac@withpluto.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 fastapi = "^0.110.0"
 cadwyn = "^3.12.0"
 httpx = "^0.25"

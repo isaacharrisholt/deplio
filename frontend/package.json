@@ -3,15 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "dotenv -e ../.env -- vite dev",
-    "build": "dotenv -e ../.env -- vite build",
-    "preview": "dotenv -e ../.env -- vite preview",
-    "test": "playwright test",
+    "dev": "doppler run -- dotenv -e ../.env -- vite dev",
+    "build": "doppler run -- dotenv -e ../.env -- vite build",
+    "preview": "doppler run -- dotenv -e ../.env -- vite preview",
+    "test": "doppler run -- playwright test",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "test:unit": "vitest",
-    "lint": "prettier --plugin-search-dir . --check . && eslint .",
-    "format": "prettier --plugin-search-dir . --write ."
+    "lint": "doppler run -- prettier --plugin-search-dir . --check . && eslint .",
+    "format": "doppler run -- prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
     "@deplio/sdk": "workspace:*",
