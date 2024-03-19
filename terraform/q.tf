@@ -1,8 +1,14 @@
 #############
 # SQS QUEUE #
 #############
+variable "q_lambda_timeout" {
+  type    = number
+  default = 60
+}
+
 resource "aws_sqs_queue" "q_queue" {
-  name = "${terraform.workspace}-deplio-q-queue"
+  name                       = "${terraform.workspace}-deplio-q-queue"
+  visibility_timeout_seconds = var.q_lambda_timeout
 }
 
 output "q_queue_url" {
@@ -14,10 +20,11 @@ output "q_queue_url" {
 ##############
 resource "null_resource" "q_receiver_binary" {
   triggers = {
-    code_sha1   = sha1(join("", [for f in fileset("../lambda/q_receiver", "./**/*.go") : filesha1("../lambda/q_receiver/${f}")]))
-    binary_sha1 = sha1("../lambda/q_receiver/bootstrap")
-    zip_sha1    = sha1("../lambda/q_receiver/q_receiver.zip")
-    workspace   = terraform.workspace
+    # code_sha1   = sha1(join("", [for f in fileset("../lambda/q_receiver", "./**/*.go") : filesha1("../lambda/q_receiver/${f}")]))
+    # binary_sha1 = sha1("../lambda/q_receiver/bootstrap")
+    # zip_sha1    = sha1("../lambda/q_receiver/q_receiver.zip")
+    # workspace   = terraform.workspace
+    always_run = timestamp()
   }
   provisioner "local-exec" {
     # Use x86_64 for local development, arm64 for production
@@ -65,7 +72,7 @@ resource "aws_lambda_function" "q_receiver_function" {
   architectures    = [terraform.workspace == "local" ? "x86_64" : "arm64"]
   filename         = data.archive_file.q_receiver_archive.output_path
   source_code_hash = data.archive_file.q_receiver_archive.output_base64sha256
-  timeout          = 60
+  timeout          = var.q_lambda_timeout
 
   runtime = "provided.al2"
 

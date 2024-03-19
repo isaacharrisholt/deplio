@@ -12,11 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'production' && 'production' || 'dev' }}
     defaults:
-      working-directory: "./terraform"
+      run:
+        working-directory: "./terraform"
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       TERRAFORM_WORKSPACE: ${{ github.ref_name == 'production' && 'prod' || 'dev' }}
+      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,12 +30,12 @@ jobs:
         run: terraform init
       - name: Create workspace
         run: terraform workspace new ${{ env.TERRAFORM_WORKSPACE }}
-        contiunue-on-error: true
+        continue-on-error: true
       - name: Select workspace
-        run: terraform workspace user ${{ env.TERRAFORM_WORKSPACE }}
+        run: terraform workspace select ${{ env.TERRAFORM_WORKSPACE }}
       - name: Validate
         run: terraform validate
       - name: Plan
-        run: terraform plan --no-color -input=false
+        run: terraform plan -no-color -input=false -var="doppler_token=${{ env.DOPPLER_TOKEN }}"
       - name: Apply
-        run: terraform apply -auto-approve -input=false
+        run: terraform apply -auto-approve -input=false -var="doppler_token=${{ env.DOPPLER_TOKEN }}"
