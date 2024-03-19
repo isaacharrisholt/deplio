@@ -12,8 +12,8 @@ importers:
         specifier: ^7.3.0
         version: 7.3.0
       supabase:
-        specifier: ^1.106.1
-        version: 1.106.1
+        specifier: ^1.150.0
+        version: 1.150.0
       turbo:
         specifier: ^1.12.4
         version: 1.12.4
@@ -4010,6 +4010,20 @@ packages:
 
   /supabase@1.106.1:
     resolution: {integrity: sha512-Wc1GYraDRCRGZIkCPoN00QuSP//Cm2Q4q5B6LvEHb2dKoezO7Mx7SYZ5rhh3X0ko9Yii0ABeN2GE88ZVL9R5mg==}
+    engines: {npm: '>=8'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      bin-links: 4.0.3
+      https-proxy-agent: 7.0.2
+      node-fetch: 3.3.2
+      tar: 6.2.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /supabase@1.150.0:
+    resolution: {integrity: sha512-hjyXukIww6Jc37Wq9urUldS61a7lZdw6J8Ky/TaScGFqTsO4DbPXUoOxHHaWYSM2ucV+4ejNZ5jYpAGmorApkA==}
     engines: {npm: '>=8'}
     hasBin: true
     requiresBuild: true

@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "dotenv-cli": "^7.3.0",
-    "supabase": "^1.106.1",
+    "supabase": "^1.150.0",
     "turbo": "^1.12.4"
   }
 }

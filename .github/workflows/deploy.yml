@@ -14,9 +14,31 @@ env:
   ENV: ${{ github.ref_name == 'production' && 'prod' || 'dev' }}
 
 jobs:
+  supabase-migrations:
+    name: Deploy migrations
+    environment: ${{ github.ref_name == 'production' && 'production' || 'dev' }}
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      GITHUB_CLIENT_ID: ${{ secrets.DEPLIO_GITHUB_CLIENT_ID }}
+      GITHUB_CLIENT_SECRET: ${{ secrets.DEPLIO_GITHUB_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 1.150.0
+      - name: Link Supabase
+        run: |
+          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} --password ${{ secrets.SUPABASE_DB_PASSWORD }}
+      - name: Deploy Migrations
+        run: |
+          supabase db push --password ${{ secrets.SUPABASE_DB_PASSWORD }}
+
   terraform:
     name: "Deploy Terraform infrastructure"
     runs-on: ubuntu-latest
+    needs: [supabase-migrations]
     environment: ${{ github.ref_name == 'production' && 'production' || 'dev' }}
     defaults:
       run:
