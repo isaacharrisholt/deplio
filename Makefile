@@ -9,5 +9,5 @@ restart:
 types:
 	pnpm supabase gen types typescript --local > frontend/src/lib/types/database.ts 
 
-start-aws:  ## Start the localstack environment
-	python3 scripts/start_local_env.py
+start-aws:
+	pnpm dotenv -- python3 scripts/start_local_env.py

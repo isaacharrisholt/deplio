@@ -16,12 +16,11 @@ redis = {extras = ["hiredis"], version = "^5.0.1"}
 upstash-redis = "^1.0.0"
 boto3 = "^1.34.55"
 gunicorn = "^21.2.0"
+uvicorn = "^0.27.1"
 
 
 [tool.poetry.group.dev.dependencies]
-alembic = "^1.13.1"
 ruff = "^0.2.2"
-uvicorn = "^0.27.1"
 
 [build-system]
 requires = ["poetry-core"]

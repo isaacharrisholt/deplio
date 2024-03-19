@@ -10,6 +10,9 @@ terraform {
     null = {
       source = "hashicorp/null"
     }
+    doppler = {
+      source = "dopplerhq/doppler"
+    }
   }
 
   required_version = ">= 1.2.0"

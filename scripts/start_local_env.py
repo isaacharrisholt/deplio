@@ -6,19 +6,19 @@ import json
 from pathlib import Path
 
 
-def get_secrets() -> dict[str, str]:
-    secrets_file = Path("local-secrets.json")
-    if not secrets_file.exists():
-        raise Exception("local-secrets.json not found")
-
-    return json.loads(secrets_file.read_text())
-
-
 def start_localstack():
     print("Starting localstack... ", end="", flush=True)
     os.environ["DEBUG"] = "1"
     result = subprocess.run(
-        ["localstack", "start", "-d", "-e", "LAMBDA_DOCKER_NETWORK=bridge", "--network", "bridge"],
+        [
+            "localstack",
+            "start",
+            "-d",
+            "-e",
+            "LAMBDA_DOCKER_NETWORK=bridge",
+            "--network",
+            "bridge",
+        ],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
@@ -41,28 +41,20 @@ def start_localstack():
     print("done")
 
 
-def setup_secrets(env_vars: dict[str, str]):
-    # Setup secrets
-    for key, value in env_vars.items():
-        key_name = f"local/{key}"
-        result = subprocess.run(
-            [
-                "awslocal",
-                "secretsmanager",
-                "create-secret",
-                "--name",
-                key_name,
-                "--secret-string",
-                value,
-            ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-        if result.returncode != 0:
-            print("failed")
-            print(result.stderr.decode("utf-8"))
-            raise Exception("Failed to create secret")
-        print(f'Created secret "{key_name}"')
+def initialise_terraform():
+    print("Initialising terraform... ", end="", flush=True)
+    result = subprocess.run(
+        ["tflocal", "init"],
+        cwd="terraform",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if result.returncode != 0:
+        print("failed")
+        print(result.stderr.decode("utf-8"))
+        raise Exception("Failed to initialise terraform")
+    print("done")
+
 
 def create_tf_workspace():
     print("Creating terraform workspace... ", end="", flush=True)
@@ -80,10 +72,23 @@ def create_tf_workspace():
     print("done")
 
 
-def apply_tf():
+def get_doppler_token() -> str:
+    token = os.getenv("DOPPLER_TOKEN")
+    if not token:
+        token = input("Enter your Doppler 'globals' project local token: ").strip()
+    return token
+
+
+def apply_tf(doppler_token: str):
     print("Applying terraform... ", end="", flush=True)
     result = subprocess.run(
-        ["tflocal", "apply", "-auto-approve"],
+        [
+            "tflocal",
+            "apply",
+            "-auto-approve",
+            "-var",
+            f"doppler_token={doppler_token}",
+        ],
         cwd="terraform",
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -126,12 +131,12 @@ def signal_handler(sig, frame):
 
 def main():
     print("Starting local environment")
-    secrets = get_secrets()
+    token = get_doppler_token()
     start_localstack()
     try:
-        setup_secrets(secrets)
+        initialise_terraform()
         create_tf_workspace()
-        apply_tf()
+        apply_tf(token)
     except Exception as e:
         print(e)
         print("Failed to start local environment")

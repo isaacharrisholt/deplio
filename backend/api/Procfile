@@ -1,1 +1,1 @@
-web: gunicorn deplio.app:app
+web: gunicorn -k uvicorn.workers.UvicornWorker deplio.app:app
