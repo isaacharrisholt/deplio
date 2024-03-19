@@ -15,19 +15,19 @@ terraform {
     }
   }
 
-  required_version = ">= 1.2.0"
+  required_version = "1.7.4"
 
   backend "s3" {
-    bucket               = "deplio-terraform"
+    bucket               = "deplio-terraform-backend"
     key                  = "terraform.tfstate"
-    region               = "us-east-1"
+    region               = "eu-west-2"
     workspace_key_prefix = "workspaces"
   }
 }
 
 variable "aws_region" {
   type    = string
-  default = "us-east-1"
+  default = "eu-west-2"
 }
 
 provider "aws" {
