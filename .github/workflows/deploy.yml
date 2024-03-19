@@ -64,3 +64,47 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy
         run: flyctl deploy --remote-only --config fly.${{ env.ENV }}.toml
+
+  frontend:
+    name: Deploy frontend
+    needs: [api]
+    timeout-minutes: 15
+    environment: ${{ github.ref_name == 'production' && 'production' || 'dev' }}
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_REMOTE_ONLY: true
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8.10.5
+          run_install: true
+      - name: Setup Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.18.2
+          cache: "pnpm"
+          cache-dependency-path: "./pnpm-lock.yaml"
+      - name: Install CLI tools
+        run: |
+          pnpm install turbo --global
+          pnpm install vercel@latest --global
+      - name: Vercel Link
+        run: vercel link --repo --yes --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.TURBO_TEAM }}
+      - name: Vercel Deploy (preview)
+        id: deploy
+        if: env.BRANCH_NAME != 'production'
+        run: |
+          vercel deploy --force --with-cache --no-wait --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.TURBO_TEAM }} --yes --env preview --meta githubCommitRef=${{ env.BRANCH_NAME }} --cwd frontend
+      - name: Vercel Deploy (production)
+        if: env.BRANCH_NAME == 'production'
+        run: |
+          vercel deploy --force --with-cache --no-wait --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.TURBO_TEAM }} --cwd ${{ matrix.app }} --yes --prod --meta githubCommitRef=${{ env.BRANCH_NAME }} --cwd frontend

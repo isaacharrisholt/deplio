@@ -6,6 +6,11 @@ import { get_supabase_admin_client } from '$lib/utils.server'
 import { null_form_schema } from '$lib/forms/null'
 import { construct_file_path, hash_file } from '$lib/storage'
 import { cache } from '$lib/cache'
+import type { Config } from '@sveltejs/adapter-vercel'
+
+export const config: Config = {
+  runtime: 'nodejs18.x',
+}
 
 export const load: PageServerLoad = async ({ request }) => {
   const form = await superValidate(request, edit_user_details_form_schema)

@@ -1,0 +1,11 @@
+backend/
+lambda/
+scripts/
+supabase/
+terraform/
+Makefile
+.pre-commit-config.yaml
+local-secrets.json
+go.work
+go.work.sum
+.github/

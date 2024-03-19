@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "doppler run -- dotenv -e ../.env -- vite dev",
-    "build": "doppler run -- dotenv -e ../.env -- vite build",
-    "preview": "doppler run -- dotenv -e ../.env -- vite preview",
+    "dev": "doppler run -- vite dev",
+    "build": "vite build",
+    "preview": "doppler run -- vite preview",
     "test": "doppler run -- playwright test",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
