@@ -8,6 +8,7 @@
   import { onMount } from 'svelte'
   import LoadingSpinner from '$lib/components/LoadingSpinner.svelte'
   import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-svelte'
+  import ErrorDisplay from '$lib/components/ErrorDisplay.svelte'
 
   export let data: PageData
 
@@ -44,8 +45,6 @@
   onMount(() => {
     return setRefreshFrequency()
   })
-
-  $: max_page = Math.ceil((data.count ?? 0) / data.page_size)
 </script>
 
 <div class="flex flex-col gap-12">
@@ -86,80 +85,92 @@ const response = await fetch('https://api.depl.io/q', {
   <div class="card variant-soft-surface flex flex-col gap-4 p-8">
     <h2>Requests</h2>
 
-    <div class="flex flex-row items-center justify-between gap-2">
-      <div class="flex flex-row items-center gap-2">
-        <div class="flex flex-row items-center gap-1">
-          {#if data.page > 1}
-            <button
-              class="flex flex-row items-center"
-              on:click={() => {
-                $refreshFrequency = 'never'
-                setRefreshFrequency()
-              }}
-            >
-              <a href="?page=1">
-                <ChevronsLeft size="16" />
-              </a>
-              <a href="?page={data.page - 1}">
-                <ChevronLeft size="16" />
-              </a>
-            </button>
-          {:else}
-            <div class="flex flex-row items-center text-gray-500">
-              <ChevronsLeft size="16" />
-              <ChevronLeft size="16" />
+    {#await data.stream.q_request_promise}
+      <div class="placeholder h-12 w-full animate-pulse" />
+      <div class="placeholder h-12 w-full animate-pulse" />
+      <div class="placeholder h-12 w-full animate-pulse" />
+    {:then { data: q_request_data, error: q_request_error }}
+      {#if q_request_error}
+        <ErrorDisplay message={q_request_error.message} />
+      {:else}
+        {@const { requests, count, page, page_size } = q_request_data}
+        {@const max_page = Math.ceil((count ?? 0) / page_size)}
+        <div class="flex flex-row items-center justify-between gap-2">
+          <div class="flex flex-row items-center gap-2">
+            <div class="flex flex-row items-center gap-1">
+              {#if page > 1}
+                <button
+                  class="flex flex-row items-center"
+                  on:click={() => {
+                    $refreshFrequency = 'never'
+                    setRefreshFrequency()
+                  }}
+                >
+                  <a href="?page=1">
+                    <ChevronsLeft size="16" />
+                  </a>
+                  <a href="?page={page - 1}">
+                    <ChevronLeft size="16" />
+                  </a>
+                </button>
+              {:else}
+                <div class="flex flex-row items-center text-gray-500">
+                  <ChevronsLeft size="16" />
+                  <ChevronLeft size="16" />
+                </div>
+              {/if}
+              <p class="text-sm">Page {page}</p>
+              {#if page < Math.ceil((count ?? 0) / page_size)}
+                <button
+                  class="flex flex-row items-center"
+                  on:click={() => {
+                    $refreshFrequency = 'never'
+                    setRefreshFrequency()
+                  }}
+                >
+                  <a href="?page={page + 1}">
+                    <ChevronRight size="16" />
+                  </a>
+                  <a href="?page={max_page}">
+                    <ChevronsRight size="16" />
+                  </a>
+                </button>
+              {:else}
+                <div class="flex flex-row items-center text-gray-500">
+                  <ChevronRight size="16" />
+                  <ChevronsRight size="16" />
+                </div>
+              {/if}
             </div>
-          {/if}
-          <p class="text-sm">Page {data.page}</p>
-          {#if data.page < Math.ceil((data.count ?? 0) / data.page_size)}
-            <button
-              class="flex flex-row items-center"
-              on:click={() => {
-                $refreshFrequency = 'never'
-                setRefreshFrequency()
-              }}
+          </div>
+
+          <div class="flex flex-row items-center justify-end gap-2">
+            {#if refreshing}
+              <LoadingSpinner width="w-8" />
+            {/if}
+            <Select
+              id="refreshFrequency"
+              name="refreshFrequency"
+              placeholder="Refresh"
+              containerClass="min-w-[12rem] w-fit"
+              bind:value={$refreshFrequency}
+              on:change={setRefreshFrequency}
             >
-              <a href="?page={data.page + 1}">
-                <ChevronRight size="16" />
-              </a>
-              <a href="?page={max_page}">
-                <ChevronsRight size="16" />
-              </a>
-            </button>
-          {:else}
-            <div class="flex flex-row items-center text-gray-500">
-              <ChevronRight size="16" />
-              <ChevronsRight size="16" />
-            </div>
-          {/if}
+              <option value="never">Never</option>
+              <option value="5">Every 5s</option>
+              <option value="15">Every 15s</option>
+              <option value="30">Every 30s</option>
+              <option value="60">Every 60s</option>
+            </Select>
+          </div>
         </div>
-      </div>
 
-      <div class="flex flex-row items-center justify-end gap-2">
-        {#if refreshing}
-          <LoadingSpinner width="w-8" />
-        {/if}
-        <Select
-          id="refreshFrequency"
-          name="refreshFrequency"
-          placeholder="Refresh"
-          containerClass="min-w-[12rem] w-fit"
-          bind:value={$refreshFrequency}
-          on:change={setRefreshFrequency}
-        >
-          <option value="never">Never</option>
-          <option value="5">Every 5s</option>
-          <option value="15">Every 15s</option>
-          <option value="30">Every 30s</option>
-          <option value="60">Every 60s</option>
-        </Select>
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-2">
-      {#each data.q_requests as request}
-        <QRequestPanel {request} />
-      {/each}
-    </div>
+        <div class="flex flex-col gap-2">
+          {#each requests as request}
+            <QRequestPanel {request} />
+          {/each}
+        </div>
+      {/if}
+    {/await}
   </div>
 </div>
