@@ -44,7 +44,7 @@ def start_localstack():
 def initialise_terraform():
     print("Initialising terraform... ", end="", flush=True)
     result = subprocess.run(
-        ["tflocal", "init"],
+        ["tflocal", "init", "-reconfigure"],
         cwd="terraform",
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
