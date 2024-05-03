@@ -1,8 +1,11 @@
 # Deplio
 
 Deplio is a toolbox of simple utils for serverless applications developed with love
-at [Pluto](https://stairpay.com). It's still being developed internally, and has
-not yet been deployed to a production environment, so it's not publicly accessible.
+at [Pluto](https://stairpay.com). It's still being developed internally, so public
+sign-ups are currently disabled.
+
+If you'd like to create an account, please contact [Isaac](mailto:isaac@withpluto.com)
+to discuss your use case.
 
 However, we're planning on making Deplio open-source anyway, so we figured we'd start
 now.
