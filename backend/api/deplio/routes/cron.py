@@ -57,7 +57,10 @@ async def create(
             'team_id': str(auth.team.id),
             'api_key_id': str(auth.api_key.id),
             'status': cron_job_request.status,
-            'executor': cron_job_request.executor.model_dump(),
+            'executor': {
+                **cron_job_request.executor.model_dump(),
+                'destination': str(cron_job_request.executor.destination),
+            },
             'schedule': cron_job_request.schedule,
             'metadata': cron_job_request.metadata,
         },
@@ -92,7 +95,10 @@ async def create(
                 'api_key_id': str(auth.api_key.id),
                 'team_id': str(auth.team.id),
                 'status': ScheduledJobStatus.PENDING,
-                'executor': cron_job.executor.model_dump(),
+                'executor': {
+                    **cron_job.executor.model_dump(),
+                    'destination': str(cron_job.executor.destination),
+                },
                 'scheduled_for': next.isoformat(),
                 'metadata': cron_job.metadata,
             },

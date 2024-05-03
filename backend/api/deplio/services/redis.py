@@ -54,7 +54,6 @@ class Redis:
 
     async def hgetall(self, request: RedisRequest[T]) -> T:
         result = await self._get_request('/hgetall', request.key)
-        print('result:', repr(result))
         return request.__return_type__(**json.loads(result['value']))
 
 

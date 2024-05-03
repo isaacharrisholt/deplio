@@ -15,9 +15,9 @@ async def execute_supabase_query[T](
     try:
         response = await query.execute()
     except Exception as e:
-        raise SupabaseError(f'Error deleting from {table_name}: {e}') from e
+        raise SupabaseError(f'Error running query against {table_name}: {e}') from e
 
     if response.data is None:
-        raise SupabaseError(f'Failed to delete from {table_name}')
+        raise SupabaseError(f'Failed to query {table_name}: no data returned')
 
     return response.data

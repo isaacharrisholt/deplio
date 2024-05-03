@@ -78,8 +78,9 @@ resource "aws_lambda_function" "q_receiver_function" {
 
   environment {
     variables = {
-      "PUBLIC_DEPLOYMENT_ENV"             = terraform.workspace
-      "PUBLIC_SUPABASE_URL"               = data.doppler_secrets.globals.map.PUBLIC_SUPABASE_URL
+      "PUBLIC_DEPLOYMENT_ENV" = terraform.workspace
+      # Replace localhost with the Docker host IP to allow Localstack to access the host
+      "PUBLIC_SUPABASE_URL"               = replace(data.doppler_secrets.globals.map.PUBLIC_SUPABASE_URL, "localhost", "172.17.0.1")
       "PUBLIC_SUPABASE_ANON_KEY"          = data.doppler_secrets.globals.map.PUBLIC_SUPABASE_ANON_KEY
       "PRIVATE_SUPABASE_SERVICE_ROLE_KEY" = data.doppler_secrets.globals.map.PRIVATE_SUPABASE_SERVICE_ROLE_KEY
     }
