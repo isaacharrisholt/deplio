@@ -10,10 +10,10 @@ from .enums import HTTPMethod
 
 class HTTPExecutor(BaseModel):
     type: Literal['http']
+    destination: str
     method: HTTPMethod
     body: Optional[str]
     headers: Optional[dict[str, str]]
-    query_params: Optional[dict[str, Any]]
 
 
 class CronJobStatus(StrEnum):
