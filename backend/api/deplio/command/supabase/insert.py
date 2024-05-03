@@ -1,6 +1,6 @@
 from typing import Any, Optional
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 
 from postgrest._async.request_builder import AsyncFilterRequestBuilder
 from deplio.command.supabase.error import SupabaseError
@@ -45,7 +45,7 @@ class SupabaseInsertSingle:
         # Build query to delete the data from the specified table,
         # using the primary key(s) to identify the row
         query = self.supabase.table(self.table).update(
-            {'deleted_at': datetime.now().isoformat()}
+            {'deleted_at': datetime.now(UTC).isoformat()}
         )
         query = self._add_query_filter(query)
 

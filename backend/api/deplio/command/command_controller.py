@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 import inspect
 
@@ -7,8 +7,8 @@ from deplio.command.command import Command
 
 @dataclass
 class CommandController:
-    undo_stack: list[Command] = []
-    redo_stack: list[Command] = []
+    undo_stack: list[Command] = field(default_factory=list)
+    redo_stack: list[Command] = field(default_factory=list)
 
     @staticmethod
     async def handle_awaitable(maybe_coroutine: Any) -> Any:
