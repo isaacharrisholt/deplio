@@ -1,11 +1,12 @@
-from typing import Any, Optional
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from typing import Any, Optional
 
 from postgrest._async.request_builder import AsyncFilterRequestBuilder
+
 from deplio.command.supabase.error import SupabaseError
-from deplio.utils.supabase import execute_supabase_query
 from deplio.services.supabase import SupabaseClient
+from deplio.utils.supabase import execute_supabase_query
 
 
 @dataclass

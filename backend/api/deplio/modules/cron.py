@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from typing import Any
 
 from cron_converter import Cron
@@ -17,7 +18,7 @@ async def schedule_cron_invocations(supabase: SupabaseClient, cron_jobs: list[Cr
     for cron_job in active_cron_jobs:
         # Get next cron invocation time and schedule it
         cron = Cron(cron_job.schedule)
-        schedule = cron.schedule(cron_job.created_at)
+        schedule = cron.schedule(datetime.now(UTC))
         next = schedule.next()
 
         scheduled_job_insert = {
@@ -56,7 +57,9 @@ async def schedule_cron_invocations(supabase: SupabaseClient, cron_jobs: list[Cr
     ]
 
     cron_invocation_insert = SupabaseInsertMany(
-        supabase, 'cron_invocation', cron_invocation_inserts
+        supabase,
+        'cron_invocation',
+        cron_invocation_inserts,
     )
 
     try:

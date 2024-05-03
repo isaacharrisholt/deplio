@@ -4,6 +4,7 @@ from uuid import UUID
 from pydantic import AwareDatetime, BaseModel
 
 from deplio.models.data.head.db.jobs import Executor
+from deplio.models.data.head.responses import DeplioResponse
 
 
 class PostScheduledJobRequest(BaseModel):
@@ -12,6 +13,6 @@ class PostScheduledJobRequest(BaseModel):
     metadata: Optional[dict[str, str]] = None
 
 
-class PostScheduledJobResponse(BaseModel):
+class PostScheduledJobResponse(DeplioResponse):
     scheduled_job_id: UUID
     next_invocation: Optional[AwareDatetime] = None
