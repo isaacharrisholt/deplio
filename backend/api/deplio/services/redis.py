@@ -13,7 +13,7 @@ class RedisRequest[T: DeplioModel]:
     __key_prefix__ = ''
     __return_type__: Type[T]
 
-    def __init__(self: Self, key: str):
+    def __init__(self, key: str):
         self._key = key
 
     @property
@@ -25,7 +25,7 @@ class RedisUserRequest(RedisRequest[UserWithTeams]):
     __key_prefix__ = 'user'
     __return_type__ = UserWithTeams
 
-    def __init__(self: Self, key: str):
+    def __init__(self, key: str):
         super().__init__(key)
 
 

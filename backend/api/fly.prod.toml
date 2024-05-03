@@ -4,10 +4,14 @@
 #
 
 app = 'deplio-api-prod'
-primary_region = 'iad'
+primary_region = 'lhr'
 
 [build]
-  builder = 'paketobuildpacks/builder:base'
+  dockerfile = 'Dockerfile'
+
+[processes]
+  api = "uvicorn deplio.app:app --host 0.0.0.0 --port 8080"
+  cron_worker = "arq deplio.scheduler.worker.WorkerSettings"
 
 [env]
   PORT = '8080'
@@ -18,7 +22,15 @@ primary_region = 'iad'
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 1
-  processes = ['app']
+  processes = ['api']
+
+[[services]]
+  processes = ['cron_worker']
+  min_machines_running = 1
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = "80"
 
 [[vm]]
   size = 'shared-cpu-1x'

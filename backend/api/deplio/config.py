@@ -18,6 +18,7 @@ class Settings(BaseSettings):
         validation_alias='PRIVATE_SUPABASE_SERVICE_ROLE_KEY',
     )
 
+    kv_url: str = Field(validation_alias='KV_URL')
     kv_rest_api_url: str = Field(validation_alias='KV_REST_API_URL')
     kv_rest_api_token: str = Field(validation_alias='KV_REST_API_TOKEN')
 

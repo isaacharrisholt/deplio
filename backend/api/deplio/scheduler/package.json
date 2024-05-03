@@ -1,0 +1,6 @@
+{
+  "name": "cron_worker",
+  "scripts": {
+    "dev": "doppler run -- poetry run python worker.py"
+  }
+}
