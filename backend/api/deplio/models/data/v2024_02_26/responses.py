@@ -38,6 +38,10 @@ def error_responses() -> dict[int | str, dict[str, Any]]:
             'model': ErrorResponse,
             'description': 'The authenticated party does not have permission to perform the requested action.',
         },
+        422: {
+            'model': ErrorResponse,
+            'description': 'The request was well-formed but was unable to be followed due to schema errors.',
+        },
         500: {
             'model': ErrorResponse,
             'description': 'An internal error occurred while processing the request.',
@@ -46,7 +50,7 @@ def error_responses() -> dict[int | str, dict[str, Any]]:
 
 
 def generate_responses(
-    ok_response_model: type[DeplioResponse],
+    ok_response_model: type[BaseModel],
 ) -> dict[int | str, dict[str, Any]]:
     return {**error_responses(), 200: {'model': ok_response_model}}
 
