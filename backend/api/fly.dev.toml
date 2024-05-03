@@ -7,30 +7,30 @@ app = 'deplio-api-dev'
 primary_region = 'lhr'
 
 [build]
-  dockerfile = 'Dockerfile'
+dockerfile = 'Dockerfile'
 
 [processes]
-  api = "uvicorn deplio.app:app --host 0.0.0.0 --port 8080"
-  cron_worker = "python deplio/scheduler/worker.py"
+api = "uvicorn deplio.app:app --host 0.0.0.0 --port 8080"
+cron_worker = "python deplio/scheduler/worker.py"
 
 [env]
-  PORT = '8080'
+PORT = '8080'
 
 [http_service]
-  internal_port = 8080
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-  min_machines_running = 0
-  processes = ['api']
+internal_port = 8080
+force_https = true
+auto_stop_machines = true
+auto_start_machines = true
+min_machines_running = 0
+processes = ['api']
 
 [[services]]
-  processes = ['cron_worker']
-  min_machines_running = 1
+processes = ['cron_worker']
+min_machines_running = 1
 
-  [[services.ports]]
-    handlers = ["http"]
-    port = "80"
+[[services.ports]]
+handlers = ["http"]
+port = "80"
 
 [[vm]]
-  size = 'shared-cpu-1x'
+size = 'shared-cpu-1x'
