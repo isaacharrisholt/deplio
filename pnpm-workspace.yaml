@@ -1,5 +1,6 @@
 packages:
   - "frontend"
   - "backend/*"
+  - "backend/api/deplio/scheduler"
   - "packages/public/*"
   - "terraform"
