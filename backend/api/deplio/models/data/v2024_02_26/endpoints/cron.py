@@ -4,10 +4,10 @@ import typing
 import pydantic
 from typing import Optional
 from pydantic import BaseModel
-from ..db.cron import CronJobStatus, HTTPExecutor
+from deplio.models.data.head.db.cron import CronJobStatus, HTTPExecutor
 
 class PostCronJobRequest(BaseModel):
     status: CronJobStatus = CronJobStatus.ACTIVE
     executor: HTTPExecutor
     schedule: str
-    metadata: Optional[dict[str, str]]
+    metadata: Optional[dict[str, str]] = None

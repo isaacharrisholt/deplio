@@ -9,6 +9,7 @@ from deplio.config import settings
 from deplio.middleware.default_version import DefaultVersioningMiddleware
 from deplio.models.data.head.responses import DeplioError, ErrorResponse
 from deplio.models.versions import version_bundle
+from deplio.routes.cron import router as cron_router
 from deplio.routes.q import router as q_router
 from deplio.routes.version import router as version_router
 from deplio.tags import tags_metadata
@@ -60,4 +61,4 @@ def validation_exception_handler(
     )
 
 
-app.generate_and_include_versioned_routers(version_router, q_router)
+app.generate_and_include_versioned_routers(version_router, q_router, cron_router)

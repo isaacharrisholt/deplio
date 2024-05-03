@@ -12,8 +12,8 @@ class HTTPExecutor(BaseModel):
     type: Literal['http']
     destination: str
     method: HTTPMethod
-    body: Optional[str]
-    headers: Optional[dict[str, str]]
+    body: Optional[str] = None
+    headers: Optional[dict[str, str]] = None
 
 
 class CronJobStatus(StrEnum):

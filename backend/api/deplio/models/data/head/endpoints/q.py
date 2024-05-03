@@ -1,6 +1,8 @@
 from typing import Annotated, Optional
 from uuid import UUID
+
 from pydantic import AnyHttpUrl, BaseModel, Field
+
 from ..db.enums import HTTPMethod
 from ..db.q import QRequest, QResponse
 from ..responses import DeplioResponse
@@ -25,8 +27,8 @@ class QMessage(BaseModel):
 
 
 PostQMessagesRequest = (
-    Annotated[QMessage, Field(..., title='Message')]
-    | Annotated[list[QMessage], Field(..., max_length=10, title='Messages')]
+    Annotated[QMessage, Field(..., title="Message")]
+    | Annotated[list[QMessage], Field(..., max_length=10, title="Messages")]
 )
 
 
