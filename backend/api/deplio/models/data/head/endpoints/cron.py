@@ -5,7 +5,8 @@ from cron_converter import Cron
 from fastapi.exceptions import RequestValidationError
 from pydantic import AfterValidator, AwareDatetime, BaseModel
 
-from deplio.models.data.head.db.cron import CronJobStatus, Executor
+from deplio.models.data.head.db.cron import CronJobStatus
+from deplio.models.data.head.db.jobs import Executor
 
 
 def validate_cron_schedule(schedule: str) -> str:

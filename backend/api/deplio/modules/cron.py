@@ -1,13 +1,11 @@
 from typing import Any
+
 from cron_converter import Cron
+
 from deplio.command.command_controller import CommandController
 from deplio.command.supabase.insert import SupabaseInsertMany
-from deplio.models.data.head.db.cron import (
-    CronJob,
-    CronJobStatus,
-    ScheduledJob,
-    ScheduledJobStatus,
-)
+from deplio.models.data.head.db.cron import CronJob, CronJobStatus
+from deplio.models.data.head.db.jobs import ScheduledJob, ScheduledJobStatus
 from deplio.services.supabase import SupabaseClient
 
 

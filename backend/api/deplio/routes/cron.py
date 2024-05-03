@@ -2,18 +2,13 @@ from typing import Annotated
 
 from cron_converter import Cron
 from fastapi import Depends, status
-from supabase._async.client import AsyncClient as SupabaseClient
 
 from deplio.auth.dependencies import APIKeyAuthCredentials, api_key_auth
 from deplio.command.command_controller import CommandController
 from deplio.command.supabase.insert import SupabaseInsertSingle
 from deplio.context import Context, context
-from deplio.models.data.head.db.cron import (
-    ScheduledJob,
-    ScheduledJobStatus,
-    CronJob,
-    CronJobStatus,
-)
+from deplio.models.data.head.db.cron import CronJob, CronJobStatus
+from deplio.models.data.head.db.jobs import ScheduledJob, ScheduledJobStatus
 from deplio.models.data.head.endpoints.cron import (
     PostCronJobRequest,
     PostCronJobResponse,
@@ -24,7 +19,7 @@ from deplio.models.data.head.responses import (
     generate_responses,
 )
 from deplio.routers import create_router
-from deplio.services.supabase import supabase_admin
+from deplio.services.supabase import SupabaseClient, supabase_admin
 from deplio.tags import Tags
 
 router = create_router(prefix='/cron')
@@ -36,7 +31,7 @@ router = create_router(prefix='/cron')
     description='Set up a new cron job to execute some work on a schedule',
     responses=generate_responses(PostCronJobResponse),
     tags=[Tags.CRON],
-    response_description='List of request IDs and number of messages delivered',
+    response_description='The cron job ID and the next invocation time',
 )
 async def create(
     auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],

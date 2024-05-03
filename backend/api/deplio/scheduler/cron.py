@@ -1,20 +1,20 @@
 import asyncio
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any
 
 from deplio.command.command_controller import CommandController
 from deplio.command.supabase.insert import SupabaseInsertMany
-from deplio.models.data.head.db.cron import CronJob, ScheduledJob
+from deplio.config import settings
+from deplio.models.data.head.db.cron import CronJob
+from deplio.models.data.head.db.jobs import ScheduledJob
 from deplio.models.data.head.db.q import QRequest
 from deplio.modules.cron import schedule_cron_invocations
 from deplio.services.sqs import SQS, SQSMessage
-from deplio.services.supabase import supabase_admin
+from deplio.services.supabase import SupabaseClient, supabase_admin
 from deplio.types.q import QSQSMessage
 from deplio.utils.async_utils import synchronise
 from deplio.utils.q import query_params_to_dict
 from deplio.utils.supabase import execute_supabase_query
-from deplio.services.supabase import SupabaseClient
-from deplio.config import settings
 
 
 class ScheduledJobWithCron(ScheduledJob):

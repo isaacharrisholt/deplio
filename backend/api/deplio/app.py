@@ -10,6 +10,7 @@ from deplio.middleware.default_version import DefaultVersioningMiddleware
 from deplio.models.data.head.responses import DeplioError, ErrorResponse
 from deplio.models.versions import version_bundle
 from deplio.routes.cron import router as cron_router
+from deplio.routes.jobs import router as jobs_router
 from deplio.routes.q import router as q_router
 from deplio.routes.version import router as version_router
 from deplio.tags import tags_metadata
@@ -19,7 +20,7 @@ def generate_openapi_id(route: APIRoute) -> str:
     print(route)
     if not route.tags:
         return route.name
-    return f'{str(route.tags[0]).lower().replace(' ', '_')}:{route.name}'
+    return f"{str(route.tags[0]).lower().replace(' ', '_')}:{route.name}"
 
 
 app = Cadwyn(
@@ -61,4 +62,6 @@ def validation_exception_handler(
     )
 
 
-app.generate_and_include_versioned_routers(version_router, q_router, cron_router)
+app.generate_and_include_versioned_routers(
+    version_router, q_router, cron_router, jobs_router
+)
