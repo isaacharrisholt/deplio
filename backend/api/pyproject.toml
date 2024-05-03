@@ -17,6 +17,7 @@ gunicorn = "^21.2.0"
 uvicorn = "^0.27.1"
 apscheduler = "^3.10.4"
 typer = "^0.12.3"
+cron-converter = "^1.1.0"
 
 
 [tool.poetry.group.dev.dependencies]

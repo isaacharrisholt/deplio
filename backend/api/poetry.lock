@@ -168,6 +168,23 @@ files = [
 ]
 
 [[package]]
+name = "cron-converter"
+version = "1.1.0"
+description = "Cron string parser and scheduler for Python"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "cron-converter-1.1.0.tar.gz", hash = "sha256:169a5788d05a28627ab9dcb688ec39a395a40782142360518cb3ad43b025cee7"},
+    {file = "cron_converter-1.1.0-py3-none-any.whl", hash = "sha256:fc2d055c691880b5ef3eb525de7a513287b9dd0ec00232300663ff5a3c66dd4a"},
+]
+
+[package.dependencies]
+python-dateutil = "*"
+
+[package.extras]
+test = ["unittest"]
+
+[[package]]
 name = "deprecation"
 version = "2.1.0"
 description = "A library to handle automated deprecations"
@@ -1023,4 +1040,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "4a6545b3c2b5189bcf60cc8fcc3f4ea6d84945b474c6808ea500a8abaf0db9fd"
+content-hash = "a092cb36920b8b53912f57f4bf966c412b507e73c995d40aaa5c5598489c029d"
