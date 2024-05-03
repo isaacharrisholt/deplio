@@ -1,16 +1,17 @@
+from cadwyn import Cadwyn
 from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware import Middleware
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
-from deplio.models.data.latest.responses import ErrorResponse, DeplioError
-from deplio.models.versions import version_bundle
+
 from deplio.config import settings
+from deplio.middleware.default_version import DefaultVersioningMiddleware
+from deplio.models.data.head.responses import DeplioError, ErrorResponse
+from deplio.models.versions import version_bundle
 from deplio.routes.q import router as q_router
 from deplio.routes.version import router as version_router
 from deplio.tags import tags_metadata
-from fastapi.middleware import Middleware
-from cadwyn import Cadwyn
-from deplio.middleware.default_version import DefaultVersioningMiddleware
 
 
 def generate_openapi_id(route: APIRoute) -> str:

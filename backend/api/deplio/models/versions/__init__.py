@@ -1,8 +1,10 @@
-from cadwyn.structure import Version, VersionBundle
-from deplio.models.data import latest
 from datetime import date
+
+from cadwyn.structure import Version, VersionBundle
+
+from deplio.models.data import head
 
 version_bundle = VersionBundle(
     Version(date(2024, 2, 26)),
-    latest_schemas_package=latest,
+    head_schemas_package=head,
 )

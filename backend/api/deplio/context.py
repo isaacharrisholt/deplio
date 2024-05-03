@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from deplio.models.data.latest.responses import DeplioWarning, DeplioError
+
+from deplio.models.data.head.responses import DeplioError, DeplioWarning
 
 
 class Context(BaseModel):

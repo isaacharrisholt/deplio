@@ -1,8 +1,9 @@
 from typing import Optional
 from uuid import UUID
+
 from pydantic import AnyHttpUrl, BaseModel
 
-from deplio.models.data.latest.db.enums import HTTPMethod
+from deplio.models.data.head.db.enums import HTTPMethod
 
 
 class QSQSMessage(BaseModel):
