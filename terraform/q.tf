@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "q_assume_lambda_role" {
 }
 
 resource "aws_iam_role" "q_lambda_role" {
-  name               = "QAssumeLambdaRole"
+  name               = "QAssumeLambdaRole${title(terraform.workspace)}"
   assume_role_policy = data.aws_iam_policy_document.q_assume_lambda_role.json
 }
 
