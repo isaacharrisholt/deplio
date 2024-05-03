@@ -11,16 +11,16 @@ from deplio.routers import create_router
 from deplio.services.supabase import supabase_admin
 from deplio.tags import Tags
 
-router = create_router(prefix="/cron")
+router = create_router(prefix='/cron')
 
 
 @router.post(
-    "",
-    summary="Create a new cron job",
-    description="Set up a new cron job to execute some work on a schedule",
+    '',
+    summary='Create a new cron job',
+    description='Set up a new cron job to execute some work on a schedule',
     responses=generate_responses(PostCronJobRequest),
     tags=[Tags.CRON],
-    response_description="List of request IDs and number of messages delivered",
+    response_description='List of request IDs and number of messages delivered',
 )
 async def create(
     # auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],

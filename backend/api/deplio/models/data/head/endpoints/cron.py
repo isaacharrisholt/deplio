@@ -12,10 +12,10 @@ def validate_cron_schedule(schedule: str) -> str:
         c = Cron(schedule)
         if c.parts is None:
             raise RequestValidationError(
-                ["Invalid cron schedule: cron schedule is empty"]
+                ['Invalid cron schedule: cron schedule is empty']
             )
     except ValueError as e:
-        raise RequestValidationError([f"Invalid cron schedule: {e}"]) from e
+        raise RequestValidationError([f'Invalid cron schedule: {e}']) from e
 
     return schedule
 

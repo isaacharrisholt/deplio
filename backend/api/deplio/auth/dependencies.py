@@ -11,14 +11,14 @@ from deplio.models.data.head.db.user import User
 from deplio.services.redis import Redis, RedisUserRequest, redis
 from deplio.services.supabase import SupabaseClient, supabase_admin
 
-auth_header_scheme = HTTPBearer(description="Bearer token for authentication")
+auth_header_scheme = HTTPBearer(description='Bearer token for authentication')
 
 
 def unauthorized():
     return HTTPException(
         status_code=401,
-        detail="Unauthorized",
-        headers={"WWW-Authenticate": "Bearer"},
+        detail='Unauthorized',
+        headers={'WWW-Authenticate': 'Bearer'},
     )
 
 
@@ -39,9 +39,9 @@ async def _get_user_and_team_from_jwt(
         return None
 
     db_user = (
-        await supabase_admin.table("user")
-        .select("*")
-        .eq("user_id", user.user.id)
+        await supabase_admin.table('user')
+        .select('*')
+        .eq('user_id', user.user.id)
         .single()
         .execute()
     )
@@ -76,13 +76,13 @@ async def get_team_from_api_key(
     now = datetime.now().isoformat()
 
     api_key_result = await (
-        supabase_admin.table("api_key")
-        .select("*, team (*)")
-        .eq("key_hash", key_hash)
-        .eq("key_prefix", key_prefix)
-        .or_(f"expires_at.lte.{now}, expires_at.is.null")
-        .is_("revoked_at", "null")
-        .is_("deleted_at", "null")
+        supabase_admin.table('api_key')
+        .select('*, team (*)')
+        .eq('key_hash', key_hash)
+        .eq('key_prefix', key_prefix)
+        .or_(f'expires_at.lte.{now}, expires_at.is.null')
+        .is_('revoked_at', 'null')
+        .is_('deleted_at', 'null')
         .limit(1)
         .maybe_single()
         .execute()
@@ -93,24 +93,24 @@ async def get_team_from_api_key(
     if not api_key_result.data:
         return None
 
-    team = Team(**api_key_result.data["team"])
-    api_key_result.data.pop("team")
-    api_key_result.data["team_id"] = team.id
+    team = Team(**api_key_result.data['team'])
+    api_key_result.data.pop('team')
+    api_key_result.data['team_id'] = team.id
     db_api_key = APIKey(**api_key_result.data)
     return db_api_key, team
 
 
 AuthCredentials = NamedTuple(
-    "AuthCredentials",
-    [("user", Optional[User]), ("team", Team), ("api_key", Optional[APIKey])],
+    'AuthCredentials',
+    [('user', Optional[User]), ('team', Team), ('api_key', Optional[APIKey])],
 )
 JWTAuthCredentials = NamedTuple(
-    "RequiredAuthCredentials",
-    [("user", User), ("team", Team)],
+    'RequiredAuthCredentials',
+    [('user', User), ('team', Team)],
 )
 APIKeyAuthCredentials = NamedTuple(
-    "RequiredAPIKeyAuthCredentials",
-    [("api_key", APIKey), ("team", Team)],
+    'RequiredAPIKeyAuthCredentials',
+    [('api_key', APIKey), ('team', Team)],
 )
 
 

@@ -10,19 +10,19 @@ from deplio.models.versions import version_bundle
 from deplio.routers import create_router
 from deplio.tags import Tags
 
-router = create_router(prefix="/version")
+router = create_router(prefix='/version')
 
 
 @router.get(
-    "",
-    summary="Get API versions",
+    '',
+    summary='Get API versions',
     description=(
-        "Retrieve the latest version of the API, along with your "
+        'Retrieve the latest version of the API, along with your '
         "current version and (if using a team API key) your team's API version."
     ),
     responses=generate_responses(Versions),
     tags=[Tags.VERSIONS],
-    response_description="API versions",
+    response_description='API versions',
 )
 async def get(auth: Annotated[AuthCredentials, Depends(any_auth)]):
     latest_version = settings.current_version

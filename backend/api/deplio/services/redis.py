@@ -7,11 +7,11 @@ from deplio.config import settings
 from deplio.models.data.head._base import DeplioModel
 from deplio.models.data.head.db.user_with_teams import UserWithTeams
 
-T = TypeVar("T", bound=DeplioModel)
+T = TypeVar('T', bound=DeplioModel)
 
 
 class RedisRequest[T: DeplioModel]:
-    __key_prefix__ = ""
+    __key_prefix__ = ''
     __return_type__: Type[T]
 
     def __init__(self, key: str):
@@ -19,11 +19,11 @@ class RedisRequest[T: DeplioModel]:
 
     @property
     def key(self: Self) -> str:
-        return f"{self.__key_prefix__}:{self._key}"
+        return f'{self.__key_prefix__}:{self._key}'
 
 
 class RedisUserRequest(RedisRequest[UserWithTeams]):
-    __key_prefix__ = "user"
+    __key_prefix__ = 'user'
     __return_type__ = UserWithTeams
 
     def __init__(self, key: str):
@@ -37,14 +37,14 @@ class Redis:
 
     async def _get_request(self: Self, path: str, key: str) -> dict[str, Any]:
         async with httpx.AsyncClient() as client:
-            url = f"{self.url}{path}/{key}"
+            url = f'{self.url}{path}/{key}'
             headers = {
-                "Authorization": f"Bearer {self.token}",
+                'Authorization': f'Bearer {self.token}',
             }
             response = await client.get(url, headers=headers)
 
         response.raise_for_status()
-        result_list = response.json()["result"]
+        result_list = response.json()['result']
         if not len(result_list):
             raise KeyError(key)
         result_dict = {}
@@ -53,9 +53,9 @@ class Redis:
         return result_dict
 
     async def hgetall(self, request: RedisRequest[T]) -> T:
-        result = await self._get_request("/hgetall", request.key)
-        print("result:", repr(result))
-        return request.__return_type__(**json.loads(result["value"]))
+        result = await self._get_request('/hgetall', request.key)
+        print('result:', repr(result))
+        return request.__return_type__(**json.loads(result['value']))
 
 
 def redis() -> Redis:

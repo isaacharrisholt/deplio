@@ -30,17 +30,17 @@ from deplio.tags import Tags
 from deplio.types.q import QSQSMessage
 from deplio.utils.q import get_forward_headers, query_params_to_dict
 
-router = create_router(prefix="/q")
+router = create_router(prefix='/q')
 
 
 @router.get(
-    "",
-    summary="List Deplio Q messages",
-    description="Get a list of messages that have been sent to Deplio Q and their responses (if any).",
+    '',
+    summary='List Deplio Q messages',
+    description='Get a list of messages that have been sent to Deplio Q and their responses (if any).',
     responses=generate_responses(GetQMessagesResponse),
     tags=[Tags.Q],
-    response_description="List of messages and their responses",
-    operation_id="q:list",
+    response_description='List of messages and their responses',
+    operation_id='q:list',
 )
 async def get(
     auth: Annotated[AuthCredentials, Depends(any_auth)],
@@ -51,33 +51,33 @@ async def get(
 ):
     try:
         response = (
-            await supabase_admin.table("q_request")
-            .select("*, responses:q_response (*)", count="exact")  # type: ignore
-            .eq("team_id", auth.team.id)
-            .order("created_at", desc=True)
-            .order("created_at", foreign_table="q_response", desc=True)
+            await supabase_admin.table('q_request')
+            .select('*, responses:q_response (*)', count='exact')  # type: ignore
+            .eq('team_id', auth.team.id)
+            .order('created_at', desc=True)
+            .order('created_at', foreign_table='q_response', desc=True)
             .range((page - 1) * page_size, page * page_size)
             .execute()
         )
     except Exception:
-        context.errors.append(DeplioError(message="Failed to retrieve from q_request"))
+        context.errors.append(DeplioError(message='Failed to retrieve from q_request'))
         return error_response(
-            message="Internal server error",
+            message='Internal server error',
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             errors=context.errors,
             warnings=context.warnings,
         )
 
     if response.count is None:
-        context.errors.append(DeplioError(message="Failed to retrieve from q_request"))
+        context.errors.append(DeplioError(message='Failed to retrieve from q_request'))
         return error_response(
-            message="Internal server error",
+            message='Internal server error',
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             errors=context.errors,
             warnings=context.warnings,
         )
 
-    print("response:", response.data)
+    print('response:', response.data)
     return GetQMessagesResponse(
         requests=response.data,
         count=len(response.data),
@@ -89,12 +89,12 @@ async def get(
 
 
 @router.post(
-    "",
-    summary="Send messages to Deplio Q",
-    description="Send messages to Deplio Q to be processed asynchronously.",
+    '',
+    summary='Send messages to Deplio Q',
+    description='Send messages to Deplio Q to be processed asynchronously.',
     responses=generate_responses(PostQMessagesResponse),
     tags=[Tags.Q],
-    response_description="List of request IDs and number of messages delivered",
+    response_description='List of request IDs and number of messages delivered',
 )
 async def create(
     auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],
@@ -116,13 +116,13 @@ async def create(
     for message in messages_list:
         database_insert.append(
             {
-                "api_key_id": str(auth.api_key.id),
-                "team_id": str(auth.team.id),
-                "destination": str(message.destination),
-                "body": message.body,
-                "method": message.method,
-                "headers": {**(request_headers or {}), **(message.headers or {})},
-                "query_params": query_params_to_dict(
+                'api_key_id': str(auth.api_key.id),
+                'team_id': str(auth.team.id),
+                'destination': str(message.destination),
+                'body': message.body,
+                'method': message.method,
+                'headers': {**(request_headers or {}), **(message.headers or {})},
+                'query_params': query_params_to_dict(
                     message.destination.query_params()
                 ),
             }
@@ -130,23 +130,23 @@ async def create(
 
     try:
         q_requests = (
-            await supabase_admin.table("q_request").insert(database_insert).execute()
+            await supabase_admin.table('q_request').insert(database_insert).execute()
         )
     except Exception as e:
-        print(f"Error inserting into q_request: {e}")
-        context.errors.append(DeplioError(message="Failed to insert into q_request"))
+        print(f'Error inserting into q_request: {e}')
+        context.errors.append(DeplioError(message='Failed to insert into q_request'))
         return error_response(
-            message="Internal server error",
+            message='Internal server error',
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             warnings=context.warnings,
             errors=context.errors,
         )
 
     if q_requests.data is None:
-        print("No q_requests.data")
-        context.errors.append(DeplioError(message="Failed to insert into q_request"))
+        print('No q_requests.data')
+        context.errors.append(DeplioError(message='Failed to insert into q_request'))
         return error_response(
-            message="Internal server error",
+            message='Internal server error',
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             warnings=context.warnings,
             errors=context.errors,
@@ -178,27 +178,27 @@ async def create(
         settings.deplio_q_queue_url,
     )
 
-    if "Successful" not in sqs_response:
-        print(f"Error sending messages to SQS: {sqs_response}")
-        context.errors.append(DeplioError(message="Failed to send messages to queue"))
+    if 'Successful' not in sqs_response:
+        print(f'Error sending messages to SQS: {sqs_response}')
+        context.errors.append(DeplioError(message='Failed to send messages to queue'))
 
         try:
             await (
-                supabase_admin.table("q_request")
+                supabase_admin.table('q_request')
                 .update(
                     {
-                        "deleted_at": datetime.now(UTC).isoformat(),
+                        'deleted_at': datetime.now(UTC).isoformat(),
                     }
                 )
-                .in_("id", [q_request.id for q_request in q_requests])
+                .in_('id', [q_request.id for q_request in q_requests])
                 .execute()
             )
         except Exception as e:
-            print(f"Error updating q_request: {e}")
-            context.errors.append(DeplioError(message="Failed to update q_request"))
+            print(f'Error updating q_request: {e}')
+            context.errors.append(DeplioError(message='Failed to update q_request'))
 
         return error_response(
-            message="Internal server error",
+            message='Internal server error',
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             warnings=context.warnings,
             errors=context.errors,

@@ -27,8 +27,8 @@ class QMessage(BaseModel):
 
 
 PostQMessagesRequest = (
-    Annotated[QMessage, Field(..., title="Message")]
-    | Annotated[list[QMessage], Field(..., max_length=10, title="Messages")]
+    Annotated[QMessage, Field(..., title='Message')]
+    | Annotated[list[QMessage], Field(..., max_length=10, title='Messages')]
 )
 
 
