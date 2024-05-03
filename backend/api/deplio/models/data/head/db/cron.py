@@ -2,7 +2,7 @@ from enum import StrEnum
 from typing import Annotated, Any, Literal, Optional
 from uuid import UUID
 
-from pydantic import AwareDatetime, BaseModel, Field
+from pydantic import AnyHttpUrl, AwareDatetime, BaseModel, Field
 
 from .._base import TimestampedDeplioModel
 from .enums import HTTPMethod
@@ -11,7 +11,7 @@ from .enums import HTTPMethod
 class HTTPExecutorV1(BaseModel):
     type: Literal['http']
     version: Literal[1]
-    destination: str
+    destination: AnyHttpUrl
     method: HTTPMethod
     body: Optional[str] = None
     headers: Optional[dict[str, str]] = None
@@ -44,6 +44,8 @@ class ScheduledJobStatus(StrEnum):
 
 
 class ScheduledJob(TimestampedDeplioModel):
+    team_id: UUID
+    api_key_id: UUID
     status: ScheduledJobStatus
     executor: Executor
     scheduled_for: AwareDatetime
