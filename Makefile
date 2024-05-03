@@ -4,7 +4,7 @@ reset:
 restart:
 	pnpm supabase stop
 	docker volume ls -q | grep deplio | xargs -L1 docker volume rm || true
-	pnpm supabase start
+	pnpm supabase start -x realtime
 
 types:
 	pnpm supabase gen types typescript --local > frontend/src/lib/types/database.ts 
