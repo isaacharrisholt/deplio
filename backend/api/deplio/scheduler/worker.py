@@ -6,7 +6,7 @@ import time
 
 if __name__ == '__main__':
     scheduler = BackgroundScheduler()
-    tr = CronTrigger(second='*')
+    tr = CronTrigger(second='0')
 
     scheduler.add_job(run_scheduled_jobs, trigger=tr)
     scheduler.start()

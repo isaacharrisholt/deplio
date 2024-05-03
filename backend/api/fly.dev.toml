@@ -11,7 +11,7 @@ primary_region = 'lhr'
 
 [processes]
   api = "uvicorn deplio.app:app --host 0.0.0.0 --port 8080"
-  cron_worker = "arq deplio.scheduler.worker.WorkerSettings"
+  cron_worker = "python deplio/scheduler/worker.py"
 
 [env]
   PORT = '8080'

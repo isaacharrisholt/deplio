@@ -55,3 +55,4 @@ class ScheduledJob(TimestampedDeplioModel):
 class CronInvocation(TimestampedDeplioModel):
     cron_job_id: UUID
     scheduled_job_id: UUID
+    metadata: Optional[dict[str, Any]]

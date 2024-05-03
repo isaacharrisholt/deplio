@@ -3,7 +3,6 @@ name = "deplio"
 version = "0.1.0"
 description = ""
 authors = ["Isaac Harris-Holt <isaac@withpluto.com>"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"

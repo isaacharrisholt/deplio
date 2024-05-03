@@ -125,6 +125,7 @@ async def create(
                 'query_params': query_params_to_dict(
                     message.destination.query_params()
                 ),
+                'metadata': message.metadata,
             }
         )
 

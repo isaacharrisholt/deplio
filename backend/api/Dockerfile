@@ -13,10 +13,14 @@ FROM python:3.12-slim
 
 WORKDIR /code
 
+RUN pip install wheel
+
 COPY --from=requirements-stage /tmp/requirements.txt /code/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
+COPY ./pyproject.toml /code/
 COPY ./deplio /code/deplio
+RUN pip install .
 
 CMD ["uvicorn", "deplio.app:app", "--host", "0.0.0.0", "--port", "8080"]

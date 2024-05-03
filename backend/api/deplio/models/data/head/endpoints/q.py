@@ -24,6 +24,7 @@ class QMessage(BaseModel):
     body: Optional[str] = Field(None)
     method: HTTPMethod
     headers: Optional[dict[str, str]] = Field(None)
+    metadata: Optional[dict[str, str]] = Field(None)
 
 
 PostQMessagesRequest = (
