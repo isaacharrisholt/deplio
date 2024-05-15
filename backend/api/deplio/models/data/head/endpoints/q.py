@@ -27,10 +27,11 @@ class QResponse(TimestampedDeplioModel):
     response_time_ns: Optional[int]
 
 
-class GetQMessagesResponse(DeplioResponse):
-    class QRequestWithResponses(QRequest):
-        responses: list[QResponse]
+class QRequestWithResponses(QRequest):
+    responses: list[QResponse]
 
+
+class GetQMessagesResponse(DeplioResponse):
     requests: list[QRequestWithResponses]
     count: int
     total: int
@@ -47,8 +48,9 @@ class QMessage(BaseModel):
 
 
 PostQMessagesRequest = (
-    Annotated[QMessage, Field(..., title='Message')]
-    | Annotated[list[QMessage], Field(..., max_length=10, title='Messages')]
+    # Annotated[QMessage, Field(..., title='Message')]
+    # |
+    Annotated[list[QMessage], Field(..., max_length=10, title='Messages')]
 )
 
 

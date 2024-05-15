@@ -1,7 +1,6 @@
-from pydantic import AnyHttpUrl
 from sqlalchemy import ForeignKey, Text, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.dialects.postgresql import JSONB, ENUM as PgEnum
+from sqlalchemy.dialects.postgresql import JSONB
 
 from .api_key import DBAPIKey
 from .user_and_team import DBTeam
@@ -26,12 +25,12 @@ class DBQRequest(TimestampedDeplioModel):
     )
     api_key: Mapped[DBAPIKey] = relationship()
 
-    destination: Mapped[AnyHttpUrl] = mapped_column(
+    destination: Mapped[str] = mapped_column(
         Text,
         nullable=False,
     )
     method: Mapped[HTTPMethod] = mapped_column(
-        PgEnum(HTTPMethod, name='http_method'),
+        Text,
         nullable=False,
     )
     body: Mapped[str | None] = mapped_column(
@@ -47,9 +46,9 @@ class DBQRequest(TimestampedDeplioModel):
         nullable=True,
     )
 
-    response: Mapped['DBQResponse'] = relationship(
-        uselist=False,
+    responses: Mapped[list['DBQResponse']] = relationship(
         back_populates='request',
+        order_by='DBQResponse.created_at.desc()',
     )
 
 
@@ -60,7 +59,9 @@ class DBQResponse(TimestampedDeplioModel):
         ForeignKey('q_request.id'),
         nullable=False,
     )
-    request: Mapped[DBQRequest] = relationship(back_populates='response')
+    request: Mapped[DBQRequest] = relationship(
+        back_populates='responses',
+    )
 
     status_code: Mapped[int | None] = mapped_column(
         Integer,

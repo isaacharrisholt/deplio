@@ -1,7 +1,10 @@
-from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import Depends, Query, Request, status
+from pydantic_core import Url
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from deplio.auth.dependencies import (
     APIKeyAuthCredentials,
@@ -11,7 +14,8 @@ from deplio.auth.dependencies import (
 )
 from deplio.config import settings
 from deplio.context import Context, context
-from deplio.models.data.head.endpoints.q import QRequest
+from deplio.models.data.head.endpoints.q import QRequestWithResponses
+from deplio.models.data.head.db.q import DBQRequest
 from deplio.models.data.head.endpoints.q import (
     GetQMessagesResponse,
     PostQMessagesRequest,
@@ -24,8 +28,8 @@ from deplio.models.data.head.responses import (
     generate_responses,
 )
 from deplio.routers import create_router
+from deplio.services.db import db_session
 from deplio.services.sqs import SQS, SQSMessage
-from deplio.services.supabase import SupabaseClient, supabase_admin
 from deplio.tags import Tags
 from deplio.types.q import QSQSMessage
 from deplio.utils.q import get_forward_headers, query_params_to_dict
@@ -44,22 +48,24 @@ router = create_router(prefix='/q')
 )
 async def get(
     auth: Annotated[AuthCredentials, Depends(any_auth)],
-    supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
+    session: Annotated[AsyncSession, Depends(db_session)],
     context: Annotated[Context, Depends(context)],
     page: Annotated[int, Query(ge=1)] = 1,
     page_size: Annotated[int, Query(ge=1, le=100)] = 25,
 ):
     try:
-        response = (
-            await supabase_admin.table('q_request')
-            .select('*, responses:q_response (*)', count='exact')  # type: ignore
-            .eq('team_id', auth.team.id)
-            .order('created_at', desc=True)
-            .order('created_at', foreign_table='q_response', desc=True)
-            .range((page - 1) * page_size, page * page_size)
-            .execute()
+        result = await session.execute(
+            select(DBQRequest, func.count(DBQRequest.id).over().label('total'))
+            .outerjoin(DBQRequest.responses)
+            .options(selectinload(DBQRequest.responses))
+            .where(DBQRequest.team_id == auth.team.id)
+            .order_by(DBQRequest.created_at.desc())
+            .limit(page_size)
+            .offset((page - 1) * page_size)
         )
-    except Exception:
+        q_requests_with_total = result.tuples().all()
+    except Exception as e:
+        print(f'Error retrieving from q_request: {e}')
         context.errors.append(DeplioError(message='Failed to retrieve from q_request'))
         return error_response(
             message='Internal server error',
@@ -68,20 +74,41 @@ async def get(
             warnings=context.warnings,
         )
 
-    if response.count is None:
-        context.errors.append(DeplioError(message='Failed to retrieve from q_request'))
-        return error_response(
-            message='Internal server error',
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            errors=context.errors,
-            warnings=context.warnings,
-        )
+    print(q_requests_with_total)
+    data = [
+        QRequestWithResponses.model_validate(request)
+        for request, _ in q_requests_with_total
+    ]
 
-    print('response:', response.data)
+    # If we have no data, run another query to get the total count
+    # This isn't a problem as it'll only occur if there are no messages
+    # or if the page number is too high
+    if data:
+        count = q_requests_with_total[0][1]
+    else:
+        try:
+            result = await session.execute(
+                select(func.count(DBQRequest.id)).where(
+                    DBQRequest.team_id == auth.team.id
+                )
+            )
+            count = result.scalar() or 0
+        except Exception as e:
+            print(f'Error retrieving from q_request: {e}')
+            context.errors.append(
+                DeplioError(message='Failed to retrieve from q_request')
+            )
+            return error_response(
+                message='Internal server error',
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                errors=context.errors,
+                warnings=context.warnings,
+            )
+
     return GetQMessagesResponse(
-        requests=response.data,
-        count=len(response.data),
-        total=response.count,
+        requests=data,
+        count=len(data),
+        total=count,
         page=page,
         page_size=page_size,
         warnings=context.warnings,
@@ -98,7 +125,7 @@ async def get(
 )
 async def create(
     auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],
-    supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
+    session: Annotated[AsyncSession, Depends(db_session)],
     context: Annotated[Context, Depends(context)],
     request: Request,
     messages: PostQMessagesRequest,
@@ -112,27 +139,23 @@ async def create(
 
     request_headers = get_forward_headers(request.headers) or None
 
-    database_insert = []
+    q_requests: list[DBQRequest] = []
     for message in messages_list:
-        database_insert.append(
-            {
-                'api_key_id': str(auth.api_key.id),
-                'team_id': str(auth.team.id),
-                'destination': str(message.destination),
-                'body': message.body,
-                'method': message.method,
-                'headers': {**(request_headers or {}), **(message.headers or {})},
-                'query_params': query_params_to_dict(
-                    message.destination.query_params()
-                ),
-                'metadata': message.metadata,
-            }
+        req = DBQRequest(
+            api_key_id=auth.api_key.id,
+            team_id=auth.team.id,
+            destination=str(message.destination),
+            body=message.body,
+            method=message.method.value,
+            headers={**(request_headers or {}), **(message.headers or {})},
+            query_params=query_params_to_dict(message.destination.query_params()),
+            metadata=message.metadata,
         )
+        q_requests.append(req)
+        session.add(req)
 
     try:
-        q_requests = (
-            await supabase_admin.table('q_request').insert(database_insert).execute()
-        )
+        await session.flush()
     except Exception as e:
         print(f'Error inserting into q_request: {e}')
         context.errors.append(DeplioError(message='Failed to insert into q_request'))
@@ -143,23 +166,11 @@ async def create(
             errors=context.errors,
         )
 
-    if q_requests.data is None:
-        print('No q_requests.data')
-        context.errors.append(DeplioError(message='Failed to insert into q_request'))
-        return error_response(
-            message='Internal server error',
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            warnings=context.warnings,
-            errors=context.errors,
-        )
-
-    q_requests = [QRequest(**q_request) for q_request in q_requests.data]
-
     sqs_messages: list[QSQSMessage] = []
     for q_request in q_requests:
         sqs_messages.append(
             QSQSMessage(
-                destination=q_request.destination,
+                destination=Url(q_request.destination),
                 body=q_request.body,
                 method=q_request.method,
                 headers=q_request.headers,
@@ -184,19 +195,10 @@ async def create(
         context.errors.append(DeplioError(message='Failed to send messages to queue'))
 
         try:
-            await (
-                supabase_admin.table('q_request')
-                .update(
-                    {
-                        'deleted_at': datetime.now(UTC).isoformat(),
-                    }
-                )
-                .in_('id', [q_request.id for q_request in q_requests])
-                .execute()
-            )
+            await session.rollback()
         except Exception as e:
-            print(f'Error updating q_request: {e}')
-            context.errors.append(DeplioError(message='Failed to update q_request'))
+            print(f'Error rolling back session: {e}')
+            context.errors.append(DeplioError(message='Failed to roll back session'))
 
         return error_response(
             message='Internal server error',
@@ -205,6 +207,7 @@ async def create(
             errors=context.errors,
         )
 
+    await session.commit()
     return PostQMessagesResponse(
         request_ids=[q_request.id for q_request in q_requests],
         messages_delivered=len(sqs_messages),

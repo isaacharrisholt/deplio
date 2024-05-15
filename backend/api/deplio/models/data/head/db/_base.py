@@ -1,6 +1,7 @@
 from typing import cast
 from pydantic import AwareDatetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.dialects.postgresql import UUID as SAUUID
 from sqlalchemy import TIMESTAMP
 import sqlalchemy as sa
@@ -12,7 +13,7 @@ PostgresUUID = cast(
 )
 
 
-class Model(DeclarativeBase):
+class Model(AsyncAttrs, DeclarativeBase):
     __abstract__ = True
 
 
