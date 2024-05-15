@@ -17,3 +17,15 @@ class HTTPMethod(StrEnum):
     PUT = 'PUT'
     DELETE = 'DELETE'
     PATCH = 'PATCH'
+
+
+class CronJobStatus(StrEnum):
+    ACTIVE = 'active'
+    INACTIVE = 'inactive'
+
+
+class ScheduledJobStatus(StrEnum):
+    PENDING = 'pending'
+    RUNNING = 'running'
+    COMPLETED = 'completed'
+    FAILED = 'failed'

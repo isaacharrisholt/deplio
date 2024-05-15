@@ -1,7 +1,7 @@
 from typing import Optional
 from uuid import UUID
 from pydantic import AnyUrl
-from .._base import TimestampedDeplioModel
+from ._base import TimestampedDeplioModel
 
 
 class User(TimestampedDeplioModel):

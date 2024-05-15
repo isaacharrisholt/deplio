@@ -11,7 +11,7 @@ from deplio.auth.dependencies import (
 )
 from deplio.config import settings
 from deplio.context import Context, context
-from deplio.models.data.head.db.q import QRequest
+from deplio.models.data.head.endpoints.q import QRequest
 from deplio.models.data.head.endpoints.q import (
     GetQMessagesResponse,
     PostQMessagesRequest,

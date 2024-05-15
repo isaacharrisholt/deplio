@@ -1,13 +1,35 @@
-from typing import Annotated, Optional
+from typing import Annotated, Optional, Any
 from uuid import UUID
 
 from cron_converter import Cron
 from fastapi.exceptions import RequestValidationError
 from pydantic import AfterValidator, AwareDatetime, BaseModel
 
-from deplio.models.data.head.db.cron import CronJob, CronJobStatus
-from deplio.models.data.head.db.jobs import Executor
-from deplio.models.data.head.responses import DeplioResponse
+from .jobs import Executor
+from ..responses import DeplioResponse
+from enum import StrEnum
+
+from ._base import TimestampedDeplioModel
+
+
+class CronJobStatus(StrEnum):
+    ACTIVE = 'active'
+    INACTIVE = 'inactive'
+
+
+class CronJob(TimestampedDeplioModel):
+    team_id: UUID
+    api_key_id: UUID
+    status: CronJobStatus
+    executor: Executor
+    schedule: str
+    metadata: Optional[dict[str, Any]]
+
+
+class CronInvocation(TimestampedDeplioModel):
+    cron_job_id: UUID
+    scheduled_job_id: UUID
+    metadata: Optional[dict[str, Any]]
 
 
 def validate_cron_schedule(schedule: str) -> str:

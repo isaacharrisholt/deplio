@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import AnyHttpUrl, BaseModel
 
-from deplio.models.data.head.db.enums import HTTPMethod
+from deplio.models.data.head.enums import HTTPMethod
 
 
 class QSQSMessage(BaseModel):

@@ -5,9 +5,9 @@ from typing import Any
 from deplio.command.command_controller import CommandController
 from deplio.command.supabase.insert import SupabaseInsertMany
 from deplio.config import settings
-from deplio.models.data.head.db.cron import CronJob
-from deplio.models.data.head.db.jobs import ScheduledJob
-from deplio.models.data.head.db.q import QRequest
+from deplio.models.data.head.endpoints.cron import CronJob
+from deplio.models.data.head.endpoints.jobs import ScheduledJob
+from deplio.models.data.head.endpoints.q import QRequest
 from deplio.modules.cron import schedule_cron_invocations
 from deplio.services.sqs import SQS, SQSMessage
 from deplio.services.supabase import SupabaseClient, supabase_admin

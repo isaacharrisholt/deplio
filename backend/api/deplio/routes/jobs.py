@@ -7,7 +7,8 @@ from deplio.auth.dependencies import APIKeyAuthCredentials, api_key_auth
 from deplio.command.command_controller import CommandController
 from deplio.command.supabase.insert import SupabaseInsertSingle
 from deplio.context import Context, context
-from deplio.models.data.head.db.jobs import ScheduledJob, ScheduledJobStatus
+from deplio.models.data.head.endpoints.jobs import ScheduledJob
+from deplio.models.data.head.enums import ScheduledJobStatus
 from deplio.models.data.head.endpoints.jobs import (
     PostScheduledJobRequest,
     PostScheduledJobResponse,

@@ -5,9 +5,9 @@ from typing import Annotated, NamedTuple, Optional
 from fastapi import Depends, HTTPException
 from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
 
-from deplio.models.data.head.db.api_key import APIKey
-from deplio.models.data.head.db.team import Team
-from deplio.models.data.head.db.user import User
+from deplio.models.data.head.endpoints.api_key import APIKey
+from deplio.models.data.head.endpoints.team import Team
+from deplio.models.data.head.endpoints.user import User
 from deplio.services.redis import Redis, RedisUserRequest, redis
 from deplio.services.supabase import SupabaseClient, supabase_admin
 

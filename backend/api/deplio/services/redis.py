@@ -4,8 +4,8 @@ from typing import Any, Self, Type, TypeVar
 import httpx
 
 from deplio.config import settings
-from deplio.models.data.head._base import DeplioModel
-from deplio.models.data.head.db.user_with_teams import UserWithTeams
+from deplio.models.data.head.endpoints._base import DeplioModel
+from deplio.models.data.head.endpoints.user_with_teams import UserWithTeams
 
 T = TypeVar('T', bound=DeplioModel)
 

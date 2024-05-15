@@ -1,5 +1,5 @@
 from uuid import UUID
-from .enums import UserRole
+from ..enums import UserRole
 from .user import User
 from .team import Team
 
