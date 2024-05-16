@@ -1,71 +1,60 @@
 from datetime import UTC, datetime
-from typing import Any
 
 from cron_converter import Cron
+from sqlalchemy.orm import Session
 
-from deplio.command.command_controller import CommandController
-from deplio.command.supabase.insert import SupabaseInsertMany
-from deplio.models.data.head.endpoints.cron import CronJob
-from deplio.models.data.head.endpoints.jobs import ScheduledJob
+from deplio.models.data.head.db.cron import DBCronInvocation, DBCronJob
 from deplio.models.data.head.enums import CronJobStatus, ScheduledJobStatus
-from deplio.services.supabase import SupabaseClient
+from deplio.models.data.head.db.jobs import DBScheduledJob
 
 
-async def schedule_cron_invocations(supabase: SupabaseClient, cron_jobs: list[CronJob]):
-    controller = CommandController()
-    active_cron_jobs = [job for job in cron_jobs if job.status == CronJobStatus.active]
+def schedule_cron_invocations(session: Session, cron_jobs: list[DBCronJob]):
+    with session.begin_nested():
+        active_cron_jobs = [
+            job for job in cron_jobs if job.status == CronJobStatus.active
+        ]
 
-    inserts: list[dict[str, Any]] = []
-    for cron_job in active_cron_jobs:
-        # Get next cron invocation time and schedule it
-        cron = Cron(cron_job.schedule)
-        schedule = cron.schedule(datetime.now(UTC))
-        next = schedule.next()
+        scheduled_jobs: list[DBScheduledJob] = []
+        for cron_job in active_cron_jobs:
+            # Get next cron invocation time and schedule it
+            cron = Cron(cron_job.schedule)
+            schedule = cron.schedule(datetime.now(UTC))
+            next = schedule.next()
 
-        scheduled_job_insert = {
-            'api_key_id': str(cron_job.api_key_id),
-            'team_id': str(cron_job.team_id),
-            'status': ScheduledJobStatus.pending,
-            'executor': {
-                **cron_job.executor.model_dump(),
-                'destination': str(cron_job.executor.destination),
-            },
-            'scheduled_for': next.isoformat(),
-            'metadata': cron_job.metadata,
-        }
+            scheduled_job_insert = DBScheduledJob(
+                api_key_id=str(cron_job.api_key_id),
+                team_id=str(cron_job.team_id),
+                status=ScheduledJobStatus.pending,
+                executor=cron_job.executor,
+                scheduled_for=next,
+                metadata_=cron_job.metadata_,
+            )
 
-        inserts.append(scheduled_job_insert)
+            scheduled_jobs.append(scheduled_job_insert)
 
-    scheduled_job_insert = SupabaseInsertMany(supabase, 'scheduled_job', inserts)
+        try:
+            session.add_all(scheduled_jobs)
+            session.flush()
+            print(f'Inserted {len(scheduled_jobs)} scheduled jobs')
+        except Exception as e:
+            print(f'Error inserting scheduled jobs: {e}')
+            raise
 
-    try:
-        scheduled_job_records = await controller.execute(scheduled_job_insert)
-    except Exception as e:
-        print(f'Error inserting scheduled jobs: {e}')
-        raise
+        cron_invocation_inserts = [
+            DBCronInvocation(
+                cron_job_id=active_cron_jobs[i].id,
+                scheduled_job_id=scheduled_job.id,
+                metadata_=active_cron_jobs[i].metadata_,
+            )
+            for i, scheduled_job in enumerate(scheduled_jobs)
+        ]
 
-    scheduled_jobs = [
-        ScheduledJob(**scheduled_job) for scheduled_job in scheduled_job_records
-    ]
+        try:
+            session.add_all(cron_invocation_inserts)
+            session.flush()
+        except Exception as e:
+            print(f'Error inserting cron invocations: {e}')
+            session.rollback()
+            raise
 
-    cron_invocation_inserts = [
-        {
-            'cron_job_id': str(active_cron_jobs[i].id),
-            'scheduled_job_id': str(scheduled_job.id),
-            'metadata': active_cron_jobs[i].metadata,
-        }
-        for i, scheduled_job in enumerate(scheduled_jobs)
-    ]
-
-    cron_invocation_insert = SupabaseInsertMany(
-        supabase,
-        'cron_invocation',
-        cron_invocation_inserts,
-    )
-
-    try:
-        await controller.execute(cron_invocation_insert)
-    except Exception as e:
-        print(f'Error inserting cron invocations: {e}')
-        await controller.undo_all()
-        raise
+        session.commit()

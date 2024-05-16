@@ -45,6 +45,11 @@ class DBQRequest(TimestampedDeplioModel):
         JSONB,
         nullable=True,
     )
+    metadata_: Mapped[dict[str, str] | None] = mapped_column(
+        JSONB,
+        nullable=True,
+        name='metadata',
+    )
 
     responses: Mapped[list['DBQResponse']] = relationship(
         back_populates='request',

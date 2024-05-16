@@ -12,6 +12,28 @@ from .jobs import DBScheduledJob
 from ..enums import CronJobStatus
 
 
+class DBCronInvocation(TimestampedDeplioModel):
+    __tablename__ = 'cron_invocation'
+
+    cron_job_id: Mapped[UUID] = mapped_column(
+        ForeignKey('cron_job.id'),
+    )
+    cron_job: Mapped['DBCronJob'] = relationship(back_populates='invocations')
+
+    scheduled_job_id: Mapped[UUID] = mapped_column(
+        ForeignKey('scheduled_job.id'),
+    )
+    scheduled_job: Mapped[DBScheduledJob] = relationship(
+        single_parent=True,
+    )
+
+    metadata_: Mapped[dict[str, Any] | None] = mapped_column(
+        JSONB,
+        nullable=True,
+        name='metadata',
+    )
+
+
 class DBCronJob(TimestampedDeplioModel):
     __tablename__ = 'cron_job'
 
@@ -40,29 +62,6 @@ class DBCronJob(TimestampedDeplioModel):
         name='metadata',
     )
 
-    invocations: Mapped[list['DBCronInvocation']] = relationship(
-        'DBCronInvocation',
+    invocations: Mapped[list[DBCronInvocation]] = relationship(
         back_populates='cron_job',
-    )
-
-
-class DBCronInvocation(TimestampedDeplioModel):
-    __tablename__ = 'cron_invocation'
-
-    cron_job_id: Mapped[UUID] = mapped_column(
-        ForeignKey('cron_job.id'),
-    )
-    cron_job: Mapped[DBCronJob] = relationship(back_populates='invocations')
-
-    scheduled_job_id: Mapped[UUID] = mapped_column(
-        ForeignKey('scheduled_job.id'),
-    )
-    scheduled_job: Mapped[DBScheduledJob] = relationship(
-        single_parent=True,
-    )
-
-    metadata_: Mapped[dict[str, Any] | None] = mapped_column(
-        JSONB,
-        nullable=True,
-        name='metadata',
     )
