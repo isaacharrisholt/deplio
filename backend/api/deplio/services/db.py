@@ -1,3 +1,5 @@
+from typing import Annotated
+from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 # TODO: use proper url
@@ -12,3 +14,6 @@ async def db_session():
             yield session
 
         await session.close()
+
+
+DBSessionDependency = Annotated[AsyncSession, Depends(db_session)]

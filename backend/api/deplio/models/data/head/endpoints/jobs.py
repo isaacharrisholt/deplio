@@ -1,11 +1,10 @@
 from typing import Optional, Literal, Annotated, Any
 from uuid import UUID
-from enum import StrEnum
 from pydantic import AnyHttpUrl, BaseModel, Field, AwareDatetime
 from ._base import TimestampedDeplioModel
 
 from deplio.models.data.head.responses import DeplioResponse
-from ..enums import HTTPMethod
+from ..enums import HTTPMethod, ScheduledJobStatus
 
 
 class HTTPExecutorV1(BaseModel):
@@ -20,13 +19,6 @@ class HTTPExecutorV1(BaseModel):
 HTTPExecutor = Annotated[HTTPExecutorV1, Field(..., discriminator='version')]
 
 Executor = Annotated[HTTPExecutor, Field(..., discriminator='type')]
-
-
-class ScheduledJobStatus(StrEnum):
-    PENDING = 'pending'
-    RUNNING = 'running'
-    COMPLETED = 'completed'
-    FAILED = 'failed'
 
 
 class ScheduledJob(TimestampedDeplioModel):

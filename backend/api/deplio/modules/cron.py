@@ -25,7 +25,7 @@ async def schedule_cron_invocations(supabase: SupabaseClient, cron_jobs: list[Cr
         scheduled_job_insert = {
             'api_key_id': str(cron_job.api_key_id),
             'team_id': str(cron_job.team_id),
-            'status': ScheduledJobStatus.PENDING,
+            'status': ScheduledJobStatus.pending,
             'executor': {
                 **cron_job.executor.model_dump(),
                 'destination': str(cron_job.executor.destination),

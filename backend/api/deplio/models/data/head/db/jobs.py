@@ -6,7 +6,6 @@ from sqlalchemy import ForeignKey, TIMESTAMP, Text
 from sqlalchemy.dialects.postgresql import JSONB, ENUM as PgEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .api_key import DBAPIKey
 from .user_and_team import DBTeam
 
 from ._base import TimestampedDeplioModel
@@ -19,9 +18,11 @@ class DBScheduledJob(TimestampedDeplioModel):
     team_id: Mapped[UUID] = mapped_column(
         ForeignKey('team.id'),
     )
-    team: Mapped[DBTeam] = relationship(back_populates='scheduled_jobs')
+    team: Mapped[DBTeam] = relationship()
 
-    api_key_id: Mapped[DBAPIKey] = relationship(back_populates='scheduled_jobs')
+    api_key_id: Mapped[UUID] = mapped_column(
+        ForeignKey('api_key.id'),
+    )
     status: Mapped[ScheduledJobStatus] = mapped_column(
         PgEnum(ScheduledJobStatus, name='scheduled_job_status'),
         nullable=False,

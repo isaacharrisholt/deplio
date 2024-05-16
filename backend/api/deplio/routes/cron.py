@@ -149,7 +149,7 @@ async def create(
             {
                 'api_key_id': str(auth.api_key.id),
                 'team_id': str(auth.team.id),
-                'status': ScheduledJobStatus.PENDING,
+                'status': ScheduledJobStatus.pending,
                 'executor': {
                     **cron_job.executor.model_dump(),
                     'destination': str(cron_job.executor.destination),

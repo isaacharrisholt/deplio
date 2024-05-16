@@ -25,7 +25,7 @@ class CronJobStatus(StrEnum):
 
 
 class ScheduledJobStatus(StrEnum):
-    PENDING = 'pending'
-    RUNNING = 'running'
-    COMPLETED = 'completed'
-    FAILED = 'failed'
+    pending = 'pending'
+    running = 'running'
+    completed = 'completed'
+    failed = 'failed'
