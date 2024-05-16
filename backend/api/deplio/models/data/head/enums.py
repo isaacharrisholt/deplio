@@ -20,8 +20,8 @@ class HTTPMethod(StrEnum):
 
 
 class CronJobStatus(StrEnum):
-    ACTIVE = 'active'
-    INACTIVE = 'inactive'
+    active = 'active'
+    inactive = 'inactive'
 
 
 class ScheduledJobStatus(StrEnum):

@@ -18,7 +18,7 @@ class DBCronJob(TimestampedDeplioModel):
     team_id: Mapped[UUID] = mapped_column(
         ForeignKey('team.id'),
     )
-    team: Mapped[DBTeam] = relationship(back_populates='cron_jobs')
+    team: Mapped[DBTeam] = relationship()
     api_key_id: Mapped[UUID] = mapped_column(
         ForeignKey('api_key.id'),
     )
@@ -41,7 +41,7 @@ class DBCronJob(TimestampedDeplioModel):
     )
 
     invocations: Mapped[list['DBCronInvocation']] = relationship(
-        'CronInvocation',
+        'DBCronInvocation',
         back_populates='cron_job',
     )
 
@@ -58,7 +58,6 @@ class DBCronInvocation(TimestampedDeplioModel):
         ForeignKey('scheduled_job.id'),
     )
     scheduled_job: Mapped[DBScheduledJob] = relationship(
-        back_populates='invocations',
         single_parent=True,
     )
 

@@ -58,12 +58,15 @@ async def get(
             select(DBQRequest, func.count(DBQRequest.id).over().label('total'))
             .outerjoin(DBQRequest.responses)
             .options(selectinload(DBQRequest.responses))
-            .where(DBQRequest.team_id == auth.team.id)
+            .where(
+                DBQRequest.team_id == auth.team.id,
+                DBQRequest.deleted_at.is_(None),
+            )
             .order_by(DBQRequest.created_at.desc())
             .limit(page_size)
             .offset((page - 1) * page_size)
         )
-        q_requests_with_total = result.tuples().all()
+        q_requests_with_total = result.unique().tuples().all()
     except Exception as e:
         print(f'Error retrieving from q_request: {e}')
         context.errors.append(DeplioError(message='Failed to retrieve from q_request'))
