@@ -110,7 +110,7 @@ async def create(
         cron_job_result = await session.execute(
             insert(cron_job_table).values(cron_job_insert).returning(cron_job_table)
         )
-        cron_job_record = cron_job_result.first()._mapping
+        cron_job_record = cron_job_result.one()._mapping
     except Exception as e:
         print(f'Error inserting into cron_job: {e}')
         context.errors.append(DeplioError(message='Failed to insert into cron_job'))
@@ -149,7 +149,7 @@ async def create(
                 .values(scheduled_job_insert)
                 .returning(scheduled_job_table)
             )
-            scheduled_job_record = result.first()._mapping
+            scheduled_job_record = result.one()._mapping
         except Exception as e:
             print(f'Error inserting into scheduled_job: {e}')
             context.errors.append(
