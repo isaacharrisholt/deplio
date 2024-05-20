@@ -3,8 +3,8 @@ from uuid import UUID
 
 from pydantic import AwareDatetime, BaseModel
 
-from deplio.models.data.head.db.jobs import Executor
-from deplio.models.data.head.responses import DeplioResponse
+from ..db.jobs import Executor
+from ..responses import DeplioResponse
 
 
 class PostScheduledJobRequest(BaseModel):

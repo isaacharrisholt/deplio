@@ -34,7 +34,7 @@ class GetCronJobsResponse(DeplioResponse):
 
 
 class PostCronJobRequest(BaseModel):
-    status: CronJobStatus = CronJobStatus.ACTIVE
+    status: CronJobStatus = CronJobStatus.active
     executor: Executor
     schedule: CronSchedule
     metadata: Optional[dict[str, str]] = None

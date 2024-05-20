@@ -23,10 +23,10 @@ Executor = Annotated[HTTPExecutor, Field(..., discriminator='type')]
 
 
 class ScheduledJobStatus(StrEnum):
-    PENDING = 'pending'
-    RUNNING = 'running'
-    COMPLETED = 'completed'
-    FAILED = 'failed'
+    pending = 'pending'
+    running = 'running'
+    completed = 'completed'
+    failed = 'failed'
 
 
 class ScheduledJob(TimestampedDeplioModel):

@@ -60,7 +60,7 @@ async def create(
         {
             'team_id': str(auth.team.id),
             'api_key_id': str(auth.api_key.id),
-            'status': ScheduledJobStatus.PENDING,
+            'status': ScheduledJobStatus.pending,
             'scheduled_for': scheduled_job_request.schedule_for.isoformat(),
             'executor': {
                 **scheduled_job_request.executor.model_dump(),

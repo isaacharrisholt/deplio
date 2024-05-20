@@ -12,7 +12,7 @@ from deplio.services.supabase import SupabaseClient
 
 async def schedule_cron_invocations(supabase: SupabaseClient, cron_jobs: list[CronJob]):
     controller = CommandController()
-    active_cron_jobs = [job for job in cron_jobs if job.status == CronJobStatus.ACTIVE]
+    active_cron_jobs = [job for job in cron_jobs if job.status == CronJobStatus.active]
 
     inserts: list[dict[str, Any]] = []
     for cron_job in active_cron_jobs:
@@ -24,7 +24,7 @@ async def schedule_cron_invocations(supabase: SupabaseClient, cron_jobs: list[Cr
         scheduled_job_insert = {
             'api_key_id': str(cron_job.api_key_id),
             'team_id': str(cron_job.team_id),
-            'status': ScheduledJobStatus.PENDING,
+            'status': ScheduledJobStatus.pending,
             'executor': {
                 **cron_job.executor.model_dump(),
                 'destination': str(cron_job.executor.destination),
