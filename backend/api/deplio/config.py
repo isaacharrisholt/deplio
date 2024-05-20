@@ -18,6 +18,12 @@ class Settings(BaseSettings):
         validation_alias='PRIVATE_SUPABASE_SERVICE_ROLE_KEY',
     )
 
+    supabase_db_user: str = Field(validation_alias='SUPABASE_DB_USER')
+    supabase_db_password: str = Field(validation_alias='SUPABASE_DB_PASSWORD')
+    supabase_db_name: str = Field(validation_alias='SUPABASE_DB_NAME')
+    supabase_db_host: str = Field(validation_alias='SUPABASE_DB_HOST')
+    supabase_db_port: str = Field(validation_alias='SUPABASE_DB_PORT')
+
     kv_url: str = Field(validation_alias='KV_URL')
     kv_rest_api_url: str = Field(validation_alias='KV_REST_API_URL')
     kv_rest_api_token: str = Field(validation_alias='KV_REST_API_TOKEN')
