@@ -1,7 +1,6 @@
 import json
-from typing import Any, Self, Type, TypeVar
-
-import httpx
+from typing import Self, Type, TypeVar
+from upstash_redis.asyncio import Redis as UpstashRedis
 
 from deplio.config import settings
 from deplio.models.data.head._base import DeplioModel
@@ -32,28 +31,10 @@ class RedisUserRequest(RedisRequest[UserWithTeams]):
 
 class Redis:
     def __init__(self, url: str, token: str):
-        self.url = url
-        self.token = token
-
-    async def _get_request(self: Self, path: str, key: str) -> dict[str, Any]:
-        async with httpx.AsyncClient() as client:
-            url = f'{self.url}{path}/{key}'
-            headers = {
-                'Authorization': f'Bearer {self.token}',
-            }
-            response = await client.get(url, headers=headers)
-
-        response.raise_for_status()
-        result_list = response.json()['result']
-        if not len(result_list):
-            raise KeyError(key)
-        result_dict = {}
-        for i in range(0, len(result_list), 2):
-            result_dict[result_list[i]] = result_list[i + 1]
-        return result_dict
+        self.client = UpstashRedis(url, token)
 
     async def hgetall(self, request: RedisRequest[T]) -> T:
-        result = await self._get_request('/hgetall', request.key)
+        result = await self.client.hgetall(request.key)
         return request.__return_type__(**json.loads(result['value']))
 
 
