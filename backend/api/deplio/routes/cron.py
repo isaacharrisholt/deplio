@@ -4,11 +4,11 @@ from uuid import UUID
 
 from cron_converter import Cron
 from fastapi import Depends, Query, status
-from sqlalchemy import insert
+from sqlalchemy import insert, select, update
 
 from deplio.auth.dependencies import APIKeyAuthCredentials, api_key_auth
 from deplio.context import Context, context
-from deplio.models.data.head.db.cron import CronJob, CronJobStatus
+from deplio.models.data.head.db.cron import CronInvocation, CronJob, CronJobStatus
 from deplio.models.data.head.db.jobs import ScheduledJob, ScheduledJobStatus
 from deplio.models.data.head.tables.cron import cron_job_table, cron_invocation_table
 from deplio.models.data.head.tables.jobs import scheduled_job_table
@@ -201,20 +201,32 @@ async def create(
 )
 async def delete(
     auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],
-    supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
+    session: DbSessionDependency,
     context: Annotated[Context, Depends(context)],
     cron_job_id: UUID,
 ):
     # TODO: Add a comand controller to handle this
     try:
-        cron_delete_response = (
-            await supabase_admin.table('cron_job')
-            .update({'deleted_at': datetime.now(UTC).isoformat()})
-            .eq('id', str(cron_job_id))
-            .eq('team_id', auth.team.id)
-            .is_('deleted_at', 'null')
-            .execute()
+        # cron_delete_response = (
+        #     await supabase_admin.table('cron_job')
+        #     .update({'deleted_at': datetime.now(UTC).isoformat()})
+        #     .eq('id', str(cron_job_id))
+        #     .eq('team_id', auth.team.id)
+        #     .is_('deleted_at', 'null')
+        #     .execute()
+        # )
+        #
+        response = await session.execute(
+            update(cron_job_table)
+            .where(
+                cron_job_table.c.id == cron_job_id,
+                cron_job_table.c.team_id == auth.team.id,
+                cron_job_table.c.deleted_at.is_(None),
+            )
+            .values(deleted_at=datetime.now(UTC))
+            .returning(cron_job_table.c.id)
         )
+        cron_delete_response = response.all()
     except Exception as e:
         print(f'Error deleting cron job: {e}')
         context.errors.append(DeplioError(message='Failed to delete cron job'))
@@ -225,7 +237,7 @@ async def delete(
             errors=context.errors,
         )
 
-    if len(cron_delete_response.data) == 0:
+    if len(cron_delete_response) == 0:
         return error_response(
             message='Cron job not found',
             status_code=status.HTTP_404_NOT_FOUND,
@@ -234,12 +246,12 @@ async def delete(
         )
 
     try:
-        cron_invocation_response = (
-            await supabase_admin.table('cron_invocation')
-            .select('*')
-            .eq('cron_job_id', str(cron_job_id))
-            .execute()
+        response = await session.execute(
+            select(cron_invocation_table).where(
+                cron_invocation_table.c.cron_job_id == cron_job_id
+            )
         )
+        cron_invocations = [CronInvocation(**record) for record in response.mappings()]
     except Exception as e:
         print(f'Error fetching cron invocations: {e}')
         context.errors.append(DeplioError(message='Failed to fetch cron invocations'))
@@ -251,19 +263,21 @@ async def delete(
         )
 
     try:
-        scheduled_job_delete_response = (
-            await supabase_admin.table('scheduled_job')
-            .update({'deleted_at': datetime.now(UTC).isoformat()})
-            .in_(
-                'id',
-                [
-                    record['scheduled_job_id']
-                    for record in cron_invocation_response.data
-                ],
+        response = await session.execute(
+            update(scheduled_job_table)
+            .where(
+                scheduled_job_table.c.id.in_(
+                    [
+                        cron_invocation.scheduled_job_id
+                        for cron_invocation in cron_invocations
+                    ]
+                ),
+                scheduled_job_table.c.started_at.is_(None),
             )
-            .is_('started_at', 'null')
-            .execute()
+            .values(deleted_at=datetime.now(UTC))
+            .returning(scheduled_job_table.c.id)
         )
+        scheduled_job_ids: list[UUID] = list(response.scalars().all())
     except Exception as e:
         print(f'Error deleting scheduled jobs: {e}')
         context.errors.append(DeplioError(message='Failed to delete scheduled jobs'))
@@ -274,14 +288,11 @@ async def delete(
             errors=context.errors,
         )
 
-    scheduled_job_ids = [record['id'] for record in scheduled_job_delete_response.data]
-
     try:
-        (
-            await supabase_admin.table('cron_invocation')
-            .update({'deleted_at': datetime.now(UTC).isoformat()})
-            .in_('scheduled_job_id', scheduled_job_ids)
-            .execute()
+        await session.execute(
+            update(cron_invocation_table)
+            .where(cron_invocation_table.c.scheduled_job_id.in_(scheduled_job_ids))
+            .values(deleted_at=datetime.now(UTC))
         )
     except Exception as e:
         print(f'Error deleting cron invocations: {e}')
@@ -293,6 +304,7 @@ async def delete(
             errors=context.errors,
         )
 
+    await session.commit()
     return DeleteCronJobResponse(
         cron_job_id=cron_job_id,
         scheduled_job_ids=scheduled_job_ids,
