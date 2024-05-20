@@ -4,10 +4,11 @@ from typing import Annotated, Optional
 from uuid import UUID
 from cron_converter import Cron
 from fastapi.exceptions import RequestValidationError
-from pydantic import AfterValidator, AwareDatetime, BaseModel
-from deplio.models.data.head.db.cron import CronJob, CronJobStatus
-from deplio.models.data.head.db.jobs import Executor
-from deplio.models.data.head.responses import DeplioResponse
+from pydantic import AfterValidator, AwareDatetime
+from .._base import DeplioBaseModel
+from ..db.cron import CronJob, CronJobStatus
+from ..db.jobs import Executor
+from ..responses import DeplioResponse
 
 
 def validate_cron_schedule(schedule: str) -> str:
@@ -33,7 +34,7 @@ class GetCronJobsResponse(DeplioResponse):
     page_size: int
 
 
-class PostCronJobRequest(BaseModel):
+class PostCronJobRequest(DeplioBaseModel):
     status: CronJobStatus = CronJobStatus.active
     executor: Executor
     schedule: CronSchedule
@@ -43,3 +44,8 @@ class PostCronJobRequest(BaseModel):
 class PostCronJobResponse(DeplioResponse):
     cron_job_id: UUID
     next_invocation: Optional[AwareDatetime] = None
+
+
+class DeleteCronJobResponse(DeplioResponse):
+    cron_job_id: UUID
+    scheduled_job_ids: list[UUID]

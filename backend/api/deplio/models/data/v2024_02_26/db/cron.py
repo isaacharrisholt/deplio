@@ -8,8 +8,8 @@ from .jobs import Executor
 
 
 class CronJobStatus(StrEnum):
-    ACTIVE = 'active'
-    INACTIVE = 'inactive'
+    active = 'active'
+    inactive = 'inactive'
 
 
 class CronJob(TimestampedDeplioModel):

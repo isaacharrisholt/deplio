@@ -27,10 +27,9 @@ class QMessage(BaseModel):
     metadata: Optional[dict[str, str]] = Field(None)
 
 
-PostQMessagesRequest = (
-    Annotated[QMessage, Field(..., title='Message')]
-    | Annotated[list[QMessage], Field(..., max_length=10, title='Messages')]
-)
+PostQMessagesRequest = Annotated[
+    list[QMessage], Field(..., max_length=10, title='Messages')
+]
 
 
 class PostQMessagesResponse(DeplioResponse):
