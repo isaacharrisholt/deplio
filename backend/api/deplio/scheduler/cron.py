@@ -2,15 +2,18 @@ import asyncio
 from datetime import UTC, datetime
 from typing import Any
 
-from deplio.command.command_controller import CommandController
-from deplio.command.supabase.insert import SupabaseInsertMany
+from sqlalchemy import insert
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from deplio.services.db import engine
 from deplio.config import settings
 from deplio.models.data.head.db.cron import CronJob
+from deplio.models.data.head.tables.q import q_request_table
 from deplio.models.data.head.db.jobs import ScheduledJob
 from deplio.models.data.head.db.q import QRequest
 from deplio.modules.cron import schedule_cron_invocations
 from deplio.services.sqs import SQS, SQSMessage
-from deplio.services.supabase import SupabaseClient, supabase_admin
+from deplio.services.supabase import supabase_admin
 from deplio.types.q import QSQSMessage
 from deplio.utils.async_utils import synchronise
 from deplio.utils.q import query_params_to_dict
@@ -41,56 +44,53 @@ def http_executor_job_to_q_request_insert(
             }
 
 
-async def handle_http_executor_jobs(
-    supabase: SupabaseClient, jobs: list[ScheduledJobWithCron]
-):
-    messages = [http_executor_job_to_q_request_insert(job) for job in jobs]
+async def handle_http_executor_jobs(jobs: list[ScheduledJobWithCron]):
+    async with AsyncSession(engine) as session:
+        messages = [http_executor_job_to_q_request_insert(job) for job in jobs]
 
-    controller = CommandController()
-    q_request_insert = SupabaseInsertMany(supabase, 'q_request', messages)
-
-    # Insert q_request
-    try:
-        q_request_records = await controller.execute(q_request_insert)
-    except Exception as e:
-        print(f'Error inserting message into Q: {e}')
-        raise
-
-    q_requests = [QRequest(**q_request) for q_request in q_request_records]
-
-    # Convert q_request to SQSMessage
-    sqs_messages = [
-        QSQSMessage(
-            destination=q_request.destination,
-            body=q_request.body,
-            method=q_request.method,
-            headers=q_request.headers,
-            request_id=q_request.id,
-        )
-        for q_request in q_requests
-    ]
-
-    sqs = SQS()
-    sqs_response = sqs.send_messages(
-        [
-            SQSMessage(
-                Id=str(message.request_id), MessageBody=message.model_dump_json()
-            )
-            for message in sqs_messages
-        ],
-        settings.deplio_q_queue_url,
-    )
-
-    if 'Successful' not in sqs_response:
-        print('Error sending messages to SQS')
-
+        # Insert q_request
         try:
-            await controller.undo_all()
+            result = await session.execute(
+                insert(q_request_table).values(messages).returning(q_request_table)
+            )
+            q_requests = [QRequest(**q_request) for q_request in result.mappings()]
         except Exception as e:
-            print(f'Error undoing all inserts: {e}')
+            print(f'Error inserting message into Q: {e}')
             raise
 
-        raise Exception('Error sending messages to SQS')
+        # Convert q_request to SQSMessage
+        sqs_messages = [
+            QSQSMessage(
+                destination=q_request.destination,
+                body=q_request.body,
+                method=q_request.method,
+                headers=q_request.headers,
+                request_id=q_request.id,
+            )
+            for q_request in q_requests
+        ]
+
+        sqs = SQS()
+        try:
+            sqs_response = sqs.send_messages(
+                [
+                    SQSMessage(
+                        Id=str(message.request_id),
+                        MessageBody=message.model_dump_json(),
+                    )
+                    for message in sqs_messages
+                ],
+                settings.deplio_q_queue_url,
+            )
+        except Exception as e:
+            print(f'Error sending messages to SQS: {e}')
+            raise
+
+        if 'Successful' not in sqs_response:
+            print('Error sending messages to SQS')
+            raise Exception('Error sending messages to SQS')
+
+        await session.commit()
 
 
 MESSAGE_HANDLERS = {
@@ -134,7 +134,7 @@ async def run_scheduled_jobs():
     print(f'Found {len(cron_jobs)} cron jobs to process')
     if cron_jobs:
         try:
-            await schedule_cron_invocations(supabase, cron_jobs)
+            await schedule_cron_invocations(cron_jobs)
         except Exception as e:
             print(f'Error scheduling cron invocations: {e}')
             raise
@@ -172,7 +172,7 @@ async def run_scheduled_jobs():
             continue
 
         try:
-            await handler(supabase, jobs)
+            await handler(jobs)
         except Exception as e:
             print(f'Error processing jobs for executor type: {executor_type}: {e}')
             failed_jobs.extend([(job, str(e)) for job in jobs])
