@@ -205,17 +205,7 @@ async def delete(
     context: Annotated[Context, Depends(context)],
     cron_job_id: UUID,
 ):
-    # TODO: Add a comand controller to handle this
     try:
-        # cron_delete_response = (
-        #     await supabase_admin.table('cron_job')
-        #     .update({'deleted_at': datetime.now(UTC).isoformat()})
-        #     .eq('id', str(cron_job_id))
-        #     .eq('team_id', auth.team.id)
-        #     .is_('deleted_at', 'null')
-        #     .execute()
-        # )
-        #
         response = await session.execute(
             update(cron_job_table)
             .where(

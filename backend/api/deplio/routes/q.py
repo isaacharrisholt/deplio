@@ -1,7 +1,7 @@
-from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import Depends, Query, Request, status
+from sqlalchemy import insert
 
 from deplio.auth.dependencies import (
     APIKeyAuthCredentials,
@@ -12,6 +12,7 @@ from deplio.auth.dependencies import (
 from deplio.config import settings
 from deplio.context import Context, context
 from deplio.models.data.head.db.q import QRequest
+from deplio.models.data.head.tables.q import q_request_table
 from deplio.models.data.head.endpoints.q import (
     GetQMessagesResponse,
     PostQMessagesRequest,
@@ -24,6 +25,7 @@ from deplio.models.data.head.responses import (
     generate_responses,
 )
 from deplio.routers import create_router
+from deplio.services.db import DbSessionDependency
 from deplio.services.sqs import SQS, SQSMessage
 from deplio.services.supabase import SupabaseClient, supabase_admin
 from deplio.tags import Tags
@@ -98,7 +100,7 @@ async def get(
 )
 async def create(
     auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],
-    supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
+    session: DbSessionDependency,
     context: Annotated[Context, Depends(context)],
     request: Request,
     messages: PostQMessagesRequest,
@@ -130,9 +132,10 @@ async def create(
         )
 
     try:
-        q_requests = (
-            await supabase_admin.table('q_request').insert(database_insert).execute()
+        response = await session.execute(
+            insert(q_request_table).values(database_insert).returning(q_request_table)
         )
+        q_requests = [QRequest(**q_request) for q_request in response.mappings()]
     except Exception as e:
         print(f'Error inserting into q_request: {e}')
         context.errors.append(DeplioError(message='Failed to insert into q_request'))
@@ -142,18 +145,6 @@ async def create(
             warnings=context.warnings,
             errors=context.errors,
         )
-
-    if q_requests.data is None:
-        print('No q_requests.data')
-        context.errors.append(DeplioError(message='Failed to insert into q_request'))
-        return error_response(
-            message='Internal server error',
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            warnings=context.warnings,
-            errors=context.errors,
-        )
-
-    q_requests = [QRequest(**q_request) for q_request in q_requests.data]
 
     sqs_messages: list[QSQSMessage] = []
     for q_request in q_requests:
@@ -168,36 +159,20 @@ async def create(
         )
 
     sqs = SQS()
-    sqs_response = sqs.send_messages(
-        [
-            SQSMessage(
-                Id=str(message.request_id),
-                MessageBody=message.model_dump_json(),
-            )
-            for message in sqs_messages
-        ],
-        settings.deplio_q_queue_url,
-    )
-
-    if 'Successful' not in sqs_response:
-        print(f'Error sending messages to SQS: {sqs_response}')
-        context.errors.append(DeplioError(message='Failed to send messages to queue'))
-
-        try:
-            await (
-                supabase_admin.table('q_request')
-                .update(
-                    {
-                        'deleted_at': datetime.now(UTC).isoformat(),
-                    }
+    try:
+        sqs_response = sqs.send_messages(
+            [
+                SQSMessage(
+                    Id=str(message.request_id),
+                    MessageBody=message.model_dump_json(),
                 )
-                .in_('id', [q_request.id for q_request in q_requests])
-                .execute()
-            )
-        except Exception as e:
-            print(f'Error updating q_request: {e}')
-            context.errors.append(DeplioError(message='Failed to update q_request'))
-
+                for message in sqs_messages
+            ],
+            settings.deplio_q_queue_url,
+        )
+    except Exception as e:
+        print(f'Error sending messages to SQS: {e}')
+        context.errors.append(DeplioError(message='Failed to send messages to queue'))
         return error_response(
             message='Internal server error',
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -205,6 +180,17 @@ async def create(
             errors=context.errors,
         )
 
+    if 'Successful' not in sqs_response:
+        print(f'Error sending messages to SQS: {sqs_response}')
+        context.errors.append(DeplioError(message='Failed to send messages to queue'))
+        return error_response(
+            message='Internal server error',
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            warnings=context.warnings,
+            errors=context.errors,
+        )
+
+    await session.commit()
     return PostQMessagesResponse(
         request_ids=[q_request.id for q_request in q_requests],
         messages_delivered=len(sqs_messages),
