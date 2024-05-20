@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from cron_converter import Cron
-from fastapi import Depends, status
+from fastapi import Depends, Query, status
 
 from deplio.auth.dependencies import APIKeyAuthCredentials, api_key_auth
 from deplio.command.command_controller import CommandController
@@ -10,6 +10,7 @@ from deplio.context import Context, context
 from deplio.models.data.head.db.cron import CronJob, CronJobStatus
 from deplio.models.data.head.db.jobs import ScheduledJob, ScheduledJobStatus
 from deplio.models.data.head.endpoints.cron import (
+    GetCronJobsResponse,
     PostCronJobRequest,
     PostCronJobResponse,
 )
@@ -23,6 +24,61 @@ from deplio.services.supabase import SupabaseClient, supabase_admin
 from deplio.tags import Tags
 
 router = create_router(prefix='/cron')
+
+
+@router.get(
+    '',
+    summary='List Deplio Cron jobs',
+    description='Get a list of cron jobs that have been set up in Deplio.',
+    responses=generate_responses(GetCronJobsResponse),
+    tags=[Tags.CRON],
+    response_description='List of cron jobs',
+    operation_id='cron:list',
+)
+async def get(
+    auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],
+    supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
+    context: Annotated[Context, Depends(context)],
+    page: Annotated[int, Query(ge=1)] = 1,
+    page_size: Annotated[int, Query(ge=1, le=100)] = 25,
+):
+    try:
+        response = (
+            await supabase_admin.table('cron_job')
+            .select('*', count='exact')  # type: ignore
+            .eq('team_id', auth.team.id)
+            .order('created_at', desc=True)
+            .is_('deleted_at', 'null')
+            .range((page - 1) * page_size, page * page_size)
+            .execute()
+        )
+    except Exception as e:
+        print(f'Error getting cron jobs: {e}')
+        context.errors.append(DeplioError(message='Failed to get cron jobs'))
+        return error_response(
+            message='Internal server error',
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            warnings=context.warnings,
+            errors=context.errors,
+        )
+
+    if response.count is None:
+        context.errors.append(DeplioError(message='Failed to get cron jobs'))
+        return error_response(
+            message='Internal server error',
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            warnings=context.warnings,
+            errors=context.errors,
+        )
+
+    return GetCronJobsResponse(
+        cron_jobs=[CronJob(**record) for record in response.data],
+        count=len(response.data),
+        total=response.count,
+        page=page,
+        page_size=page_size,
+        warnings=context.warnings,
+    )
 
 
 @router.post(
@@ -75,7 +131,7 @@ async def create(
 
     cron_job = CronJob(**cron_job_record)
 
-    response = PostCronJobResponse(cron_job_id=cron_job.id)
+    response = PostCronJobResponse(cron_job_id=cron_job.id, warnings=context.warnings)
 
     if cron_job.status == CronJobStatus.ACTIVE:
         # Get next cron invocation time and schedule it

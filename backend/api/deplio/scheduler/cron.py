@@ -130,11 +130,13 @@ async def run_scheduled_jobs():
 
     # For any jobs that have a cron job, insert a new scheduled job for the next run
     cron_jobs = [job.cron_job[0] for job in scheduled_jobs if job.cron_job]
-    try:
-        await schedule_cron_invocations(supabase, cron_jobs)
-    except Exception as e:
-        print(f'Error scheduling cron invocations: {e}')
-        raise
+    print(f'Found {len(cron_jobs)} cron jobs to process')
+    if cron_jobs:
+        try:
+            await schedule_cron_invocations(supabase, cron_jobs)
+        except Exception as e:
+            print(f'Error scheduling cron invocations: {e}')
+            raise
 
     # Update scheduled jobs to running status
     try:

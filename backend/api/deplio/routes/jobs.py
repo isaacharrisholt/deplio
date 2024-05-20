@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import Depends, status
@@ -41,6 +42,18 @@ async def create(
 
     controller = CommandController()
 
+    if scheduled_job_request.schedule_for < datetime.now(UTC):
+        context.errors.append(
+            DeplioError(message='Scheduled time must be in the future')
+        )
+
+        return error_response(
+            message='Scheduled time must be in the future',
+            status_code=status.HTTP_400_BAD_REQUEST,
+            warnings=context.warnings,
+            errors=context.errors,
+        )
+
     scheduled_job_insert = SupabaseInsertSingle(
         supabase_admin,
         'scheduled_job',
@@ -48,6 +61,7 @@ async def create(
             'team_id': str(auth.team.id),
             'api_key_id': str(auth.api_key.id),
             'status': ScheduledJobStatus.PENDING,
+            'scheduled_for': scheduled_job_request.schedule_for.isoformat(),
             'executor': {
                 **scheduled_job_request.executor.model_dump(),
                 'destination': str(scheduled_job_request.executor.destination),
@@ -76,4 +90,5 @@ async def create(
     return PostScheduledJobResponse(
         scheduled_job_id=scheduled_job.id,
         next_invocation=scheduled_job.scheduled_for,
+        warnings=context.warnings,
     )
