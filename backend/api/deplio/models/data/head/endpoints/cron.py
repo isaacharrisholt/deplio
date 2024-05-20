@@ -44,3 +44,8 @@ class PostCronJobRequest(BaseModel):
 class PostCronJobResponse(DeplioResponse):
     cron_job_id: UUID
     next_invocation: Optional[AwareDatetime] = None
+
+
+class DeleteCronJobResponse(DeplioResponse):
+    cron_job_id: UUID
+    scheduled_job_ids: list[UUID]

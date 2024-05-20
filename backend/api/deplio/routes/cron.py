@@ -1,4 +1,6 @@
+from datetime import UTC, datetime
 from typing import Annotated
+from uuid import UUID
 
 from cron_converter import Cron
 from fastapi import Depends, Query, status
@@ -10,6 +12,7 @@ from deplio.context import Context, context
 from deplio.models.data.head.db.cron import CronJob, CronJobStatus
 from deplio.models.data.head.db.jobs import ScheduledJob, ScheduledJobStatus
 from deplio.models.data.head.endpoints.cron import (
+    DeleteCronJobResponse,
     GetCronJobsResponse,
     PostCronJobRequest,
     PostCronJobResponse,
@@ -212,3 +215,111 @@ async def create(
             )
 
     return response
+
+
+@router.delete(
+    '/{cron_job_id}',
+    summary='Delete a cron job',
+    description='Delete a cron job from Deplio. Will also delete any associated scheduled jobs.',
+    responses=generate_responses(DeleteCronJobResponse),
+    tags=[Tags.CRON],
+)
+async def delete(
+    auth: Annotated[APIKeyAuthCredentials, Depends(api_key_auth)],
+    supabase_admin: Annotated[SupabaseClient, Depends(supabase_admin)],
+    context: Annotated[Context, Depends(context)],
+    cron_job_id: UUID,
+):
+    # TODO: Add a comand controller to handle this
+    try:
+        cron_delete_response = (
+            await supabase_admin.table('cron_job')
+            .update({'deleted_at': datetime.now(UTC).isoformat()})
+            .eq('id', str(cron_job_id))
+            .eq('team_id', auth.team.id)
+            .is_('deleted_at', 'null')
+            .execute()
+        )
+    except Exception as e:
+        print(f'Error deleting cron job: {e}')
+        context.errors.append(DeplioError(message='Failed to delete cron job'))
+        return error_response(
+            message='Internal server error',
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            warnings=context.warnings,
+            errors=context.errors,
+        )
+
+    if len(cron_delete_response.data) == 0:
+        return error_response(
+            message='Cron job not found',
+            status_code=status.HTTP_404_NOT_FOUND,
+            warnings=context.warnings,
+            errors=context.errors,
+        )
+
+    try:
+        cron_invocation_response = (
+            await supabase_admin.table('cron_invocation')
+            .select('*')
+            .eq('cron_job_id', str(cron_job_id))
+            .execute()
+        )
+    except Exception as e:
+        print(f'Error fetching cron invocations: {e}')
+        context.errors.append(DeplioError(message='Failed to fetch cron invocations'))
+        return error_response(
+            message='Internal server error',
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            warnings=context.warnings,
+            errors=context.errors,
+        )
+
+    try:
+        scheduled_job_delete_response = (
+            await supabase_admin.table('scheduled_job')
+            .update({'deleted_at': datetime.now(UTC).isoformat()})
+            .in_(
+                'id',
+                [
+                    record['scheduled_job_id']
+                    for record in cron_invocation_response.data
+                ],
+            )
+            .is_('started_at', 'null')
+            .execute()
+        )
+    except Exception as e:
+        print(f'Error deleting scheduled jobs: {e}')
+        context.errors.append(DeplioError(message='Failed to delete scheduled jobs'))
+        return error_response(
+            message='Internal server error',
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            warnings=context.warnings,
+            errors=context.errors,
+        )
+
+    scheduled_job_ids = [record['id'] for record in scheduled_job_delete_response.data]
+
+    try:
+        (
+            await supabase_admin.table('cron_invocation')
+            .update({'deleted_at': datetime.now(UTC).isoformat()})
+            .in_('scheduled_job_id', scheduled_job_ids)
+            .execute()
+        )
+    except Exception as e:
+        print(f'Error deleting cron invocations: {e}')
+        context.errors.append(DeplioError(message='Failed to delete cron invocations'))
+        return error_response(
+            message='Internal server error',
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            warnings=context.warnings,
+            errors=context.errors,
+        )
+
+    return DeleteCronJobResponse(
+        cron_job_id=cron_job_id,
+        scheduled_job_ids=scheduled_job_ids,
+        warnings=context.warnings,
+    )

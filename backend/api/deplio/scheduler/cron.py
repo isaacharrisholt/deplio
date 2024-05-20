@@ -114,6 +114,7 @@ async def run_scheduled_jobs():
                 .select('*, cron_job(*)')
                 .lte('scheduled_for', datetime.now(UTC).isoformat())
                 .is_('deleted_at', 'null')
+                .is_('cron_job.deleted_at', 'null')
                 .eq('status', 'pending')
             ),
             'scheduled_job',
